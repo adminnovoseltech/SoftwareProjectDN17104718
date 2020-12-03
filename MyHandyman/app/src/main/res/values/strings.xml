@@ -1,3 +1,18 @@
 <resources>
     <string name="app_name">MyHandyman</string>
+    <string name="login_hint_username">E-mail</string>
+    <string name="login_hint_password">Password</string>
+    <string name="login_button_text">Login</string>
+    <string name="or">OR</string>
+    <string name="register_button_text">Register</string>
+    <string name="choice_button_looking">I am looking for a service</string>
+    <string name="choice_button_offer">I am offering a service</string>
+    <string name="cancel">Cancel</string>
+    <string name="register_hint_password">Password</string>
+    <string name="register_hint_phoneNo">Phone Number</string>
+    <string name="register_hint_email">E-mail</string>
+    <string name="register_hint_username">Username</string>
+    <string name="user_register_button">Register</string>
+    <string name="services_category">Category of services</string>
+    <string name="years_of_experience">Experience</string>
 </resources>
