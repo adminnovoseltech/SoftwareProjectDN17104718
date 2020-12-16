@@ -15,4 +15,5 @@
     <string name="user_register_button">Register</string>
     <string name="services_category">Category of services</string>
     <string name="years_of_experience">Experience</string>
+    <string name="user_logout_button">Log out</string>
 </resources>
