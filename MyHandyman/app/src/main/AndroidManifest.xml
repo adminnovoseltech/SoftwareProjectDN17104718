@@ -9,7 +9,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MyHandyman">
-        <activity android:name=".HomeActivity"></activity>
+        <activity
+            android:name=".HomeActivity"
+            android:label="@string/title_activity_home"
+            android:theme="@style/Theme.MyHandyman.NoActionBar" />
         <activity android:name=".BusinessRegistrationActivity" />
         <activity android:name=".UserRegistrationActivity" />
         <activity android:name=".RegistrationChoiceActivity" />
