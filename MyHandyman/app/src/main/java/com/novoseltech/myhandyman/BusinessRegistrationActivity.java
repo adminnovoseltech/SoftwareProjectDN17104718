@@ -208,7 +208,7 @@ public class BusinessRegistrationActivity extends AppCompatActivity {
                     user.put("username", username);
                     user.put("email", email);
                     user.put("phoneNo", phoneNo);
-                    user.put("accountType", "Business");
+                    user.put("accountType", "Professional");
                     user.put("category", businessCategory);
                     user.put("experience", businessExperience);
 
@@ -220,6 +220,7 @@ public class BusinessRegistrationActivity extends AppCompatActivity {
                     });
                     Intent intent = new Intent(BusinessRegistrationActivity.this, HomeActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    finish();
                     startActivity(intent);
                 }else{
                     if(task.getException() instanceof FirebaseAuthUserCollisionException){

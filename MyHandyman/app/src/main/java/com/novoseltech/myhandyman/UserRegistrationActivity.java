@@ -116,6 +116,7 @@ public class UserRegistrationActivity extends AppCompatActivity {
                     });
                     Intent intent = new Intent(UserRegistrationActivity.this, HomeActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    finish();
                     startActivity(intent);
                 }else{
                     if(task.getException() instanceof FirebaseAuthUserCollisionException){
