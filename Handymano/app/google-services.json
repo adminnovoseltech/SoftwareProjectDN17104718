@@ -1,0 +1,69 @@
+{
+  "project_info": {
+    "project_number": "548498954650",
+    "firebase_url": "https://myhandyman-ncirl.firebaseio.com",
+    "project_id": "myhandyman-ncirl",
+    "storage_bucket": "myhandyman-ncirl.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:548498954650:android:c555ff46d86c37743cc223",
+        "android_client_info": {
+          "package_name": "com.novoseltech.handymano"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "548498954650-69l61h88uqk0976kh8p1ous6n8r43i56.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA8hHPVqDcUYO-NI8huQ2qbJrm8DEDBJ68"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "548498954650-69l61h88uqk0976kh8p1ous6n8r43i56.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:548498954650:android:fe3423f2984d497e3cc223",
+        "android_client_info": {
+          "package_name": "com.novoseltech.myhandyman"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "548498954650-69l61h88uqk0976kh8p1ous6n8r43i56.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA8hHPVqDcUYO-NI8huQ2qbJrm8DEDBJ68"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "548498954650-69l61h88uqk0976kh8p1ous6n8r43i56.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
