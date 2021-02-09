@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Patterns;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -24,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
 
     EditText etEmail;
     EditText etPassword;
+    Button btn_passwordReset;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +35,15 @@ public class MainActivity extends AppCompatActivity {
         etEmail = findViewById(R.id.loginEmailInput);
         etPassword = findViewById(R.id.loginPasswordInput);
         mAuth = FirebaseAuth.getInstance();
+
+        btn_passwordReset = findViewById(R.id.forgotPassword);
+
+        btn_passwordReset.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(MainActivity.this, PasswordReset.class));
+            }
+        });
 
     }
 

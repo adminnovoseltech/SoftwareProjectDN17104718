@@ -2,6 +2,7 @@ package com.novoseltech.handymano;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,7 +12,10 @@ import android.util.Patterns;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -22,6 +26,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.GeoPoint;
+import com.novoseltech.handymano.fragments.AddressSelect;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -34,6 +40,13 @@ public class BusinessRegistrationActivity extends AppCompatActivity {
     EditText etBusinessEmail;
     EditText etBusinessPhoneNo;
     EditText etBusinessPassword;
+    TextView or4;
+    TextView or5;
+
+    Button btn_register;
+    Button btn_cancel;
+    Button btn_saveLocation;
+    Button btn_chooseLocation;
 
     //Firebase objects
     private FirebaseAuth mAuth;
@@ -41,6 +54,26 @@ public class BusinessRegistrationActivity extends AppCompatActivity {
     private String UID;
     private String businessCategory="N/A";
     private String businessExperience="N/A";
+
+    //Location
+    FrameLayout mapFrame;
+
+    //Location data
+    //String latitude;
+    //String longitude;
+    double latitude;
+    double longitude;
+    String radius;
+
+
+    //Layout
+    ConstraintLayout.LayoutParams btc;
+
+
+
+
+
+
 
 
 
@@ -53,9 +86,108 @@ public class BusinessRegistrationActivity extends AppCompatActivity {
         etBusinessEmail = findViewById(R.id.registerBusinessEmail_input);
         etBusinessPhoneNo = findViewById(R.id.registerBusinessPhoneNo_input);
         etBusinessPassword = findViewById(R.id.registerBusinessPassword_input);
+        or4 = findViewById(R.id.textView_or4);
+        or5 = findViewById(R.id.textView_or5);
+
+        btn_register = findViewById(R.id.btn_businessRegister);
+        btn_cancel = findViewById(R.id.btn_businessRegisterCancel);
+        btn_saveLocation = findViewById(R.id.btn_saveLocation);
+        btn_chooseLocation = findViewById(R.id.btn_chooseLocation);
 
         mAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();
+
+        mapFrame = findViewById(R.id.frame_location);
+        mapFrame.setVisibility(View.GONE);
+
+        btn_register.setVisibility(View.GONE);
+        btn_saveLocation.setVisibility(View.GONE);
+        btn_chooseLocation.setVisibility(View.VISIBLE);
+
+        or5.setVisibility(View.GONE);
+
+        AddressSelect af = new AddressSelect();
+
+        //Layout params
+         btc = (ConstraintLayout.LayoutParams) btn_cancel.getLayoutParams();
+
+
+        btn_chooseLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.frame_location, af)
+                        .commit();
+
+                btn_register.setVisibility(View.GONE);
+                btn_cancel.setVisibility(View.GONE);
+                or4.setVisibility(View.GONE);
+                or5.setVisibility(View.GONE);
+                btn_chooseLocation.setVisibility(View.GONE);
+
+                btn_saveLocation.setVisibility(View.VISIBLE);
+                mapFrame.setVisibility(View.VISIBLE);
+            }
+        });
+
+        btn_register.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                //Invoke registration method
+                registerBusinessUser();
+            }
+        });
+
+        btn_saveLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                latitude = Double.parseDouble(af.getLocationData(0));
+                longitude = Double.parseDouble(af.getLocationData(1));
+                radius = af.getLocationData(2);
+
+
+
+                if(((latitude == 0.0) && (longitude == 0.0)) || (radius == null)){
+                    if(radius == null){
+                        Toast.makeText(getApplicationContext(), "Radius cannot be empty", Toast.LENGTH_SHORT).show();
+                    }else{
+                        Toast.makeText(getApplicationContext(), "Location needs to be set", Toast.LENGTH_SHORT).show();
+                    }
+                }else{
+
+                    //lp.setMargins(lp.leftMargin, 180, lp.rightMargin, lp.bottomMargin);
+
+                    btc.setMargins(btc.leftMargin, 2500, btc.rightMargin, btc.bottomMargin);
+                    btn_register.setVisibility(View.VISIBLE);
+
+                    btn_chooseLocation.setVisibility(View.VISIBLE);
+
+                    btn_cancel.setVisibility(View.VISIBLE);
+                    or4.setVisibility(View.VISIBLE);
+                    or5.setVisibility(View.VISIBLE);
+
+                    btn_saveLocation.setVisibility(View.GONE);
+                    mapFrame.setVisibility(View.GONE);
+
+                    //Toast.makeText(getApplicationContext(), radius, Toast.LENGTH_SHORT).show();
+                }
+
+
+            }
+        });
+
+        
+        
+        /*getSupportFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
+            @Override
+            public void onBackStackChanged() {
+                btn_register.setVisibility(View.VISIBLE);
+                btn_cancel.setVisibility(View.VISIBLE);
+                mapFrame.setVisibility(View.GONE);
+            }
+        });*/
 
 
 
@@ -155,10 +287,15 @@ public class BusinessRegistrationActivity extends AppCompatActivity {
     }
 
     public void ClickRegisterBusiness(View view){
-        registerBusinessUser();
+        //Register user temporarily disabled
+        //registerBusinessUser();
+        //mapFrame.setVisibility(View.VISIBLE);
+
+
     }
 
     public void ClickCancelBusinessRegistration(View view){
+        mapFrame.setVisibility(View.GONE);
         func.redirectActivity(this, RegistrationChoiceActivity.class);
     }
 
@@ -205,12 +342,19 @@ public class BusinessRegistrationActivity extends AppCompatActivity {
                     UID = mAuth.getCurrentUser().getUid();
                     DocumentReference docReference = fStore.collection("user").document(UID);
                     Map<String, Object> user = new HashMap<>();
+
+                    GeoPoint gp = new GeoPoint(latitude, longitude);
                     user.put("username", username);
                     user.put("email", email);
                     user.put("phoneNo", phoneNo);
                     user.put("accountType", "Professional");
                     user.put("category", businessCategory);
                     user.put("experience", businessExperience);
+                    user.put("location", gp);
+                    //user.put("latitude", latitude);
+                    //user.put("longitude", longitude);
+                    user.put("radius", radius);
+
 
                     docReference.set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
@@ -232,4 +376,7 @@ public class BusinessRegistrationActivity extends AppCompatActivity {
             }
         });
     }
+
+
+
 }

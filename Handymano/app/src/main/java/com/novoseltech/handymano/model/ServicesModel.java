@@ -1,16 +1,18 @@
-package com.novoseltech.handymano;
+package com.novoseltech.handymano.model;
 
 public class ServicesModel {
 
     private String username;
     private String category;
+    private double distance;
 
     public ServicesModel() {
     }
 
-    public ServicesModel(String username, String category) {
+    public ServicesModel(String username, String category, double distance) {
         this.username = username;
         this.category = category;
+        this.distance = distance;
     }
 
     public String getUsername() {
@@ -29,4 +31,7 @@ public class ServicesModel {
         this.category = category;
     }
 
+    public double getDistance() {
+        return distance;
+    }
 }

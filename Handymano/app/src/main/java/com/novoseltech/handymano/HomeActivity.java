@@ -1,36 +1,84 @@
 package com.novoseltech.handymano;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Criteria;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.provider.Settings;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.firebase.geofire.GeoFireUtils;
+import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.GeoPoint;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.novoseltech.handymano.model.ServicesModel;
 
+import androidx.annotation.ArrayRes;
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import org.imperiumlabs.geofirestore.GeoFirestore;
+import org.imperiumlabs.geofirestore.GeoQuery;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-public class HomeActivity extends AppCompatActivity{
+public class HomeActivity extends AppCompatActivity {
 
 
-
-
+    private static final String TAG = "LOG: ";
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
     FirebaseFirestore fStore = FirebaseFirestore.getInstance();
     String UID;
@@ -56,8 +104,25 @@ public class HomeActivity extends AppCompatActivity{
     LinearLayout jobsNavLayout;
     LinearLayout projectsNavLayout;
 
+    //Recycler view objects
+    private RecyclerView fStoreList;
+    private FirestoreRecyclerAdapter adapter;
 
+    //Location objects
 
+    private static final int REQUEST_LOCATION = 1;
+    LocationManager locationManager;
+
+    String std_latitude;
+    String std_longitude;
+
+    Boolean currentLocationIcon = true;
+
+    FirebaseFirestore tempFireStore = FirebaseFirestore.getInstance();
+
+    Map<String, Object> pUsers = new HashMap<>();
+
+    ArrayList accounts = new ArrayList();
 
 
 
@@ -70,16 +135,12 @@ public class HomeActivity extends AppCompatActivity{
 
 
 
-        //drawerLayout_standard = findViewById(R.id.drawer_layout_standard);
-
         mAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();
         UID = mAuth.getCurrentUser().getUid();
 
 
-
-
-
+        //ViewHolder
 
 
         fStore.collection("user").document(UID).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -102,23 +163,14 @@ public class HomeActivity extends AppCompatActivity{
         handler.postDelayed(new Runnable() {
 
             //Create new fragment objects
-            ProfileFragment pf = new ProfileFragment();
             HomeFragment hf = new HomeFragment();
-            MessagesFragment mf = new MessagesFragment();
-            JobsFragment jf = new JobsFragment();
-            ProjectsFragment prjf = new ProjectsFragment();
+
 
             @Override
             public void run() {
 
-
-                //On start of application load fragment for home page
-                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                ft.replace(R.id.frame, hf);
-                ft.commit();
-
                 //Depending on account type load different activity layout and drawer layout
-                if(accountType.equals("Professional")){
+                if (accountType.equals("Professional")) {
                     //Navigation drawer
                     setContentView(R.layout.activity_home_professional);
                     drawerLayout = findViewById(R.id.drawer_layout);
@@ -131,16 +183,36 @@ public class HomeActivity extends AppCompatActivity{
                     projectsNavLayout.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                            ft.replace(R.id.frame, prjf);
-                            ft.commit();
-                            drawerLayout.closeDrawer(GravityCompat.START);
+
                         }
                     });
 
 
                     //Standard user
-                }else{
+                } else {
+                    //Empty "temp" subcollection
+
+                    tempFireStore.collection("user").document(UID).collection("temp")
+                            .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if(task.isSuccessful()){
+                                for(QueryDocumentSnapshot queryDocumentSnapshot : task.getResult()){
+                                    tempFireStore.collection("user").document(UID).collection("temp")
+                                            .document(queryDocumentSnapshot.getId())
+                                            .delete()
+                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    Log.d(TAG, "DocumentSnapshot successfully deleted!");
+                                                }
+                                            });
+                                }
+                            }
+                        }
+                    });
+
+
                     //Navigation drawer
                     setContentView(R.layout.activity_home_standard);
                     drawerLayout = findViewById(R.id.drawer_layout_standard);
@@ -148,20 +220,105 @@ public class HomeActivity extends AppCompatActivity{
                     tv_UserName = drawerLayout.findViewById(R.id.text_UserName_Standard);
                     tv_UserName.setText(userData.get("username").toString());
 
+                    //ArrayList accounts = new ArrayList();
+
+
+
+
+                    String addQueryParams = "";
+
+                    //Location text input field
+                    EditText et_stdUserLocation = findViewById(R.id.standardUserLocationET);
+                    et_stdUserLocation.setFocusable(false);
+                    TextInputLayout til_stdUserLocation = findViewById(R.id.standardUserLocationLayout);
+                    til_stdUserLocation.setHint("Current location");
+
+                    //Location based search button
+                    Button btn_search = findViewById(R.id.btn_professionalSearch);
+                    btn_search.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            //Get users location
+                            getCurrentLocation();
+                            //Calling the method to retrieve professional users account based on their and user's location and travelling preferences
+                            getProUsersFromCurrentLocation();
+                            //Setting the RecyclerView to visible
+                            fStoreList.setVisibility(View.VISIBLE);
+
+                        }
+                    });
+
+                    //Start icon of Text Input Layout click listener
+                    til_stdUserLocation.setStartIconOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            //If current icon is current location, set the map icon
+                            if(currentLocationIcon){
+                                til_stdUserLocation.setStartIconDrawable(R.drawable.ic_map);
+                                et_stdUserLocation.setFocusableInTouchMode(true);
+                                til_stdUserLocation.setHint("Custom address");
+                                currentLocationIcon = false;
+                            }else{//If current icon is map, set the current location icon
+                                til_stdUserLocation.setStartIconDrawable(R.drawable.ic_currentlocation);
+                                et_stdUserLocation.setFocusable(false);
+                                til_stdUserLocation.setHint("Current location");
+                                currentLocationIcon = true;
+                            }
+                            //Toast.makeText(getApplicationContext(), "Works", Toast.LENGTH_LONG).show();
+
+
+                        }
+                    });
+
+                    fStoreList = findViewById(R.id.firestoreList);
+                    getCurrentLocation();
+
+                    //Query
+                    Query query = fStore.collection("user").document(UID).collection("temp");
+                    //RecyclerOptions
+                    FirestoreRecyclerOptions<ServicesModel> options = new FirestoreRecyclerOptions.Builder<ServicesModel>()
+                            .setQuery(query, ServicesModel.class)
+                            .build();
+
+
+                    adapter = new FirestoreRecyclerAdapter<ServicesModel, ServicesViewHolder>(options) {
+                        @NonNull
+                        @Override
+                        public ServicesViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_single, parent, false);
+                            return new ServicesViewHolder(view);
+                        }
+
+                        @Override
+                        protected void onBindViewHolder(@NonNull ServicesViewHolder holder, int position, @NonNull ServicesModel model) {
+                            holder.list_username.setText(model.getUsername());
+                            holder.list_category.setText(model.getCategory());
+                            holder.list_distance.setText(model.getDistance() + " km away");
+                            holder.list_distance.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_locationpin, 0, 0, 0);
+
+
+                        }
+                    };
+
+                    fStoreList.setHasFixedSize(true);
+                    fStoreList.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+                    fStoreList.setAdapter(adapter);
+
+
+                    adapter.startListening();
+                    fStoreList.setVisibility(View.INVISIBLE);
+
 
                 }
 
+
                 //Profile image listener on navigation drawer
-                //Get the drawer layout, retrieve id of profile pic open fragment
                 profileImage = drawerLayout.findViewById(R.id.profilePicture);
                 profileImage.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                        ft.replace(R.id.frame, pf);
-                        ft.commit();
-                        drawerLayout.closeDrawer(GravityCompat.START);
 
+                        drawerLayout.closeDrawer(GravityCompat.START);
                         Toast.makeText(getApplicationContext(), "It works", Toast.LENGTH_SHORT).show();
 
                     }
@@ -172,9 +329,7 @@ public class HomeActivity extends AppCompatActivity{
                 homeNavLayout.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                        ft.replace(R.id.frame, hf);
-                        ft.commit();
+
                         drawerLayout.closeDrawer(GravityCompat.START);
                     }
                 });
@@ -184,9 +339,7 @@ public class HomeActivity extends AppCompatActivity{
                 messageNavLayout.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                        ft.replace(R.id.frame, mf);
-                        ft.commit();
+
                         drawerLayout.closeDrawer(GravityCompat.START);
                     }
                 });
@@ -196,21 +349,151 @@ public class HomeActivity extends AppCompatActivity{
                 jobsNavLayout.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                        ft.replace(R.id.frame, jf);
-                        ft.commit();
+
                         drawerLayout.closeDrawer(GravityCompat.START);
                     }
                 });
 
             }
+
+
         }, 1000);
-
-
-
 
     }
 
+    public void getProUsersFromCurrentLocation(){
+        double userLat = Double.valueOf(std_latitude);
+        double userLon = Double.valueOf(std_longitude);
+
+        //Temporary FireStore collection which stores professional service providers which are in the radius
+        // or willing to travel accross whole Ireland in subcollection
+        //under user's profile so that it can be used in a query that is used in FirestoreRecyclerOptions
+        tempFireStore.collection("user").whereEqualTo("accountType", "Professional").get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if(task.isSuccessful()){
+                            for (QueryDocumentSnapshot document : task.getResult()){
+                                GeoPoint gp = document.getGeoPoint("location");
+                                int radius = Integer.parseInt((String) document.get("radius"));
+
+
+                                double proLat = gp.getLatitude();
+                                double proLon = gp.getLongitude();
+
+                                double distance =
+                                        distanceBetweenTwoCoordinates(userLat, userLon, proLat, proLon);
+
+
+
+                                if(distance <= radius || radius == 0){
+                                    accounts.add(document.getId());
+                                    pUsers.put("location", document.getGeoPoint("location"));
+                                    pUsers.put("radius", document.getString("radius"));
+                                    pUsers.put("username", document.getString("username"));
+                                    pUsers.put("category", document.getString("category"));
+                                    pUsers.put("distance", Math.round(distance));
+
+                                    fStore.collection("user").document(UID)
+                                            .collection("temp")
+                                            .document(document.getId())
+                                            .set(pUsers)
+                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    Log.d(TAG, "Pro user successfully added");
+                                                    Toast.makeText(getApplicationContext(), "Successful", Toast.LENGTH_LONG).show();
+
+                                                    pUsers.clear();
+
+                                                }
+                                            }).addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            Toast.makeText(getApplicationContext(), e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                                        }
+                                    });
+                                }
+
+                            }
+                        }
+                    }
+                });
+    }
+
+    public double distanceBetweenTwoCoordinates(double lat1, double lon1, double lat2, double lon2){
+        //https://www.movable-type.co.uk/scripts/latlong.html
+        //Used 'haversine' formula to calculate the distance between two coordinates
+
+        int earthRadius = 6371;
+
+        double dLat = degreesToRadians(lat2 - lat1);
+        double dLon = degreesToRadians(lon2 - lon1);
+
+        lat1 = degreesToRadians(lat1);
+        lat2 = degreesToRadians(lat2);
+
+        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2)
+                + Math.sin(dLon / 2) * Math.sin(dLon / 2)
+                * Math.cos(lat1) * Math.cos(lat2);
+
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+        return earthRadius * c;
+    }
+
+    public double degreesToRadians(double degrees){
+        return degrees * (Math.PI / 180);
+    }
+
+    public void getCurrentLocation() {
+
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                REQUEST_LOCATION);
+
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            OnGPS();
+        } else {
+            getLocation();
+        }
+
+    }
+
+    private void OnGPS() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Enable GPS").setCancelable(false).setPositiveButton("Yes", new  DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+            }
+        }).setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        final AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+
+    private void getLocation() {
+        if (ActivityCompat.checkSelfPermission(
+                HomeActivity.this,Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                HomeActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
+        } else {
+            Location locationGPS = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            if (locationGPS != null) {
+                double lat = locationGPS.getLatitude();
+                double lon = locationGPS.getLongitude();
+                std_latitude = String.valueOf(lat);
+                std_longitude = String.valueOf(lon);
+            } else {
+                Toast.makeText(this, "Unable to find location.", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
 
     public void logout(){
         //Close app
@@ -244,9 +527,6 @@ public class HomeActivity extends AppCompatActivity{
         builder.show();
     }
 
-
-
-
     public void ClickMenu(View view) {
         openDrawer(drawerLayout);
     }
@@ -255,7 +535,6 @@ public class HomeActivity extends AppCompatActivity{
         //Open drawer layout
         drawerLayout.openDrawer(GravityCompat.START);
     }
-
 
     public static void closeDrawer(DrawerLayout drawerLayout) {
         //Close drawer layout
@@ -275,19 +554,36 @@ public class HomeActivity extends AppCompatActivity{
     }
 
     public void ClickProfile(View view) {
-
     }
 
     public void ClickMessages(View view) {
     }
 
-    private void loadFragment(Fragment fragment){
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.frame, fragment);
-        drawerLayout.closeDrawer(GravityCompat.START);
-        fragmentTransaction.addToBackStack(null);
+    private class ServicesViewHolder extends RecyclerView.ViewHolder{
+        private TextView list_username;
+        private TextView list_category;
+        private TextView list_distance;
+
+        public ServicesViewHolder(@NonNull View itemView) {
+            super(itemView);
+            list_username = itemView.findViewById(R.id.list_username);
+            list_category = itemView.findViewById(R.id.list_category);
+            list_distance = itemView.findViewById(R.id.list_distance);
+        }
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
 
+        //adapter.startListening();
+    }
+
+    @Override
+    protected void onStop() {
+        if(accountType.equals("Standard")){
+            adapter.stopListening();
+        }
+        super.onStop();
+    }
 }
