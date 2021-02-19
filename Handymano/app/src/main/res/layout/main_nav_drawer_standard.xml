@@ -2,15 +2,17 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
-    <ImageView
+    <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/profilePicture"
         android:layout_width="match_parent"
         android:layout_height="120dp"
         android:layout_margin="16dp"
         android:src="@drawable/ic_profile_512"
-        android:onClick="ClickProfile"/>
+        android:onClick="ClickProfile"
+        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize10Percent"/>
 
     <TextView
         android:id="@+id/text_UserName_Standard"

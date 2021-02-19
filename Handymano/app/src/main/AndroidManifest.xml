@@ -7,7 +7,8 @@
          location permissions for the "MyLocation" functionality.
     -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -16,7 +17,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".PasswordReset"></activity>
+        <activity android:name=".views.ProfessionalProfileActivity"></activity>
+        <activity android:name=".views.StandardProfileActivity" />
+        <activity android:name=".views.ViewProfessionalActivity" />
+        <activity android:name=".PasswordReset" />
         <activity android:name=".MapTest" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.

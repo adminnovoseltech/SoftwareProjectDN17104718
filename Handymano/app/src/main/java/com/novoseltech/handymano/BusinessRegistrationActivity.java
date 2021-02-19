@@ -178,17 +178,6 @@ public class BusinessRegistrationActivity extends AppCompatActivity {
             }
         });
 
-        
-        
-        /*getSupportFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
-            @Override
-            public void onBackStackChanged() {
-                btn_register.setVisibility(View.VISIBLE);
-                btn_cancel.setVisibility(View.VISIBLE);
-                mapFrame.setVisibility(View.GONE);
-            }
-        });*/
-
 
 
         //Services category - creating the dropdown
