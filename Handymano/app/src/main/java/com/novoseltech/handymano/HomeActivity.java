@@ -61,8 +61,10 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.novoseltech.handymano.model.ServicesModel;
+import com.novoseltech.handymano.views.ProfessionalProfileActivity;
 import com.novoseltech.handymano.views.StandardProfileActivity;
 import com.novoseltech.handymano.views.ViewProfessionalActivity;
+import com.novoseltech.handymano.views.professional.ProjectsActivity;
 
 import androidx.annotation.ArrayRes;
 import androidx.annotation.NonNull;
@@ -161,8 +163,24 @@ public class HomeActivity extends AppCompatActivity {
 
         //ViewHolder
 
+        fStore.collection("user").document(UID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful()){
+                    DocumentSnapshot documentSnapshot = task.getResult();
 
-        fStore.collection("user").document(UID).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    accountType = documentSnapshot.getString("accountType");
+                    email = documentSnapshot.getString("email");
+                    userData.put("accountType", documentSnapshot.getString("accountType"));
+                    userData.put("username", documentSnapshot.getString("username"));
+                    userData.put("email", documentSnapshot.getString("email"));
+                    userData.put("phoneNo", documentSnapshot.get("phoneNo"));
+                }
+            }
+        });
+
+
+        /*fStore.collection("user").document(UID).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 accountType = documentSnapshot.getString("accountType");
@@ -174,7 +192,7 @@ public class HomeActivity extends AppCompatActivity {
 
                 //if(accountType.equals("Professional"))
             }
-        });
+        });*/
 
         functions = new Functions();
 
@@ -218,6 +236,8 @@ public class HomeActivity extends AppCompatActivity {
                     profileImage.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
+                            Intent intent = new Intent(HomeActivity.this, ProfessionalProfileActivity.class);
+                            startActivity(intent);
 
                         }
                     });
@@ -227,7 +247,8 @@ public class HomeActivity extends AppCompatActivity {
                     projectsNavLayout.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-
+                            Intent intent = new Intent(HomeActivity.this, ProjectsActivity.class);
+                            startActivity(intent);
                         }
                     });
 
@@ -508,8 +529,14 @@ public class HomeActivity extends AppCompatActivity {
                         }
                     };
 
-                    tv_UserName.setText(userData.get("username").toString());
+                    /**
+                     * This is to be monitored
+                     */
+                    //tv_UserName.setText(userData.get("username").toString());
 
+                    /**
+                     *
+                     */
                     fStoreList.setHasFixedSize(true);
                     fStoreList.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
                     fStoreList.setAdapter(adapter);

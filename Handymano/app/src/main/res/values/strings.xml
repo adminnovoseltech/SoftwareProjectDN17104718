@@ -48,5 +48,9 @@
     <string name="location">Location</string>
     <string name="search">Search</string>
     <string name="expandSearch">Expand search</string>
+    <string name="project_title">Project title</string>
+    <string name="project_description">Project description</string>
+    <string name="save_project">Save project</string>
+    <string name="create_new_project">New project</string>
 
 </resources>
