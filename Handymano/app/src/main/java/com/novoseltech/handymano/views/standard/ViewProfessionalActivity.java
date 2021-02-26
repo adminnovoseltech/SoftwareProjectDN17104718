@@ -1,4 +1,4 @@
-package com.novoseltech.handymano.views;
+package com.novoseltech.handymano.views.standard;
 
 import androidx.appcompat.app.AppCompatActivity;
 

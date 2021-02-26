@@ -12,7 +12,7 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/til_projectTitle"
-            android:layout_width="300dp"
+            android:layout_width="350dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="50dp"
             android:hint="@string/project_title"
@@ -24,13 +24,13 @@
                 android:id="@+id/et_projectTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text"/>
+                android:inputType="text" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/til_projectDescription"
-            android:layout_width="300dp"
+            android:layout_width="350dp"
             android:layout_height="300dp"
             android:layout_marginTop="30dp"
             android:hint="@string/project_description"
@@ -42,7 +42,7 @@
                 android:id="@+id/et_projectDescription"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:inputType="textMultiLine"/>
+                android:inputType="textMultiLine" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <Button
@@ -54,6 +54,67 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
+
+        <Button
+            android:id="@+id/btn_addPictures"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:text="@string/add_pictures"
+            app:layout_constraintBottom_toTopOf="@+id/btn_saveProject"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <ImageView
+            android:id="@+id/imageView_first"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="20dp"
+            android:src="@drawable/border"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/til_projectDescription" />
+
+        <ImageView
+            android:id="@+id/imageView_second"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:src="@drawable/border"
+            app:layout_constraintStart_toEndOf="@+id/imageView_first"
+            app:layout_constraintTop_toBottomOf="@+id/til_projectDescription" />
+
+        <TextView
+            android:id="@+id/tv_imageCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="60dp"
+            android:textSize="28sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.4"
+            app:layout_constraintStart_toEndOf="@+id/imageView_second"
+            app:layout_constraintTop_toBottomOf="@+id/til_projectDescription" />
+
+        <ImageView
+            android:id="@+id/imageView_cancel_first"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="118dp"
+            android:layout_marginTop="9dp"
+            android:src="@drawable/ic_cancel"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/til_projectDescription" />
+
+        <ImageView
+            android:id="@+id/imageView_cancel_second"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="9dp"
+            android:layout_marginEnd="149dp"
+            android:src="@drawable/ic_cancel"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/til_projectDescription" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

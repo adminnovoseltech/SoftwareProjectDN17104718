@@ -12,9 +12,17 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.novoseltech.handymano.views.professional.HomeActivityProfessional;
+import com.novoseltech.handymano.views.standard.HomeActivityStandard;
+
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -22,10 +30,17 @@ public class MainActivity extends AppCompatActivity {
     Functions func = new Functions();
 
     FirebaseAuth mAuth;
+    FirebaseFirestore fStore;
 
     EditText etEmail;
     EditText etPassword;
     Button btn_passwordReset;
+
+    String accountType = "";
+    String email = "";
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
         etEmail = findViewById(R.id.loginEmailInput);
         etPassword = findViewById(R.id.loginPasswordInput);
         mAuth = FirebaseAuth.getInstance();
+
 
         btn_passwordReset = findViewById(R.id.forgotPassword);
 
@@ -52,8 +68,52 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
         if(mAuth.getCurrentUser() != null){
+            /*
             finish();
             startActivity(new Intent (this, HomeActivity.class));
+            */
+            Map<String, Object> userData = new HashMap<>();
+
+            fStore = FirebaseFirestore.getInstance();
+            fStore.collection("user").document(mAuth.getCurrentUser().getUid())
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            if(task.isSuccessful()){
+                                DocumentSnapshot documentSnapshot = task.getResult();
+
+                                accountType = documentSnapshot.getString("accountType");
+                                email = documentSnapshot.getString("email");
+                                userData.put("accountType", documentSnapshot.getString("accountType"));
+                                userData.put("username", documentSnapshot.getString("username"));
+                                userData.put("email", documentSnapshot.getString("email"));
+                                userData.put("phoneNo", documentSnapshot.get("phoneNo"));
+
+                                if(accountType.equals("Professional")){
+                                    finish();
+                                    Intent intent = new Intent(MainActivity.this, HomeActivityProfessional.class);
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    intent.putExtra("username", (String)userData.get("username"));
+                                    startActivity(intent);
+                                }else if(accountType.equals("Standard")){
+                                    finish();
+                                    Intent intent = new Intent(MainActivity.this, HomeActivityStandard.class);
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    intent.putExtra("username", (String)userData.get("username"));
+                                    startActivity(intent);
+                                }else{
+                                    Toast.makeText(getApplicationContext(), "Automatic login failed. Please try manually", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(getApplicationContext(), "Automatic login failed", Toast.LENGTH_SHORT).show();
+                        }
+                    });
         }
     }
 
@@ -98,18 +158,49 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()){
-                    finish();
                     //Sign in successful, opening new activity
-                    Intent intent = new Intent(MainActivity.this, HomeActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
+                    Map<String, Object> userData = new HashMap<>();
+                    fStore = FirebaseFirestore.getInstance();
+                    fStore.collection("user").document(mAuth.getCurrentUser().getUid())
+                            .get()
+                            .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                    if(task.isSuccessful()){
+                                        DocumentSnapshot documentSnapshot = task.getResult();
 
+                                        accountType = documentSnapshot.getString("accountType");
+                                        userData.put("accountType", documentSnapshot.getString("accountType"));
+                                        userData.put("username", documentSnapshot.getString("username"));
+                                        userData.put("email", documentSnapshot.getString("email"));
+                                        userData.put("phoneNo", documentSnapshot.get("phoneNo"));
+                                    }
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Toast.makeText(getApplicationContext(), "Automatic login failed", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+
+                    if(accountType.equals("Professional")){
+                        finish();
+                        Intent intent = new Intent(MainActivity.this, HomeActivityProfessional.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent);
+                    }else if(accountType.equals("Standard")){
+                        finish();
+                        Intent intent = new Intent(MainActivity.this, HomeActivityStandard.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent);
+                    }else{
+                        Toast.makeText(getApplicationContext(), "Account type not recognized.", Toast.LENGTH_SHORT).show();
+                    }
                 }else{
                     Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
         });
-
-
     }
 }

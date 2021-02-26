@@ -18,6 +18,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.novoseltech.handymano.views.standard.HomeActivityStandard;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -114,7 +115,7 @@ public class UserRegistrationActivity extends AppCompatActivity {
                             System.out.println("onSuccess: user profile " + UID + "created!");
                         }
                     });
-                    Intent intent = new Intent(UserRegistrationActivity.this, HomeActivity.class);
+                    Intent intent = new Intent(UserRegistrationActivity.this, HomeActivityStandard.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     finish();
                     startActivity(intent);

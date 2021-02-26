@@ -52,5 +52,6 @@
     <string name="project_description">Project description</string>
     <string name="save_project">Save project</string>
     <string name="create_new_project">New project</string>
+    <string name="add_pictures">Add pictures</string>
 
 </resources>

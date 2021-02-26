@@ -28,6 +28,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
 import com.novoseltech.handymano.fragments.AddressSelect;
+import com.novoseltech.handymano.views.professional.HomeActivityProfessional;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -351,7 +352,7 @@ public class BusinessRegistrationActivity extends AppCompatActivity {
                             System.out.println("onSuccess: user profile " + UID + "created!");
                         }
                     });
-                    Intent intent = new Intent(BusinessRegistrationActivity.this, HomeActivity.class);
+                    Intent intent = new Intent(BusinessRegistrationActivity.this, HomeActivityProfessional.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     finish();
                     startActivity(intent);
