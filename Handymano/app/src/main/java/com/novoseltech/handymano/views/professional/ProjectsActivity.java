@@ -82,7 +82,6 @@ public class ProjectsActivity extends AppCompatActivity {
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Toast.makeText(getApplicationContext(), holder.projectTitle.getText(), Toast.LENGTH_SHORT).show();
 
                         Intent intent  = new Intent(getApplicationContext(), ProfessionalProject.class);
                         intent.putExtra("PROJECT_ID", holder.projectTitle.getText());

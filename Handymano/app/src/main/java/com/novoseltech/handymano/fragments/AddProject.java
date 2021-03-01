@@ -204,6 +204,12 @@ public class AddProject extends Fragment {
                     project.put("title", pTitle);
                     project.put("description", pDesc);
                     project.put("creation_date", todayDate);
+
+                    if(mImageUri == null){
+                        project.put("imageCount", mArrayUri.size());
+                    }else{
+                        project.put("imageCount", 1);
+                    }
                     fStore.collection("user").document(UID)
                             .collection("projects")
                             .document(pTitle)
