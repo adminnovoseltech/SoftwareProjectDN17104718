@@ -52,10 +52,10 @@ import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link AddProject#newInstance} factory method to
+ * Use the {@link AddJob#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class AddProject extends Fragment {
+public class AddJob extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -74,13 +74,13 @@ public class AddProject extends Fragment {
     ImageView iv_second;
     TextView tv_imageCount;
 
-    Button btn_saveProject;
-    Button btn_createProject;
+    Button btn_saveJob;
+    Button btn_createJob;
     RecyclerView fStoreList;
     Button btn_addImages;
 
-    EditText et_projectTitle;
-    EditText et_projectDescription;
+    EditText et_jobTitle;
+    EditText et_jobDescription;
 
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
     FirebaseFirestore fStore = FirebaseFirestore.getInstance();
@@ -97,9 +97,7 @@ public class AddProject extends Fragment {
     ImageView iv_cancel_first;
     ImageView iv_cancel_second;
 
-
-
-    public AddProject() {
+    public AddJob() {
         // Required empty public constructor
     }
 
@@ -109,11 +107,11 @@ public class AddProject extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment AddProject.
+     * @return A new instance of fragment AddJob.
      */
     // TODO: Rename and change types and number of parameters
-    public static AddProject newInstance(String param1, String param2) {
-        AddProject fragment = new AddProject();
+    public static AddJob newInstance(String param1, String param2) {
+        AddJob fragment = new AddJob();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -134,25 +132,25 @@ public class AddProject extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_add_project, container, false);
+        View view = inflater.inflate(R.layout.fragment_add_job, container, false);
 
-        btn_saveProject = view.findViewById(R.id.btn_saveProject);
-        btn_addImages = view.findViewById(R.id.btn_addPictures);
-        et_projectTitle = view.findViewById(R.id.et_projectTitle);
-        et_projectDescription = view.findViewById(R.id.et_projectDescription);
-        btn_createProject = getActivity().findViewById(R.id.btn_createProject);
-        fStoreList = getActivity().findViewById(R.id.firestoreListProjects);
+        btn_saveJob = view.findViewById(R.id.btn_saveJob);
+        btn_addImages = view.findViewById(R.id.btn_addJobPictures);
+        et_jobTitle = view.findViewById(R.id.et_jobTitle);
+        et_jobDescription = view.findViewById(R.id.et_jobDescription);
+        btn_createJob = getActivity().findViewById(R.id.btn_newJob);
+        fStoreList = getActivity().findViewById(R.id.firestoreListJobs);
 
-        iv_first = view.findViewById(R.id.iv_firstImg);
-        iv_second = view.findViewById(R.id.iv_secondImg);
-        tv_imageCount = view.findViewById(R.id.tv_imageCount);
+        iv_first = view.findViewById(R.id.iv_firstImage);
+        iv_second = view.findViewById(R.id.iv_secondImage);
+        tv_imageCount = view.findViewById(R.id.tv_imgCount);
 
         iv_first.setVisibility(View.INVISIBLE);
         iv_second.setVisibility(View.INVISIBLE);
 
-        iv_cancel_first = view.findViewById(R.id.iv_cancel_first_img);
+        iv_cancel_first = view.findViewById(R.id.iv_cancel_first_image);
         iv_cancel_first.setVisibility(View.INVISIBLE);
-        iv_cancel_second = view.findViewById(R.id.iv_cancel_second_img);
+        iv_cancel_second = view.findViewById(R.id.iv_cancel_second_image);
         iv_cancel_second.setVisibility(View.INVISIBLE);
 
 
@@ -186,30 +184,30 @@ public class AddProject extends Fragment {
             }
         });
 
-        btn_saveProject.setOnClickListener(new View.OnClickListener() {
+        btn_saveJob.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //Objects
-                Map<String, Object> project = new HashMap<>();
-                String pTitle = et_projectTitle.getText().toString();
-                String pDesc = et_projectDescription.getText().toString();
+                Map<String, Object> job = new HashMap<>();
+                String pTitle = et_jobTitle.getText().toString();
+                String pDesc = et_jobDescription.getText().toString();
 
 
                 //Content validation
                 if(pTitle.length() >= 10 && pTitle.length() <= 50 && pDesc.length() >= 10 && pDesc.length() <= 400 && (mImageUri != null || mArrayUri.size() > 0)){
-                    project.put("title", pTitle);
-                    project.put("description", pDesc);
-                    project.put("creation_date", todayDate);
+                    job.put("title", pTitle);
+                    job.put("description", pDesc);
+                    job.put("creation_date", todayDate);
 
                     if(mImageUri == null){
-                        project.put("imageCount", mArrayUri.size());
+                        job.put("imageCount", mArrayUri.size());
                     }else{
-                        project.put("imageCount", 1);
+                        job.put("imageCount", 1);
                     }
                     fStore.collection("user").document(UID)
-                            .collection("projects")
+                            .collection("jobs")
                             .document(pTitle)
-                            .set(project)
+                            .set(job)
                             .addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
@@ -244,29 +242,27 @@ public class AddProject extends Fragment {
                                 }
                             });
 
-                    btn_createProject.setVisibility(View.VISIBLE);
+                    btn_createJob.setVisibility(View.VISIBLE);
                     fStoreList.setVisibility(View.VISIBLE);
-                    getActivity().getSupportFragmentManager().beginTransaction().remove(AddProject.this).commit();
+                    getActivity().getSupportFragmentManager().beginTransaction().remove(AddJob.this).commit();
 
                 }else{
                     if(pTitle.length() < 10 || pTitle.length() > 50){
-                        et_projectTitle.setError("Title length must be between 10 and 50 characters!");
-                        et_projectTitle.requestFocus();
+                        et_jobTitle.setError("Title length must be between 10 and 50 characters!");
+                        et_jobTitle.requestFocus();
                     }else if(mImageUri == null || mArrayUri.size() == 0){
-                        Toast.makeText(getContext(), "You must attach at least 1 image to the project", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), "You must attach at least 1 image to the job", Toast.LENGTH_SHORT).show();
                     }
                     else{
                         if(pDesc.length() < 10){
-                            et_projectDescription.setError("Description length must be at least 10 characters!");
+                            et_jobDescription.setError("Description length must be at least 10 characters!");
                         }else{
-                            et_projectDescription.setError("Description can contain max 400 characters!");
+                            et_jobDescription.setError("Description can contain max 400 characters!");
                         }
-                        et_projectDescription.requestFocus();
+                        et_jobDescription.requestFocus();
                     }
                 }
-
             }
-
         });
 
         iv_cancel_first.setOnClickListener(new View.OnClickListener() {
@@ -344,7 +340,6 @@ public class AddProject extends Fragment {
                 Toast.makeText(getContext(), "To be added!", Toast.LENGTH_SHORT).show();
             }
         });
-
     }
 
     @Override
@@ -484,8 +479,8 @@ public class AddProject extends Fragment {
         StorageReference reference = FirebaseStorage.getInstance().getReference()
                 .child("images")
                 .child(UID)
-                .child("projects")
-                .child(et_projectTitle.getText().toString())
+                .child("jobs")
+                .child(et_jobTitle.getText().toString())
                 .child(todayDate + "_image_" + imgCount + ".jpeg");
 
         reference.putBytes(baos.toByteArray())

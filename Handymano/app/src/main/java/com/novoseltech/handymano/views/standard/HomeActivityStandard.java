@@ -58,6 +58,7 @@ import com.novoseltech.handymano.MainActivity;
 import com.novoseltech.handymano.R;
 import com.novoseltech.handymano.model.ServicesModel;
 import com.novoseltech.handymano.views.professional.HomeActivityProfessional;
+import com.novoseltech.handymano.views.standard.job.JobsActivity;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -139,6 +140,7 @@ public class HomeActivityStandard extends AppCompatActivity {
 
         tv_UserName = drawerLayout.findViewById(R.id.text_UserName_Standard);
         profileImage = drawerLayout.findViewById(R.id.profilePicture);
+
 
         //FirebaseUser user = mAuth.getCurrentUser();
 
@@ -428,8 +430,8 @@ public class HomeActivityStandard extends AppCompatActivity {
         jobsNavLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                drawerLayout.closeDrawer(GravityCompat.START);
+                Intent intent = new Intent(HomeActivityStandard.this, JobsActivity.class);
+                startActivity(intent);
             }
         });
 

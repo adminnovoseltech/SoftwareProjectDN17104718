@@ -53,5 +53,9 @@
     <string name="save_project">Save project</string>
     <string name="create_new_project">New project</string>
     <string name="add_pictures">Add pictures</string>
+    <string name="new_job">New job</string>
+    <string name="job_title">Title</string>
+    <string name="job_description">Description</string>
+    <string name="save_job">Save job</string>
 
 </resources>

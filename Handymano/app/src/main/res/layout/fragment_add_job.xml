@@ -1,27 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.AddProject">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".fragments.AddJob">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/til_projectTitle"
+            android:id="@+id/til_jobTitle"
             android:layout_width="350dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="50dp"
-            android:hint="@string/project_title"
+            android:hint="@string/job_title"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_projectTitle"
+                android:id="@+id/et_jobTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="text" />
@@ -29,92 +29,93 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/til_projectDescription"
+            android:id="@+id/til_jobDescription"
             android:layout_width="350dp"
             android:layout_height="300dp"
             android:layout_marginTop="30dp"
-            android:hint="@string/project_description"
+            android:hint="@string/job_description"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/til_projectTitle">
+            app:layout_constraintTop_toBottomOf="@+id/til_jobTitle">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_projectDescription"
+                android:id="@+id/et_jobDescription"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:inputType="textMultiLine" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <Button
-            android:id="@+id/btn_saveProject"
+            android:id="@+id/btn_saveJob"
             android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
-            android:text="@string/save_project"
+            android:text="@string/save_job"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
         <Button
-            android:id="@+id/btn_addPictures"
+            android:id="@+id/btn_addJobPictures"
             android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
             android:text="@string/add_pictures"
-            app:layout_constraintBottom_toTopOf="@+id/btn_saveProject"
+            app:layout_constraintBottom_toTopOf="@+id/btn_saveJob"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
         <ImageView
-            android:id="@+id/iv_firstImg"
+            android:id="@+id/iv_firstImage"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_marginStart="30dp"
             android:layout_marginTop="20dp"
             android:src="@drawable/border"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/til_projectDescription" />
+            app:layout_constraintTop_toBottomOf="@+id/til_jobDescription" />
 
         <ImageView
-            android:id="@+id/iv_secondImg"
+            android:id="@+id/iv_secondImage"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_marginStart="20dp"
             android:layout_marginTop="20dp"
             android:src="@drawable/border"
-            app:layout_constraintStart_toEndOf="@+id/iv_firstImg"
-            app:layout_constraintTop_toBottomOf="@+id/til_projectDescription" />
+            app:layout_constraintStart_toEndOf="@+id/iv_firstImage"
+            app:layout_constraintTop_toBottomOf="@+id/til_jobDescription" />
 
         <TextView
-            android:id="@+id/tv_imageCount"
+            android:id="@+id/tv_imgCount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="60dp"
             android:textSize="28sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.4"
-            app:layout_constraintStart_toEndOf="@+id/iv_secondImg"
-            app:layout_constraintTop_toBottomOf="@+id/til_projectDescription" />
+            app:layout_constraintStart_toEndOf="@+id/iv_secondImage"
+            app:layout_constraintTop_toBottomOf="@+id/til_jobDescription" />
 
         <ImageView
-            android:id="@+id/iv_cancel_first_img"
+            android:id="@+id/iv_cancel_first_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="118dp"
             android:layout_marginTop="9dp"
             android:src="@drawable/ic_cancel"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/til_projectDescription" />
+            app:layout_constraintTop_toBottomOf="@+id/til_jobDescription" />
 
         <ImageView
-            android:id="@+id/iv_cancel_second_img"
+            android:id="@+id/iv_cancel_second_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="9dp"
             android:layout_marginEnd="149dp"
             android:src="@drawable/ic_cancel"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/til_projectDescription" />
+            app:layout_constraintTop_toBottomOf="@+id/til_jobDescription" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 </FrameLayout>
