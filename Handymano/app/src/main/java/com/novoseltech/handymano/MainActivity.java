@@ -68,10 +68,6 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
         if(mAuth.getCurrentUser() != null){
-            /*
-            finish();
-            startActivity(new Intent (this, HomeActivity.class));
-            */
             Map<String, Object> userData = new HashMap<>();
 
             fStore = FirebaseFirestore.getInstance();
@@ -82,7 +78,6 @@ public class MainActivity extends AppCompatActivity {
                         public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                             if(task.isSuccessful()){
                                 DocumentSnapshot documentSnapshot = task.getResult();
-
                                 accountType = documentSnapshot.getString("accountType");
                                 email = documentSnapshot.getString("email");
                                 userData.put("accountType", documentSnapshot.getString("accountType"));

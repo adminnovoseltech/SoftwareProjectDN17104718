@@ -85,11 +85,7 @@ public class HomeActivity extends AppCompatActivity {
     Map<String, Object> userData = new HashMap<>();
 
     //Navigation drawer
-
     DrawerLayout drawerLayout;
-
-
-    //End of navigation drawer
 
     TextView tv_UserName;
     ShapeableImageView profileImage;
@@ -131,16 +127,12 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         final Handler handler = new Handler(Looper.getMainLooper());
 
-
-
-
         mAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();
         UID = mAuth.getCurrentUser().getUid();
 
 
         //ViewHolder
-
         fStore.collection("user").document(UID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -158,22 +150,7 @@ public class HomeActivity extends AppCompatActivity {
         });
 
 
-        /*fStore.collection("user").document(UID).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                accountType = documentSnapshot.getString("accountType");
-                email = documentSnapshot.getString("email");
-                userData.put("accountType", documentSnapshot.getString("accountType"));
-                userData.put("username", documentSnapshot.getString("username"));
-                userData.put("email", documentSnapshot.getString("email"));
-                userData.put("phoneNo", documentSnapshot.get("phoneNo"));
-
-                //if(accountType.equals("Professional"))
-            }
-        });*/
-
         functions = new Functions();
-
 
         handler.postDelayed(new Runnable() {
 

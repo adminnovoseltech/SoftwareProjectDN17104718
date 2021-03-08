@@ -25,8 +25,6 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.novoseltech.handymano.R;
 import com.novoseltech.handymano.model.OnSwipeTouchListener;
-import com.synnapps.carouselview.CarouselView;
-import com.synnapps.carouselview.ImageListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -94,12 +92,6 @@ public class ProfessionalProject extends AppCompatActivity {
                         .child("projects")
                         .child(PROJECT_ID);
 
-
-                //Toast.makeText(getApplicationContext(), "Date: " + projectCreationDate + " with count " + imageCount, Toast.LENGTH_LONG).show();
-
-
-                //Toast.makeText(getApplicationContext(), String.valueOf(storageReference), Toast.LENGTH_LONG).show();
-
                 for(int l = 0; l < imageCount; l++){
                     StorageReference sr = null;
                     sr = storageReference.child(projectCreationDate + "_image_" + l + ".jpeg");
@@ -109,7 +101,6 @@ public class ProfessionalProject extends AppCompatActivity {
                         public void onComplete(@NonNull Task<Uri> task) {
                             if(task.isSuccessful()){
                                 imageUriArray.add(task.getResult());
-                                //Toast.makeText(getApplicationContext(), String.valueOf(imageUriArray.get(0)), Toast.LENGTH_LONG).show();
                             }
                         }
                     });
@@ -117,13 +108,8 @@ public class ProfessionalProject extends AppCompatActivity {
 
                 tv_currentImg.setText("1 / " + imageCount);
 
-
-
-                /*Glide.with(ProfessionalProject.this)
-                        .load(imageUriArray.get(0))
-                        .into(imageViewCarousel);*/
             }
-        }, 1000);
+        }, 300);
 
         Handler handler1 = new Handler();
         handler1.postDelayed(new Runnable() {
@@ -133,15 +119,15 @@ public class ProfessionalProject extends AppCompatActivity {
                         .load(imageUriArray.get(0))
                         .into(imageViewCarousel);
             }
-        }, 2000);
+        }, 600);
 
 
         imageViewCarousel.setOnTouchListener(new OnSwipeTouchListener(ProfessionalProject.this){
             public void onSwipeTop() {
-                Toast.makeText(ProfessionalProject.this, "top", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(ProfessionalProject.this, "top", Toast.LENGTH_SHORT).show();
             }
             public void onSwipeRight() {
-                Toast.makeText(ProfessionalProject.this, "right", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(ProfessionalProject.this, "right", Toast.LENGTH_SHORT).show();
                 Glide.with(ProfessionalProject.this)
                         .load(imageUriArray.get(current_img_no - 1))
                         .into(imageViewCarousel);
@@ -159,7 +145,7 @@ public class ProfessionalProject extends AppCompatActivity {
 
             }
             public void onSwipeLeft() {
-                Toast.makeText(ProfessionalProject.this, "left", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(ProfessionalProject.this, "left", Toast.LENGTH_SHORT).show();
                 Glide.with(ProfessionalProject.this)
                         .load(imageUriArray.get(current_img_no + 1))
                         .into(imageViewCarousel);
@@ -177,7 +163,7 @@ public class ProfessionalProject extends AppCompatActivity {
 
             }
             public void onSwipeBottom() {
-                Toast.makeText(ProfessionalProject.this, "bottom", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(ProfessionalProject.this, "bottom", Toast.LENGTH_SHORT).show();
             }
         });
 
