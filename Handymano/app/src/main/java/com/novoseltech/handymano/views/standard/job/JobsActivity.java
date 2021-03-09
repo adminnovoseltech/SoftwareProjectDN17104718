@@ -27,12 +27,7 @@ import com.google.firebase.firestore.Query;
 import com.novoseltech.handymano.MainActivity;
 import com.novoseltech.handymano.R;
 import com.novoseltech.handymano.fragments.AddJob;
-import com.novoseltech.handymano.fragments.AddProject;
 import com.novoseltech.handymano.model.JobsModel;
-import com.novoseltech.handymano.model.ProjectsModel;
-import com.novoseltech.handymano.views.professional.ProfessionalProject;
-import com.novoseltech.handymano.views.professional.ProjectsActivity;
-import com.novoseltech.handymano.views.standard.HomeActivityStandard;
 
 public class JobsActivity extends AppCompatActivity {
 
@@ -90,14 +85,10 @@ public class JobsActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {
 
-                        /*
-
-                        Intent intent  = new Intent(getApplicationContext(), ProfessionalProject.class);
-                        intent.putExtra("PROJECT_ID", holder.jobTitle.getText());
+                        Intent intent  = new Intent(getApplicationContext(), StandardJobViewActivity.class);
+                        intent.putExtra("JOB_ID", holder.jobTitle.getText());
                         startActivity(intent);
 
-
-                         */
                     }
                 });
             }

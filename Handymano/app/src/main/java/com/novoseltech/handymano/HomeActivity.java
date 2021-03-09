@@ -52,7 +52,7 @@ import com.novoseltech.handymano.model.ServicesModel;
 import com.novoseltech.handymano.views.professional.ProfessionalProfileActivity;
 import com.novoseltech.handymano.views.standard.StandardProfileActivity;
 import com.novoseltech.handymano.views.standard.ViewProfessionalActivity;
-import com.novoseltech.handymano.views.professional.ProjectsActivity;
+import com.novoseltech.handymano.views.professional.project.ProjectsActivity;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;

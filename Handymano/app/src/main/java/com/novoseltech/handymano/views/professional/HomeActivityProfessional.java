@@ -19,9 +19,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.novoseltech.handymano.Functions;
-import com.novoseltech.handymano.HomeActivity;
 import com.novoseltech.handymano.MainActivity;
 import com.novoseltech.handymano.R;
+import com.novoseltech.handymano.views.professional.project.ProjectsActivity;
 
 public class HomeActivityProfessional extends AppCompatActivity {
 

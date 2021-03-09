@@ -17,11 +17,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".views.standard.job.JobsActivity"></activity>
-        <activity android:name=".views.professional.ProfessionalProject" />
+        <activity android:name=".views.standard.job.StandardJobViewActivity"></activity>
+        <activity android:name=".views.standard.job.JobsActivity" />
+        <activity android:name=".views.professional.project.ProfessionalProject" />
         <activity android:name=".views.professional.HomeActivityProfessional" />
         <activity android:name=".views.standard.HomeActivityStandard" />
-        <activity android:name=".views.professional.ProjectsActivity" />
+        <activity android:name=".views.professional.project.ProjectsActivity" />
         <activity android:name=".views.professional.ProfessionalProfileActivity" />
         <activity android:name=".views.standard.StandardProfileActivity" />
         <activity android:name=".views.standard.ViewProfessionalActivity" />

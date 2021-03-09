@@ -57,5 +57,6 @@
     <string name="job_title">Title</string>
     <string name="job_description">Description</string>
     <string name="save_job">Save job</string>
+    <string name="current_image_count">Current image</string>
 
 </resources>
