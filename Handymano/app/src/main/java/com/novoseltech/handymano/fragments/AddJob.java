@@ -473,15 +473,27 @@ public class AddJob extends Fragment {
     private void uploadImageToFirebaseStorage(Bitmap bitmap, int imgCount) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        StorageReference reference;
+
+        if(imgCount == 1){
+            reference = FirebaseStorage.getInstance().getReference()
+                    .child("images")
+                    .child(UID)
+                    .child("jobs")
+                    .child(et_jobTitle.getText().toString())
+                    .child(todayDate + "_image_0.jpeg");
+        }else{
+            reference = FirebaseStorage.getInstance().getReference()
+                    .child("images")
+                    .child(UID)
+                    .child("jobs")
+                    .child(et_jobTitle.getText().toString())
+                    .child(todayDate + "_image_" + imgCount + ".jpeg");
+        }
 
 
 
-        StorageReference reference = FirebaseStorage.getInstance().getReference()
-                .child("images")
-                .child(UID)
-                .child("jobs")
-                .child(et_jobTitle.getText().toString())
-                .child(todayDate + "_image_" + imgCount + ".jpeg");
+
 
         reference.putBytes(baos.toByteArray())
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {

@@ -3,9 +3,11 @@ package com.novoseltech.handymano.views.standard.job;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -22,40 +24,47 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.novoseltech.handymano.R;
+import com.novoseltech.handymano.adapter.SliderAdapter;
 import com.novoseltech.handymano.model.OnSwipeTouchListener;
+import com.novoseltech.handymano.model.SliderItem;
+import com.smarteist.autoimageslider.IndicatorView.animation.type.IndicatorAnimationType;
+import com.smarteist.autoimageslider.IndicatorView.draw.controller.DrawController;
+import com.smarteist.autoimageslider.SliderAnimations;
+import com.smarteist.autoimageslider.SliderView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class StandardJobViewActivity extends AppCompatActivity {
 
+    String JOB_ID;
+
     String jobCreationDate = "";
     long imageCount = 0;
-    int current_img_no = 0;
+
+    SliderView sliderView;
+    private SliderAdapter adapter;
+
+    //Firebase objects
+    FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    FirebaseFirestore fStore = FirebaseFirestore.getInstance();
+    FirebaseUser user = mAuth.getCurrentUser();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_standard_job_view);
 
-        String JOB_ID = getIntent().getStringExtra("JOB_ID");
-        List<Uri> imageUriArray = new ArrayList<>();
+        JOB_ID = getIntent().getStringExtra("JOB_ID");
 
-
-        //Firebase objects
-        FirebaseAuth mAuth = FirebaseAuth.getInstance();
-        FirebaseFirestore fStore = FirebaseFirestore.getInstance();
-        FirebaseUser user = mAuth.getCurrentUser();
-
-        //Carousel
-        ImageView imageViewCarousel = findViewById(R.id.ivJobGallery);
-        TextView tv_currentImg = findViewById(R.id.tv_currentJobImg);
-
+        sliderView = findViewById(R.id.imageSliderJob);
+        adapter = new SliderAdapter(getApplicationContext());
+        sliderView.setSliderAdapter(adapter);
 
         //Layout objects
         TextView tv_jobTitle = findViewById(R.id.tv_jobTitle);
         TextView tv_jobDescription = findViewById(R.id.tv_jobDescription);
-
         tv_jobTitle.setText(JOB_ID);
 
         DocumentReference documentReference = fStore.collection("user")
@@ -77,116 +86,71 @@ public class StandardJobViewActivity extends AppCompatActivity {
         });
 
         Handler handler = new Handler();
-
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-
-                if(imageCount == 0){
-                    tv_currentImg.setVisibility(View.INVISIBLE);
-                }else if(imageCount == 1){
-                    //Loading project images from Firebase Storage
-                    StorageReference storageReference = FirebaseStorage.getInstance().getReference()
-                            .child("images")
-                            .child(user.getUid())
-                            .child("jobs")
-                            .child(JOB_ID)
-                            .child(jobCreationDate + "_image_1.jpeg");
-                    storageReference.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Uri> task) {
-                            imageUriArray.add(task.getResult());
-                        }
-                    });
-
-                    tv_currentImg.setText("1 / " + imageCount);
-
-
-                }else{
-                    //Loading project images from Firebase Storage
-                    StorageReference storageReference = FirebaseStorage.getInstance().getReference()
-                            .child("images")
-                            .child(user.getUid())
-                            .child("jobs")
-                            .child(JOB_ID);
-
-                    for(int l = 0; l < imageCount; l++){
-                        StorageReference sr = null;
-                        sr = storageReference.child(jobCreationDate + "_image_" + l + ".jpeg");
-                        //Toast.makeText(getApplicationContext(), String.valueOf(sr), Toast.LENGTH_LONG).show();
-                        sr.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Uri> task) {
-                                if(task.isSuccessful()){
-                                    imageUriArray.add(task.getResult());
-                                }
-                            }
-                        });
-                    }
-
-                    tv_currentImg.setText("1 / " + imageCount);
-                }
-
+                addImagesToSlider(sliderView);
 
             }
-        }, 500);
+        }, 300);
 
-
-        //Load the first image
-       Handler handler1 = new Handler();
-        handler1.postDelayed(new Runnable() {
+        Handler handler1 = new Handler();
+        handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                Glide.with(StandardJobViewActivity.this)
-                        .load(imageUriArray.get(0))
-                        .into(imageViewCarousel);
+                Toast.makeText(getApplicationContext(), "Loading images", Toast.LENGTH_SHORT).show();
+
+
+                sliderView.setIndicatorAnimation(IndicatorAnimationType.WORM); //set indicator animation by using IndicatorAnimationType. :WORM or THIN_WORM or COLOR or DROP or FILL or NONE or SCALE or SCALE_DOWN or SLIDE and SWAP!!
+                sliderView.setSliderTransformAnimation(SliderAnimations.SIMPLETRANSFORMATION);
+                sliderView.setAutoCycleDirection(SliderView.AUTO_CYCLE_DIRECTION_BACK_AND_FORTH);
+                sliderView.setIndicatorSelectedColor(Color.WHITE);
+                sliderView.setIndicatorUnselectedColor(Color.GRAY);
+                sliderView.setScrollTimeInSec(4); //set scroll delay in seconds :
+                sliderView.startAutoCycle();
+
+                sliderView.setOnIndicatorClickListener(new DrawController.ClickListener() {
+                    @Override
+                    public void onIndicatorClicked(int position) {
+                        Log.i("GGG", "onIndicatorClicked: " + sliderView.getCurrentPagePosition());
+                    }
+                });
             }
-        }, 1000);
+        }, 600);
 
 
-        imageViewCarousel.setOnTouchListener(new OnSwipeTouchListener(StandardJobViewActivity.this){
-            public void onSwipeTop() {
-                //Toast.makeText(ProfessionalProject.this, "top", Toast.LENGTH_SHORT).show();
-            }
-            public void onSwipeRight() {
-                //Toast.makeText(ProfessionalProject.this, "right", Toast.LENGTH_SHORT).show();
-                Glide.with(StandardJobViewActivity.this)
-                        .load(imageUriArray.get(current_img_no - 1))
-                        .into(imageViewCarousel);
 
-                if(current_img_no < 0){
-                    current_img_no = (int) (imageCount - 1);
-                    Glide.with(StandardJobViewActivity.this)
-                            .load(imageUriArray.get(current_img_no))
-                            .into(imageViewCarousel);
-                }else{
-                    current_img_no = current_img_no - 1;
-                }
+    }
 
-                tv_currentImg.setText((current_img_no + 1) + " / " + imageCount);
+    public void addImagesToSlider(View view){
+        if(imageCount == 0){
+            //tv_currentImg.setVisibility(View.INVISIBLE);
+        }else{
+            StorageReference storageReference = FirebaseStorage.getInstance().getReference()
+                    .child("images")
+                    .child(user.getUid())
+                    .child("jobs")
+                    .child(JOB_ID);
 
-            }
-            public void onSwipeLeft() {
-                //Toast.makeText(ProfessionalProject.this, "left", Toast.LENGTH_SHORT).show();
-                Glide.with(StandardJobViewActivity.this)
-                        .load(imageUriArray.get(current_img_no + 1))
-                        .into(imageViewCarousel);
-
-                if(current_img_no == (imageCount - 1)){
-                    current_img_no = 0;
-                    Glide.with(StandardJobViewActivity.this)
-                            .load(imageUriArray.get(current_img_no))
-                            .into(imageViewCarousel);
-                }else{
-                    current_img_no = current_img_no + 1;
-                }
-
-                tv_currentImg.setText((current_img_no + 1) + " / " + imageCount);
+            for(int l = 0; l < imageCount; l++){
+                SliderItem sliderItem = new SliderItem();
+                StorageReference sr = null;
+                sr = storageReference.child(jobCreationDate + "_image_" + l + ".jpeg");
+                sr.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Uri> task) {
+                        if(task.isSuccessful()){
+                            Log.d("URL: ", task.getResult().toString());
+                            sliderItem.setImageUrl(task.getResult().toString());
+                            adapter.addItem(sliderItem);
+                        }else{
+                            Log.e("Error loading images", task.getException().getLocalizedMessage());
+                        }
+                    }
+                });
 
             }
-            public void onSwipeBottom() {
-                //Toast.makeText(ProfessionalProject.this, "bottom", Toast.LENGTH_SHORT).show();
             }
-        });
+
     }
 }
