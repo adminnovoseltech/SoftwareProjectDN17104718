@@ -97,15 +97,6 @@ public class JobsActivity extends AppCompatActivity {
                     }
                 });
 
-                holder.iv_more_list.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Toast.makeText(getApplicationContext(), holder.jobTitle.getText(), Toast.LENGTH_SHORT);
-                        Log.d("Extend log: ", String.valueOf(position));
-                    }
-                });
-
-
             }
         };
 
@@ -140,8 +131,6 @@ public class JobsActivity extends AppCompatActivity {
         public JobsViewHolder(@NonNull View itemView) {
             super(itemView);
             jobTitle = itemView.findViewById(R.id.list_jobTitle);
-            iv_more_list = itemView.findViewById(R.id.iv_more);
-
         }
 
 

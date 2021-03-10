@@ -228,7 +228,7 @@ public class AddProject extends Fragment {
                                     }else{
                                         try {
                                             Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), mImageUri);
-                                            uploadImageToFirebaseStorage(bitmap, 1);
+                                            uploadSingleImageToFirebase(bitmap);
                                         } catch (IOException e) {
                                             e.printStackTrace();
                                         }
@@ -478,21 +478,41 @@ public class AddProject extends Fragment {
     private void uploadImageToFirebaseStorage(Bitmap bitmap, int imgCount) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-
-
-
         StorageReference reference = FirebaseStorage.getInstance().getReference()
                 .child("images")
                 .child(UID)
                 .child("projects")
                 .child(et_projectTitle.getText().toString())
                 .child(todayDate + "_image_" + imgCount + ".jpeg");
-
         reference.putBytes(baos.toByteArray())
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                         Log.d("TAG", "Upload of image " + imgCount + " successful");
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.e("TAG", "onFailure: ", e.getCause());
+            }
+        });
+    }
+
+    private void uploadSingleImageToFirebase(Bitmap bitmap){
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        StorageReference reference = FirebaseStorage.getInstance().getReference()
+                .child("images")
+                .child(UID)
+                .child("projects")
+                .child(et_projectTitle.getText().toString())
+                .child(todayDate + "_image_0.jpeg");
+
+        reference.putBytes(baos.toByteArray())
+                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        Log.d("TAG", "Upload of image  successful");
                     }
                 }).addOnFailureListener(new OnFailureListener() {
             @Override
