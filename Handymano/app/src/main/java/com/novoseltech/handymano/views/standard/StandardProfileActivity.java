@@ -11,6 +11,8 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Address;
+import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -22,6 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -42,7 +45,10 @@ import com.novoseltech.handymano.R;
 import com.novoseltech.handymano.fragments.PasswordConfirmationDialog;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class StandardProfileActivity extends AppCompatActivity implements PasswordConfirmationDialog.PasswordConfirmationDialogListener {
@@ -386,6 +392,8 @@ public class StandardProfileActivity extends AppCompatActivity implements Passwo
 
         pass = password;
     }
+
+
 }
 
 

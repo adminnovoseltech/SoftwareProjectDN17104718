@@ -11,6 +11,8 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Address;
+import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -47,7 +49,10 @@ import com.novoseltech.handymano.fragments.PasswordConfirmationDialog;
 import com.novoseltech.handymano.views.standard.StandardProfileActivity;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class ProfessionalProfileActivity extends AppCompatActivity implements PasswordConfirmationDialog.PasswordConfirmationDialogListener{
@@ -69,6 +74,7 @@ public class ProfessionalProfileActivity extends AppCompatActivity implements Pa
     double tmpLat;
     double tmpLon;
     String tmpRad;
+    String tmpAddress;
 
 
 
@@ -98,6 +104,8 @@ public class ProfessionalProfileActivity extends AppCompatActivity implements Pa
 
     Boolean editMode = false;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -107,6 +115,11 @@ public class ProfessionalProfileActivity extends AppCompatActivity implements Pa
         TextView tv_pp_email = findViewById(R.id.tv_pp_email);
         tv_pp_email.setText(email);
         TextView tv_pp_phoneNo = findViewById(R.id.tv_pp_phoneNo);
+
+        TextView tv_currentAddress = findViewById(R.id.textView_currentAddress);
+        tv_currentAddress.setVisibility(View.VISIBLE);
+        TextView tv_currentAddressTitle = findViewById(R.id.textView_AddressTitle);
+        tv_currentAddress.setVisibility(View.VISIBLE);
 
         iv_pp_profilePhoto = findViewById(R.id.iv_pp_profilePhoto);
 
@@ -135,6 +148,7 @@ public class ProfessionalProfileActivity extends AppCompatActivity implements Pa
         btn_save_pp.setVisibility(View.INVISIBLE);
 
         btn_chooseLocation = findViewById(R.id.btn_chooseLoc);
+        btn_chooseLocation.setVisibility(View.GONE);
         btn_saveLoc = findViewById(R.id.btn_pp_saveLoc);
         btn_saveLoc.setVisibility(View.GONE);
         AddressSelect af = new AddressSelect();
@@ -161,6 +175,8 @@ public class ProfessionalProfileActivity extends AppCompatActivity implements Pa
                             tmpLat = gp.getLatitude();
                             tmpLon = gp.getLongitude();
                             tmpRad = documentSnapshot.getString("radius");
+                            String address = getAddressFromLatLng(tmpLat, tmpLon);
+                            tv_currentAddress.setText(address);
 
                             tv_pp_username.setText(documentSnapshot.getString("username"));
                             tv_pp_phoneNo.setText(documentSnapshot.getString("phoneNo"));
@@ -185,10 +201,12 @@ public class ProfessionalProfileActivity extends AppCompatActivity implements Pa
                 til_pp_username.setVisibility(View.VISIBLE);
                 til_pp_phoneNo.setVisibility(View.VISIBLE);
                 til_pp_email.setVisibility(View.VISIBLE);
+                btn_chooseLocation.setVisibility(View.VISIBLE);
 
                 tv_pp_username.setVisibility(View.INVISIBLE);
                 tv_pp_phoneNo.setVisibility(View.INVISIBLE);
                 tv_pp_email.setVisibility(View.INVISIBLE);
+                tv_currentAddress.setVisibility(View.GONE);
 
                 btn_save_pp.setVisibility(View.VISIBLE);
 
@@ -204,15 +222,19 @@ public class ProfessionalProfileActivity extends AppCompatActivity implements Pa
                 til_pp_username.setVisibility(View.INVISIBLE);
                 til_pp_phoneNo.setVisibility(View.INVISIBLE);
                 til_pp_email.setVisibility(View.INVISIBLE);
+                btn_chooseLocation.setVisibility(View.INVISIBLE);
 
                 tv_pp_username.setVisibility(View.VISIBLE);
                 tv_pp_phoneNo.setVisibility(View.VISIBLE);
                 tv_pp_email.setVisibility(View.VISIBLE);
+                tv_currentAddress.setVisibility(View.VISIBLE);
 
                 //If nothing was changed
                 if(et_pp_username.getText().toString().equals(username) &&
                         et_pp_phoneNo.getText().toString().equals(phoneNo) &&
-                        et_pp_email.getText().toString().equals(email)){
+                        et_pp_email.getText().toString().equals(email) &&
+                        tmpAddress.equals(getAddressFromLatLng(latitude, longitude)) &&
+                        tmpRad.equals(radius)){
 
                     Log.d(TAG, "Nothing to update!");
 
@@ -271,6 +293,12 @@ public class ProfessionalProfileActivity extends AppCompatActivity implements Pa
 
                 btn_save_pp.setVisibility(View.VISIBLE);
                 iv_pp_profilePhoto.setVisibility(View.VISIBLE);
+
+                String address = getAddressFromLatLng(latitude, longitude);
+                tmpAddress = address;
+                tv_currentAddress.setText(address);
+
+
                 if(editMode){
                     btn_save_pp.setVisibility(View.VISIBLE);
                     btn_edit_pp.setVisibility(View.GONE);
@@ -420,10 +448,15 @@ public class ProfessionalProfileActivity extends AppCompatActivity implements Pa
         //If password is matching and it is correct password then do the following
 
         //Update username and phone number (Updating user's Firestore document)
+
+        GeoPoint gp = new GeoPoint(latitude, longitude);
+
         Map<String, Object> userHmap = new HashMap<>();
         userHmap.put("username", et_pp_username.getText().toString());
         userHmap.put("phoneNo", et_pp_phoneNo.getText().toString());
         userHmap.put("email", et_pp_email.getText().toString());
+        userHmap.put("location", gp);
+        userHmap.put("radius", radius);
         fStore.collection("user").document(UID).update(userHmap);
 
         //Update account's email
@@ -460,6 +493,31 @@ public class ProfessionalProfileActivity extends AppCompatActivity implements Pa
     public void applyPass(String password){
 
         pass = password;
+    }
+
+    public String getAddressFromLatLng(double lat, double lng){
+        Geocoder geocoder;
+        List<Address> addresses;
+        String address = null;
+        geocoder = new Geocoder(this, Locale.getDefault());
+
+        try {
+            addresses = geocoder.getFromLocation(lat, lng, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
+
+            address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
+            String city = addresses.get(0).getLocality();
+            String state = addresses.get(0).getAdminArea();
+            String country = addresses.get(0).getCountryName();
+            String postalCode = addresses.get(0).getPostalCode();
+            String knownName = addresses.get(0).getFeatureName();
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return address;
+
     }
 
 

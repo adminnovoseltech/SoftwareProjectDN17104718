@@ -149,6 +149,10 @@ public class AddressSelect extends Fragment implements OnMapReadyCallback{
                     googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(point, 7));
                     addMarkerToTheMap(point);
 
+                    coordinates[0] = String.valueOf(tmpLat);
+                    coordinates[1] = String.valueOf(tmpLon);
+                    coordinates[2] = tmpRad;
+
 
                 }else{
                     LatLng point = new LatLng(53.2734, -7.77832031);
