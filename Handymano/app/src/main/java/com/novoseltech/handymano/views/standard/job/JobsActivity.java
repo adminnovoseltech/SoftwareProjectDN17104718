@@ -11,12 +11,17 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
@@ -91,6 +96,16 @@ public class JobsActivity extends AppCompatActivity {
 
                     }
                 });
+
+                holder.iv_more_list.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Toast.makeText(getApplicationContext(), holder.jobTitle.getText(), Toast.LENGTH_SHORT);
+                        Log.d("Extend log: ", String.valueOf(position));
+                    }
+                });
+
+
             }
         };
 
@@ -117,15 +132,22 @@ public class JobsActivity extends AppCompatActivity {
         });
     }
 
-    private class JobsViewHolder  extends RecyclerView.ViewHolder{
+    private class JobsViewHolder extends RecyclerView.ViewHolder{
 
         private TextView jobTitle;
+        private ImageView iv_more_list;
 
         public JobsViewHolder(@NonNull View itemView) {
             super(itemView);
-
             jobTitle = itemView.findViewById(R.id.list_jobTitle);
+            iv_more_list = itemView.findViewById(R.id.iv_more);
+
         }
+
+
+
+
+
     }
 
     @Override

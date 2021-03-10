@@ -34,6 +34,7 @@ import com.novoseltech.handymano.R;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -62,6 +63,11 @@ public class AddressSelect extends Fragment implements OnMapReadyCallback{
     SupportMapFragment mapFragment;
 
     String[] coordinates;
+
+    String mode;
+    String tmpRad;
+    Double tmpLat;
+    Double tmpLon;
 
 
 
@@ -120,6 +126,16 @@ public class AddressSelect extends Fragment implements OnMapReadyCallback{
         /*mapFragment = (SupportMapFragment) getChildFragmentManager()
                 .findFragmentById(R.id.map);*/
 
+        /*String mode = getArguments().getString("mode");
+        String tmpRad = getArguments().getString("radius");
+        Double tmpLat = getArguments().getDouble("lat");
+        Double tmpLon = getArguments().getDouble("lon");*/
+
+        mode = getArguments().getString("mode");
+        tmpRad = getArguments().getString("radius");
+        tmpLat = getArguments().getDouble("lat");
+        tmpLon = getArguments().getDouble("lon");
+
 
         mapFragment = (SupportMapFragment)this
                 .getChildFragmentManager().findFragmentById(R.id.map_frag);
@@ -127,8 +143,20 @@ public class AddressSelect extends Fragment implements OnMapReadyCallback{
         mapFragment.getMapAsync(new OnMapReadyCallback() {
             @Override
             public void onMapReady(GoogleMap googleMap) {
-                LatLng point = new LatLng(53.2734, -7.77832031);
-                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(point, 7));
+
+                if(mode.equals("Edit")){
+                    LatLng point = new LatLng(tmpLat, tmpLon);
+                    googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(point, 7));
+                    addMarkerToTheMap(point);
+
+
+                }else{
+                    LatLng point = new LatLng(53.2734, -7.77832031);
+                    googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(point, 7));
+                }
+                /*LatLng point = new LatLng(53.2734, -7.77832031);
+                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(point, 7));*/
+                //addMarkerToTheMap(point);
             }
         });
 
@@ -150,6 +178,32 @@ public class AddressSelect extends Fragment implements OnMapReadyCallback{
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        if(mode.equals("Edit")){
+            et_radius.setText(tmpRad);
+
+            Geocoder geocoder;
+            List<Address> addresses;
+            geocoder = new Geocoder(getContext(), Locale.getDefault());
+
+            try {
+                addresses = geocoder.getFromLocation(tmpLat, tmpLon, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
+
+                String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
+                String city = addresses.get(0).getLocality();
+                String state = addresses.get(0).getAdminArea();
+                String country = addresses.get(0).getCountryName();
+                String postalCode = addresses.get(0).getPostalCode();
+                String knownName = addresses.get(0).getFeatureName();
+
+                et_address.setText(address);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+
+
+        }
 
 
 
@@ -252,6 +306,8 @@ public class AddressSelect extends Fragment implements OnMapReadyCallback{
             @Override
             public void onMapReady(GoogleMap googleMap) {
                 googleMap.clear();
+
+
 
                 //Create marker
                 MarkerOptions options = new MarkerOptions().position(point)

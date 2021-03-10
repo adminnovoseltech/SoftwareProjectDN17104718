@@ -7,6 +7,17 @@
     tools:context=".views.professional.ProfessionalProfileActivity">
 
 
+    <FrameLayout
+        android:id="@+id/frame_loc_pro"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+    </FrameLayout>
+
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/iv_pp_profilePhoto"
         android:layout_width="150dp"
@@ -21,13 +32,25 @@
     <ScrollView
         android:id="@+id/scrollView2"
         android:layout_width="match_parent"
-        android:layout_height="250dp"
+        android:layout_height="400dp"
         android:layout_marginTop="40dp"
         app:layout_constraintTop_toBottomOf="@+id/iv_pp_profilePhoto">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/btn_chooseLoc"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="40dp"
+                android:layout_marginBottom="40dp"
+                android:text="@string/chooseLocation"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/layout_pp_email_edit" />
 
             <TextView
                 android:id="@+id/textViewpp1"
@@ -38,7 +61,6 @@
                 android:textSize="28sp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.459"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -155,24 +177,36 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 
+
+    <Button
+        android:id="@+id/btn_pp_saveLoc"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="580dp"
+        android:text="@string/saveLocation"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <Button
         android:id="@+id/btn_save_pp"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
         android:text="SAVE"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/scrollView2" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/btn_edit_pp"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="11dp"
+        android:layout_marginBottom="20dp"
         android:text="EDIT"
         android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/scrollView2" />
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
