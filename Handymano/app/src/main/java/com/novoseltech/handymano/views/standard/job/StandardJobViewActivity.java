@@ -1,19 +1,24 @@
 package com.novoseltech.handymano.views.standard.job;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -25,18 +30,15 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.novoseltech.handymano.R;
 import com.novoseltech.handymano.adapter.SliderAdapter;
-import com.novoseltech.handymano.model.OnSwipeTouchListener;
 import com.novoseltech.handymano.model.SliderItem;
 import com.smarteist.autoimageslider.IndicatorView.animation.type.IndicatorAnimationType;
 import com.smarteist.autoimageslider.IndicatorView.draw.controller.DrawController;
 import com.smarteist.autoimageslider.SliderAnimations;
 import com.smarteist.autoimageslider.SliderView;
 
-import java.util.ArrayList;
-import java.util.List;
+public class StandardJobViewActivity extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener{
 
-public class StandardJobViewActivity extends AppCompatActivity {
-
+    private static final String TAG = "LOG: ";
     String JOB_ID;
 
     String jobCreationDate = "";
@@ -61,6 +63,8 @@ public class StandardJobViewActivity extends AppCompatActivity {
         sliderView = findViewById(R.id.imageSliderJob);
         adapter = new SliderAdapter(getApplicationContext());
         sliderView.setSliderAdapter(adapter);
+
+        ImageView iv_jobMore = findViewById(R.id.iv_stdJobMore);
 
         //Layout objects
         TextView tv_jobTitle = findViewById(R.id.tv_jobTitle);
@@ -150,7 +154,74 @@ public class StandardJobViewActivity extends AppCompatActivity {
                 });
 
             }
-            }
+        }
 
+    }
+
+    @Override
+    public boolean onMenuItemClick(MenuItem menuItem) {
+        switch (menuItem.getItemId()){
+            case R.id.option_edit:
+                Toast.makeText(getApplicationContext(), "Will start work with this", Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.option_delete:
+                AlertDialog.Builder deleteJobDialog = new AlertDialog.Builder(StandardJobViewActivity.this);
+                deleteJobDialog.setTitle("Delete job")
+                        .setMessage("You are about to delete the job. Continue?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                StorageReference storageReference = FirebaseStorage.getInstance().getReference()
+                                        .child("images")
+                                        .child(user.getUid())
+                                        .child("jobs")
+                                        .child(JOB_ID);
+
+                                for(int l = 0; l < imageCount; l++){
+                                    StorageReference sr = null;
+                                    sr = storageReference.child(jobCreationDate + "_image_" + l + ".jpeg");
+                                    int j = l;
+                                    sr.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if(task.isSuccessful()){
+                                                Log.d(TAG, "Deleted image " + (j+1));
+                                            }else{
+                                                Log.e(TAG, task.getException().getLocalizedMessage());
+                                            }
+                                        }
+                                    });
+
+                                }
+
+                                fStore.collection("user")
+                                        .document(user.getUid())
+                                        .collection("jobs")
+                                        .document(JOB_ID)
+                                        .delete();
+
+                                Intent intent = new Intent(StandardJobViewActivity.this, JobsActivity.class);
+                                startActivity(intent);
+                            }
+                        })
+                        .setNegativeButton("No", null)
+                        .show();
+
+
+
+
+                return true;
+            default:
+                return false;
+
+        }
+    }
+
+    public void showJobMenu(View view) {
+        PopupMenu popupMenu = new PopupMenu(this, view);
+        popupMenu.setOnMenuItemClickListener(this);
+        MenuInflater inflater = popupMenu.getMenuInflater();
+        inflater.inflate(R.menu.actions, popupMenu.getMenu());
+        popupMenu.show();
     }
 }

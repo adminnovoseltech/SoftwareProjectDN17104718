@@ -59,5 +59,7 @@
     <string name="save_job">Save job</string>
     <string name="current_image_count">Current image</string>
     <string name="address">Address</string>
+    <string name="option_1">Edit</string>
+    <string name="option_2">Delete</string>
 
 </resources>

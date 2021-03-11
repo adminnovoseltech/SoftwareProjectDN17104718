@@ -28,7 +28,6 @@ import com.novoseltech.handymano.MainActivity;
 import com.novoseltech.handymano.R;
 import com.novoseltech.handymano.fragments.AddProject;
 import com.novoseltech.handymano.model.ProjectsModel;
-import com.novoseltech.handymano.views.professional.HomeActivityProfessional;
 import com.novoseltech.handymano.views.professional.ProfessionalProfileActivity;
 
 public class ProjectsActivity extends AppCompatActivity {
@@ -82,7 +81,7 @@ public class ProjectsActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {
 
-                        Intent intent  = new Intent(getApplicationContext(), ProfessionalProject.class);
+                        Intent intent  = new Intent(getApplicationContext(), ProfessionalProjectViewActivity.class);
                         intent.putExtra("PROJECT_ID", holder.projectTitle.getText());
                         startActivity(intent);
                     }

@@ -28,7 +28,7 @@ import com.smarteist.autoimageslider.IndicatorView.draw.controller.DrawControlle
 import com.smarteist.autoimageslider.SliderAnimations;
 import com.smarteist.autoimageslider.SliderView;
 
-public class ProfessionalProject extends AppCompatActivity {
+public class ProfessionalProjectViewActivity extends AppCompatActivity {
 
     String PROJECT_ID;
 
