@@ -2,10 +2,14 @@ package com.novoseltech.handymano.views.professional.project;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -20,11 +24,17 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
+import com.novoseltech.handymano.MainActivity;
 import com.novoseltech.handymano.R;
 import com.novoseltech.handymano.fragments.AddProject;
 import com.novoseltech.handymano.model.ProjectsModel;
+import com.novoseltech.handymano.views.professional.HomeActivityProfessional;
+import com.novoseltech.handymano.views.professional.ProfessionalProfileActivity;
 
 public class ProjectsActivity extends AppCompatActivity {
+
+    //Navigation drawer
+    DrawerLayout drawerLayout;
 
     private RecyclerView fStoreList;
     private FirestoreRecyclerAdapter adapter;
@@ -37,6 +47,7 @@ public class ProjectsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_projects);
+        drawerLayout = findViewById(R.id.drawer_layout_professional);
 
         mAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();
@@ -104,6 +115,8 @@ public class ProjectsActivity extends AppCompatActivity {
 
     }
 
+
+
     private class ProjectsViewHolder  extends RecyclerView.ViewHolder{
 
         private TextView projectTitle;
@@ -125,5 +138,58 @@ public class ProjectsActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         adapter.startListening();
+    }
+
+    public void ClickMenu(View view) {
+        openDrawer(drawerLayout);
+    }
+
+    public void ClickProfile(View view) {
+        Intent intent = new Intent(ProjectsActivity.this, ProfessionalProfileActivity.class);
+        startActivity(intent);
+    }
+
+
+    public static void openDrawer(DrawerLayout drawerLayout) {
+        //Open drawer layout
+        drawerLayout.openDrawer(GravityCompat.START);
+    }
+
+    public void ClickLogOut(View view) {
+        logout();
+    }
+
+    public void logout(){
+        //Close app
+        //Initialize alert dialog
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        //Set title
+        builder.setTitle("Log out");
+        //Set message
+        builder.setMessage("Are you sure you want to log out ?");
+        //Yes button
+        builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+                FirebaseAuth.getInstance().signOut();
+                finish();
+                Intent intent = new Intent(ProjectsActivity.this, MainActivity.class);
+                startActivity(intent);
+                //functions.redirectActivity(HomeActivityProfessional.this, MainActivity.class);
+
+            }
+        });
+
+        //No button
+        builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                //Dismiss dialog
+                dialogInterface.dismiss();
+            }
+        });
+        //Show dialog
+        builder.show();
     }
 }

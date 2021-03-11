@@ -132,11 +132,6 @@ public class JobsActivity extends AppCompatActivity {
             super(itemView);
             jobTitle = itemView.findViewById(R.id.list_jobTitle);
         }
-
-
-
-
-
     }
 
     @Override

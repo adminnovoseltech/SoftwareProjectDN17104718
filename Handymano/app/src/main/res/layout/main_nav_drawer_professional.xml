@@ -9,7 +9,8 @@
         android:layout_width="match_parent"
         android:layout_height="120dp"
         android:layout_margin="16dp"
-        android:src="@drawable/ic_profile_512" />
+        android:src="@drawable/ic_profile_512"
+        android:onClick="ClickProfile"/>
 
     <TextView
         android:id="@+id/text_UserName_Professional"
