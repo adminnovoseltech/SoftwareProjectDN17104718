@@ -207,9 +207,6 @@ public class StandardJobViewActivity extends AppCompatActivity implements PopupM
                         .setNegativeButton("No", null)
                         .show();
 
-
-
-
                 return true;
             default:
                 return false;

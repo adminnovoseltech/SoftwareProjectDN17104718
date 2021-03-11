@@ -1,14 +1,20 @@
 package com.novoseltech.handymano.views.professional.project;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -23,13 +29,16 @@ import com.google.firebase.storage.StorageReference;
 import com.novoseltech.handymano.R;
 import com.novoseltech.handymano.adapter.SliderAdapter;
 import com.novoseltech.handymano.model.SliderItem;
+import com.novoseltech.handymano.views.standard.job.JobsActivity;
+import com.novoseltech.handymano.views.standard.job.StandardJobViewActivity;
 import com.smarteist.autoimageslider.IndicatorView.animation.type.IndicatorAnimationType;
 import com.smarteist.autoimageslider.IndicatorView.draw.controller.DrawController;
 import com.smarteist.autoimageslider.SliderAnimations;
 import com.smarteist.autoimageslider.SliderView;
 
-public class ProfessionalProjectViewActivity extends AppCompatActivity {
+public class ProfessionalProjectViewActivity extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener {
 
+    private static final String TAG = "TAG: ";
     String PROJECT_ID;
 
     String projectCreationDate = "";
@@ -145,4 +154,66 @@ public class ProfessionalProjectViewActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public boolean onMenuItemClick(MenuItem menuItem) {
+        switch (menuItem.getItemId()) {
+            case R.id.option_edit:
+                Toast.makeText(getApplicationContext(), "Will start work with this", Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.option_delete:
+                AlertDialog.Builder deleteJobDialog = new AlertDialog.Builder(ProfessionalProjectViewActivity.this);
+                deleteJobDialog.setTitle("Delete job")
+                        .setMessage("You are about to delete the job. Continue?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                StorageReference storageReference = FirebaseStorage.getInstance().getReference()
+                                        .child("images")
+                                        .child(user.getUid())
+                                        .child("projects")
+                                        .child(PROJECT_ID);
+
+                                for (int l = 0; l < imageCount; l++) {
+                                    StorageReference sr = null;
+                                    sr = storageReference.child(projectCreationDate + "_image_" + l + ".jpeg");
+                                    int j = l;
+                                    sr.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if (task.isSuccessful()) {
+                                                Log.d(TAG, "Deleted image " + (j + 1));
+                                            } else {
+                                                Log.e(TAG, task.getException().getLocalizedMessage());
+                                            }
+                                        }
+                                    });
+
+                                }
+
+                                fStore.collection("user")
+                                        .document(user.getUid())
+                                        .collection("projects")
+                                        .document(PROJECT_ID)
+                                        .delete();
+
+                                Intent intent = new Intent(ProfessionalProjectViewActivity.this, ProjectsActivity.class);
+                                startActivity(intent);
+                            }
+                        })
+                        .setNegativeButton("No", null)
+                        .show();
+
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    public void ClickMenuProject(View view) {
+        PopupMenu popupMenu = new PopupMenu(this, view);
+        popupMenu.setOnMenuItemClickListener(this);
+        MenuInflater inflater = popupMenu.getMenuInflater();
+        inflater.inflate(R.menu.actions, popupMenu.getMenu());
+        popupMenu.show();
+    }
 }
