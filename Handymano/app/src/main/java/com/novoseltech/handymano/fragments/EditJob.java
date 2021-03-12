@@ -16,6 +16,8 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -29,6 +31,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ScrollView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -86,6 +90,8 @@ public class EditJob extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    ConstraintLayout cl_editJob;
+    ConstraintLayout cl_savingChanges;
 
     String JOB_ID;
     String jobCreationDate = "";
@@ -120,6 +126,11 @@ public class EditJob extends Fragment {
 
     List<SliderItem> initialImages = new ArrayList<>();
 
+    //Activity elements
+    TextView tv_jb;
+    ScrollView sv_jb;
+    CardView cv_jb;
+    ImageView iv_jb;
     public EditJob() {
         // Required empty public constructor
     }
@@ -156,6 +167,9 @@ public class EditJob extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_edit_job, container, false);
         // Inflate the layout for this fragment
+        cl_editJob = view.findViewById(R.id.cl_editJob);
+        cl_savingChanges = view.findViewById(R.id.cl_savingChanges);
+        cl_savingChanges.setVisibility(View.GONE);
         JOB_ID = getArguments().getString("JOB_ID");
 
         et_jobTitle = view.findViewById(R.id.et_ej_jobTitle);
@@ -166,6 +180,14 @@ public class EditJob extends Fragment {
         btn_saveChanges = view.findViewById(R.id.btn_saveJobChanges);
 
         sliderView = view.findViewById(R.id.imageSliderJobEdit);
+
+        //Activity elements
+        TextView tv_jb = getActivity().findViewById(R.id.tv_jobTitle);
+        ScrollView sv_jb = getActivity().findViewById(R.id.svJob);
+        CardView cv_jb = getActivity().findViewById(R.id.cv_carousel_job);
+        ImageView iv_jb = getActivity().findViewById(R.id.iv_stdJobMore);
+
+
 
 
         return view;
@@ -253,6 +275,8 @@ public class EditJob extends Fragment {
         btn_saveChanges.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                cl_editJob.setVisibility(View.INVISIBLE);
+                cl_savingChanges.setVisibility(View.VISIBLE);
                 //Objects
                 Map<String, Object> job = new HashMap<>();
                 String pTitle = et_jobTitle.getText().toString();
@@ -260,233 +284,168 @@ public class EditJob extends Fragment {
 
                 List<Uri> images = new ArrayList<>();
 
-                // Enable if permission granted
-                if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) ==
-                        PackageManager.PERMISSION_GRANTED) {
-                    for(int i = 0; i < initialImages.size(); i++){
-                        Uri uri = Uri.parse(initialImages.get(i).getImageUrl());
+                Handler hand1 = new Handler();
+                hand1.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        // Enable if permission granted
+                        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) ==
+                                PackageManager.PERMISSION_GRANTED) {
+                            for(int i = 0; i < initialImages.size(); i++){
+                                Uri uri = Uri.parse(initialImages.get(i).getImageUrl());
 
-                        if(uri.toString().contains("firebasestorage.googleapis")){
-                            try {
-                                URL url = new URL(initialImages.get(i).getImageUrl());
+                                if(uri.toString().contains("firebasestorage.googleapis")){
+                                    try {
+                                        URL url = new URL(initialImages.get(i).getImageUrl());
+                                        Picasso.get().load(String.valueOf(url)).into(new Target() {
+                                            @Override
+                                            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
 
-                                Picasso.get().load(String.valueOf(url)).into(new Target() {
-                                    @Override
-                                    public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                                                String path = MediaStore.Images.Media.insertImage(getActivity().getContentResolver(), bitmap, "Title", null);
+                                                Uri tmpUri = Uri.parse(path);
+                                                images.add(tmpUri);
+                                                Log.d("URI", "Log");
+                                            }
 
+                                            @Override
+                                            public void onBitmapFailed(Exception e, Drawable errorDrawable) {
+
+                                            }
+
+                                            @Override
+                                            public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+                                            }
+                                        });
+
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+
+                                }else{
+
+                                    try {
+                                        Bitmap bitmap = null;
+                                        bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), uri);
+                                        Uri tmpUri = null;
+                                        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
                                         String path = MediaStore.Images.Media.insertImage(getActivity().getContentResolver(), bitmap, "Title", null);
-                                        Uri tmpUri = Uri.parse(path);
+                                        tmpUri = Uri.parse(path);
                                         images.add(tmpUri);
-                                        Log.d("URI", "Log");
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
                                     }
-
-                                    @Override
-                                    public void onBitmapFailed(Exception e, Drawable errorDrawable) {
-
-                                    }
-
-                                    @Override
-                                    public void onPrepareLoad(Drawable placeHolderDrawable) {
-
-                                    }
-                                });
-
-                                //Bitmap bitmap = BitmapFactory.decodeStream(url.openConnection().getInputStream());
-
-                                //ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                                //bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-                                /*String path = MediaStore.Images.Media.insertImage(getActivity().getContentResolver(), bitmap, "Title", null);
-                                Uri tmpUri = Uri.parse(path);
-                                images.add(tmpUri);*/
-                            } catch (MalformedURLException e) {
-                                e.printStackTrace();
+                                }
                             }
-
-                        }else{
-
-                            try {
-                                Bitmap bitmap = null;
-                                bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), uri);
-                                Uri tmpUri = null;
-                                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
-                                String path = MediaStore.Images.Media.insertImage(getActivity().getContentResolver(), bitmap, "Title", null);
-                                tmpUri = Uri.parse(path);
-                                images.add(tmpUri);
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
+                            Log.d("URI", "Log");
 
                         }
-
-
-                        //File img = new File(uri.getPath());
-                        //String filePath = img.getPath();
-                        //Bitmap bitmap = BitmapFactory.decodeFile(filePath);
-                        //Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), uri.getPath());
-                        //ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                        //bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
-                        //String path = MediaStore.Images.Media.insertImage(getActivity().getContentResolver(), bitmap, "Title", null);
-                        //Uri tmpUri = Uri.parse(path);
-                        //images.add(tmpUri);
-
-
+                        // Else ask for permission
+                        else {
+                            ActivityCompat.requestPermissions(getActivity(), new String[]
+                                    { Manifest.permission.WRITE_EXTERNAL_STORAGE }, 0);
+                        }
                     }
-                    Log.d("URI", "Log");
+                }, 500);
 
-                }
-                // Else ask for permission
-                else {
-                    ActivityCompat.requestPermissions(getActivity(), new String[]
-                            { Manifest.permission.WRITE_EXTERNAL_STORAGE }, 0);
-                }
+                hand1.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        //Content validation
+                        if(pTitle.length() >= 10 && pTitle.length() <= 50 && pDesc.length() >= 10 && pDesc.length() <= 400 && (images.size() > 0)){
+                            job.put("title", pTitle);
+                            job.put("description", pDesc);
+                            job.put("creation_date", todayDate);
+                            job.put("imageCount", images.size());
 
-                /*for(int i = 0; i < initialImages.size(); i++){
-                    Uri uri = Uri.parse(initialImages.get(i).getImageUrl());
-                    Uri tmpUri = null;
-                    try {
-                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), uri);
-                        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
-                        String path = MediaStore.Images.Media.insertImage(getActivity().getContentResolver(), bitmap, "Title", null);
-                        tmpUri = Uri.parse(path);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    images.add(tmpUri);
-                    Log.d("URI", uri.toString());
-                }*/
+                            fStore.collection("user").document(UID)
+                                    .collection("jobs")
+                                    .document(pTitle)
+                                    .update(job)
+                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if(task.isSuccessful()){
 
-                //Content validation
-                if(pTitle.length() >= 10 && pTitle.length() <= 50 && pDesc.length() >= 10 && pDesc.length() <= 400 && (images.size() > 0)){
-                    job.put("title", pTitle);
-                    job.put("description", pDesc);
-                    job.put("creation_date", todayDate);
-                    job.put("imageCount", images.size());
+                                                StorageReference storageReference = FirebaseStorage.getInstance().getReference()
+                                                        .child("images")
+                                                        .child(user.getUid())
+                                                        .child("jobs")
+                                                        .child(JOB_ID);
 
-                    fStore.collection("user").document(UID)
-                            .collection("jobs")
-                            .document(pTitle)
-                            .update(job)
-                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    if(task.isSuccessful()){
-
-                                      /*  if(pTitle.equals(JOB_ID)){
-
-                                        }else{
-
-                                        }*/
+                                                for(int l = 0; l < imageCount; l++){
+                                                    StorageReference sr = null;
+                                                    sr = storageReference.child(jobCreationDate + "_image_" + l + ".jpeg");
+                                                    int j = l;
+                                                    sr.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                        @Override
+                                                        public void onComplete(@NonNull Task<Void> task) {
+                                                            if(task.isSuccessful()){
+                                                                Log.d("DELETE LOG: ", "Deleted image " + (j+1));
+                                                            }else{
+                                                                Log.e("DELETE LOG: ", task.getException().getLocalizedMessage());
+                                                            }
+                                                        }
+                                                    });
+                                                }
 
 
-                                        StorageReference storageReference = FirebaseStorage.getInstance().getReference()
-                                                .child("images")
-                                                .child(user.getUid())
-                                                .child("jobs")
-                                                .child(JOB_ID);
-
-                                        for(int l = 0; l < imageCount; l++){
-                                            StorageReference sr = null;
-                                            sr = storageReference.child(jobCreationDate + "_image_" + l + ".jpeg");
-                                            int j = l;
-                                            sr.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                @Override
-                                                public void onComplete(@NonNull Task<Void> task) {
-                                                    if(task.isSuccessful()){
-                                                        Log.d("DELETE LOG: ", "Deleted image " + (j+1));
-                                                    }else{
-                                                        Log.e("DELETE LOG: ", task.getException().getLocalizedMessage());
+                                                for(int i = 0; i < images.size(); i++){
+                                                    Bitmap bitmap = null;
+                                                    try {
+                                                        bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), images.get(i));
+                                                        uploadImageToFirebaseStorage(bitmap, i);
+                                                        //Toast.makeText(getContext(), ""+i, Toast.LENGTH_SHORT).show();
+                                                    } catch (IOException e) {
+                                                        e.printStackTrace();
                                                     }
                                                 }
-                                            });
-                                        }
 
 
-                                        for(int i = 0; i < images.size(); i++){
-                                            Bitmap bitmap = null;
-                                            try {
-                                                bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), images.get(i));
-                                                uploadImageToFirebaseStorage(bitmap, i);
-                                                Toast.makeText(getContext(), ""+i, Toast.LENGTH_SHORT).show();
-                                            } catch (IOException e) {
-                                                e.printStackTrace();
+                                            }else{
+                                                Log.d("TASK LOG: ", task.getException().getLocalizedMessage());
                                             }
                                         }
-
-
-
-
-
-                                    }else{
-                                        Log.d("TASK LOG: ", task.getException().getLocalizedMessage());
-                                    }
-                                }
-                            }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Log.e("EXCEPTION: ", e.getLocalizedMessage());
-                        }
-                    });
-
-                    /*fStore.collection("user").document(UID)
-                            .collection("jobs")
-                            .document(pTitle)
-
-                            .set(job)
-                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    //Toast.makeText(getContext(), "Project created", Toast.LENGTH_SHORT).show();
-                                    if(mArrayUri.size() > 0){
-                                        for(int i = 0; i < mArrayUri.size(); i++){
-                                            Bitmap bitmap = null;
-                                            try {
-                                                bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), mArrayUri.get(i));
-                                                uploadImageToFirebaseStorage(bitmap, i);
-                                            } catch (IOException e) {
-                                                e.printStackTrace();
-                                            }
-                                        }
-                                    }else{
-                                        try {
-                                            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), mImageUri);
-                                            uploadSingleImageToFirebase(bitmap);
-                                        } catch (IOException e) {
-                                            e.printStackTrace();
-                                        }
-
-                                    }
-
-                                }
-                            })
-                            .addOnFailureListener(new OnFailureListener() {
+                                    }).addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
-                                    Toast.makeText(getContext(), e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                                    Log.e("EXCEPTION: ", e.getLocalizedMessage());
                                 }
-                            });*/
+                            });
 
-                    //btn_createJob.setVisibility(View.VISIBLE);
-                    //fStoreList.setVisibility(View.VISIBLE);
-                    //getActivity().getSupportFragmentManager().beginTransaction().remove(AddJob.this).commit();
+                            Toast.makeText(getContext(), "Upload completed", Toast.LENGTH_SHORT).show();
 
-                }else{
-                    if(pTitle.length() < 10 || pTitle.length() > 50){
-                        et_jobTitle.setError("Title length must be between 10 and 50 characters!");
-                        et_jobTitle.requestFocus();
-                    }else if(images.size() == 0){
-                        Toast.makeText(getContext(), "You must attach at least 1 image to the job", Toast.LENGTH_SHORT).show();
-                    }
-                    else{
-                        if(pDesc.length() < 10){
-                            et_jobDescription.setError("Description length must be at least 10 characters!");
+
+                            //btn_createJob.setVisibility(View.VISIBLE);
+                            //fStoreList.setVisibility(View.VISIBLE);
+                            getActivity().getSupportFragmentManager().beginTransaction().remove(EditJob.this).commit();
+                            cl_editJob.setVisibility(View.VISIBLE);
+                            cl_savingChanges.setVisibility(View.GONE);
+                            tv_jb.setVisibility(View.VISIBLE);
+                            sv_jb.setVisibility(View.VISIBLE);
+                            cv_jb.setVisibility(View.VISIBLE);
+                            iv_jb.setVisibility(View.VISIBLE);
+
                         }else{
-                            et_jobDescription.setError("Description can contain max 400 characters!");
+                            if(pTitle.length() < 10 || pTitle.length() > 50){
+                                et_jobTitle.setError("Title length must be between 10 and 50 characters!");
+                                et_jobTitle.requestFocus();
+                            }else if(images.size() == 0){
+                                Toast.makeText(getContext(), "You must attach at least 1 image to the job", Toast.LENGTH_SHORT).show();
+                            }
+                            else{
+                                if(pDesc.length() < 10){
+                                    et_jobDescription.setError("Description length must be at least 10 characters!");
+                                }else{
+                                    et_jobDescription.setError("Description can contain max 400 characters!");
+                                }
+                                et_jobDescription.requestFocus();
+                            }
                         }
-                        et_jobDescription.requestFocus();
                     }
-                }
+                },1000);
+
 
             }
         });
