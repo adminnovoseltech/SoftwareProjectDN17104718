@@ -159,11 +159,15 @@ public class ProfessionalProjectViewActivity extends AppCompatActivity implement
         switch (menuItem.getItemId()) {
             case R.id.option_edit:
                 Toast.makeText(getApplicationContext(), "Will start work with this", Toast.LENGTH_SHORT).show();
+
+
+
+
                 return true;
             case R.id.option_delete:
                 AlertDialog.Builder deleteJobDialog = new AlertDialog.Builder(ProfessionalProjectViewActivity.this);
-                deleteJobDialog.setTitle("Delete job")
-                        .setMessage("You are about to delete the job. Continue?")
+                deleteJobDialog.setTitle("Delete project")
+                        .setMessage("You are about to delete the project. Continue?")
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {

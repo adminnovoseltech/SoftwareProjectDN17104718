@@ -3,6 +3,9 @@ package com.novoseltech.handymano.views.standard.job;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -16,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,6 +34,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.novoseltech.handymano.R;
 import com.novoseltech.handymano.adapter.SliderAdapter;
+import com.novoseltech.handymano.fragments.EditJob;
 import com.novoseltech.handymano.model.SliderItem;
 import com.smarteist.autoimageslider.IndicatorView.animation.type.IndicatorAnimationType;
 import com.smarteist.autoimageslider.IndicatorView.draw.controller.DrawController;
@@ -52,6 +57,13 @@ public class StandardJobViewActivity extends AppCompatActivity implements PopupM
     FirebaseFirestore fStore = FirebaseFirestore.getInstance();
     FirebaseUser user = mAuth.getCurrentUser();
 
+    //Layout
+    ConstraintLayout cl_jobView;
+    TextView tv_jobTitle;
+    ScrollView svJob;
+    CardView cv_carousel_job;
+    ImageView iv_jobMore;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,17 +71,21 @@ public class StandardJobViewActivity extends AppCompatActivity implements PopupM
         setContentView(R.layout.activity_standard_job_view);
 
         JOB_ID = getIntent().getStringExtra("JOB_ID");
+        cl_jobView = findViewById(R.id.cl_jobViewStandard);
 
         sliderView = findViewById(R.id.imageSliderJob);
         adapter = new SliderAdapter(getApplicationContext());
         sliderView.setSliderAdapter(adapter);
 
-        ImageView iv_jobMore = findViewById(R.id.iv_stdJobMore);
+        iv_jobMore = findViewById(R.id.iv_stdJobMore);
 
         //Layout objects
-        TextView tv_jobTitle = findViewById(R.id.tv_jobTitle);
+        tv_jobTitle = findViewById(R.id.tv_jobTitle);
         TextView tv_jobDescription = findViewById(R.id.tv_jobDescription);
         tv_jobTitle.setText(JOB_ID);
+
+        svJob = findViewById(R.id.svJob);
+        cv_carousel_job = findViewById(R.id.cv_carousel_job);
 
         DocumentReference documentReference = fStore.collection("user")
                 .document(user.getUid())
@@ -102,7 +118,7 @@ public class StandardJobViewActivity extends AppCompatActivity implements PopupM
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                Toast.makeText(getApplicationContext(), "Loading images", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getApplicationContext(), "Loading images", Toast.LENGTH_SHORT).show();
 
 
                 sliderView.setIndicatorAnimation(IndicatorAnimationType.WORM); //set indicator animation by using IndicatorAnimationType. :WORM or THIN_WORM or COLOR or DROP or FILL or NONE or SCALE or SCALE_DOWN or SLIDE and SWAP!!
@@ -113,6 +129,7 @@ public class StandardJobViewActivity extends AppCompatActivity implements PopupM
                 sliderView.setScrollTimeInSec(4); //set scroll delay in seconds :
                 sliderView.startAutoCycle();
 
+
                 sliderView.setOnIndicatorClickListener(new DrawController.ClickListener() {
                     @Override
                     public void onIndicatorClicked(int position) {
@@ -121,6 +138,8 @@ public class StandardJobViewActivity extends AppCompatActivity implements PopupM
                 });
             }
         }, 600);
+
+
 
 
 
@@ -153,6 +172,8 @@ public class StandardJobViewActivity extends AppCompatActivity implements PopupM
                     }
                 });
 
+
+
             }
         }
 
@@ -162,7 +183,21 @@ public class StandardJobViewActivity extends AppCompatActivity implements PopupM
     public boolean onMenuItemClick(MenuItem menuItem) {
         switch (menuItem.getItemId()){
             case R.id.option_edit:
-                Toast.makeText(getApplicationContext(), "Will start work with this", Toast.LENGTH_SHORT).show();
+                Bundle bundle = new Bundle();
+                bundle.putString("JOB_ID", JOB_ID);
+
+                //Toast.makeText(getApplicationContext(), "Will start work with this", Toast.LENGTH_SHORT).show();
+                EditJob editJobFragment = new EditJob();
+                editJobFragment.setArguments(bundle);
+                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                transaction.replace(R.id.frame_edit_job, editJobFragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
+
+                tv_jobTitle.setVisibility(View.GONE);
+                svJob.setVisibility(View.GONE);
+                cv_carousel_job.setVisibility(View.GONE);
+                iv_jobMore.setVisibility(View.GONE);
                 return true;
             case R.id.option_delete:
                 AlertDialog.Builder deleteJobDialog = new AlertDialog.Builder(StandardJobViewActivity.this);
