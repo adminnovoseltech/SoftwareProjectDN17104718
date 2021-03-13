@@ -227,7 +227,6 @@ public class EditJob extends Fragment {
             }
         }, 300);
 
-        Handler handler1 = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -359,60 +358,133 @@ public class EditJob extends Fragment {
                             job.put("creation_date", todayDate);
                             job.put("imageCount", images.size());
 
-                            fStore.collection("user").document(UID)
-                                    .collection("jobs")
-                                    .document(pTitle)
-                                    .update(job)
-                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
-                                            if(task.isSuccessful()){
+                            if(pTitle.equals(JOB_ID)){
+                                fStore.collection("user").document(UID)
+                                        .collection("jobs")
+                                        .document(pTitle)
+                                        .update(job)
+                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                if(task.isSuccessful()){
 
-                                                StorageReference storageReference = FirebaseStorage.getInstance().getReference()
-                                                        .child("images")
-                                                        .child(user.getUid())
-                                                        .child("jobs")
-                                                        .child(JOB_ID);
+                                                    StorageReference storageReference = FirebaseStorage.getInstance().getReference()
+                                                            .child("images")
+                                                            .child(user.getUid())
+                                                            .child("jobs")
+                                                            .child(JOB_ID);
 
-                                                for(int l = 0; l < imageCount; l++){
-                                                    StorageReference sr = null;
-                                                    sr = storageReference.child(jobCreationDate + "_image_" + l + ".jpeg");
-                                                    int j = l;
-                                                    sr.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                        @Override
-                                                        public void onComplete(@NonNull Task<Void> task) {
-                                                            if(task.isSuccessful()){
-                                                                Log.d("DELETE LOG: ", "Deleted image " + (j+1));
-                                                            }else{
-                                                                Log.e("DELETE LOG: ", task.getException().getLocalizedMessage());
+                                                    for(int l = 0; l < imageCount; l++){
+                                                        StorageReference sr = null;
+                                                        sr = storageReference.child(jobCreationDate + "_image_" + l + ".jpeg");
+                                                        int j = l;
+                                                        sr.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                            @Override
+                                                            public void onComplete(@NonNull Task<Void> task) {
+                                                                if(task.isSuccessful()){
+                                                                    Log.d("DELETE LOG: ", "Deleted image " + (j+1));
+                                                                }else{
+                                                                    Log.e("DELETE LOG: ", task.getException().getLocalizedMessage());
+                                                                }
                                                             }
-                                                        }
-                                                    });
-                                                }
-
-
-                                                for(int i = 0; i < images.size(); i++){
-                                                    Bitmap bitmap = null;
-                                                    try {
-                                                        bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), images.get(i));
-                                                        uploadImageToFirebaseStorage(bitmap, i);
-                                                        //Toast.makeText(getContext(), ""+i, Toast.LENGTH_SHORT).show();
-                                                    } catch (IOException e) {
-                                                        e.printStackTrace();
+                                                        });
                                                     }
+
+
+                                                    for(int i = 0; i < images.size(); i++){
+                                                        Bitmap bitmap = null;
+                                                        try {
+                                                            bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), images.get(i));
+                                                            uploadImageToFirebaseStorage(bitmap, i);
+                                                            //Toast.makeText(getContext(), ""+i, Toast.LENGTH_SHORT).show();
+                                                        } catch (IOException e) {
+                                                            e.printStackTrace();
+                                                        }
+                                                    }
+
+
+                                                }else{
+                                                    Log.d("TASK LOG: ", task.getException().getLocalizedMessage());
                                                 }
-
-
-                                            }else{
-                                                Log.d("TASK LOG: ", task.getException().getLocalizedMessage());
                                             }
+                                        }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Log.e("EXCEPTION: ", e.getLocalizedMessage());
+                                    }
+                                });
+                            }else{
+                                fStore.collection("user").document(UID)
+                                        .collection("jobs")
+                                        .document(JOB_ID)
+                                        .delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if(task.isSuccessful()){
+                                            Log.d("TAG: ", "Document deleted");
+                                        }else{
+                                            Log.e("EXCEPTION", task.getException().getLocalizedMessage());
                                         }
-                                    }).addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Log.e("EXCEPTION: ", e.getLocalizedMessage());
-                                }
-                            });
+                                    }
+                                });
+
+                                fStore.collection("user").document(UID)
+                                        .collection("jobs")
+                                        .document(pTitle)
+                                        .set(job)
+                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                if(task.isSuccessful()){
+
+                                                    StorageReference storageReference = FirebaseStorage.getInstance().getReference()
+                                                            .child("images")
+                                                            .child(user.getUid())
+                                                            .child("jobs")
+                                                            .child(JOB_ID);
+
+                                                    for(int l = 0; l < imageCount; l++){
+                                                        StorageReference sr = null;
+                                                        sr = storageReference.child(jobCreationDate + "_image_" + l + ".jpeg");
+                                                        int j = l;
+                                                        sr.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                            @Override
+                                                            public void onComplete(@NonNull Task<Void> task) {
+                                                                if(task.isSuccessful()){
+                                                                    Log.d("DELETE LOG: ", "Deleted image " + (j+1));
+                                                                }else{
+                                                                    Log.e("DELETE LOG: ", task.getException().getLocalizedMessage());
+                                                                }
+                                                            }
+                                                        });
+                                                    }
+
+
+                                                    for(int i = 0; i < images.size(); i++){
+                                                        Bitmap bitmap = null;
+                                                        try {
+                                                            bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), images.get(i));
+                                                            uploadImageToFirebaseStorage(bitmap, i);
+                                                            //Toast.makeText(getContext(), ""+i, Toast.LENGTH_SHORT).show();
+                                                        } catch (IOException e) {
+                                                            e.printStackTrace();
+                                                        }
+                                                    }
+
+
+                                                }else{
+                                                    Log.d("TASK LOG: ", task.getException().getLocalizedMessage());
+                                                }
+                                            }
+                                        }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Log.e("EXCEPTION: ", e.getLocalizedMessage());
+                                    }
+                                });
+                            }
+
+
 
                             Toast.makeText(getContext(), "Upload completed", Toast.LENGTH_SHORT).show();
 

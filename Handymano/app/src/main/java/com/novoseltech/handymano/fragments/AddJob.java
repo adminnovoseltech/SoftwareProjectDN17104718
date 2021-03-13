@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -15,6 +16,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -38,6 +40,12 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.novoseltech.handymano.R;
+import com.novoseltech.handymano.adapter.SliderAdapter;
+import com.novoseltech.handymano.model.SliderItem;
+import com.smarteist.autoimageslider.IndicatorView.animation.type.IndicatorAnimationType;
+import com.smarteist.autoimageslider.IndicatorView.draw.controller.DrawController;
+import com.smarteist.autoimageslider.SliderAnimations;
+import com.smarteist.autoimageslider.SliderView;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -67,6 +75,7 @@ public class AddJob extends Fragment {
     private String mParam2;
 
     int PICK_IMAGE_MULTIPLE = 2014;
+    long imageCount = 0;
 
     String imageEncoded;
     List<String> imagesEncodedList;
@@ -96,6 +105,14 @@ public class AddJob extends Fragment {
 
     ImageView iv_cancel_first;
     ImageView iv_cancel_second;
+
+    ImageView iv_addImg;
+    ImageView iv_deleteImg;
+
+    SliderView sliderView;
+    SliderAdapter adapter;
+
+    List<SliderItem> initialImages = new ArrayList<>();
 
     public AddJob() {
         // Required empty public constructor
@@ -141,17 +158,12 @@ public class AddJob extends Fragment {
         btn_createJob = getActivity().findViewById(R.id.btn_newJob);
         fStoreList = getActivity().findViewById(R.id.firestoreListJobs);
 
-        iv_first = view.findViewById(R.id.iv_firstImage);
-        iv_second = view.findViewById(R.id.iv_secondImage);
-        tv_imageCount = view.findViewById(R.id.tv_imgCount);
+        iv_addImg = view.findViewById(R.id.iv_addJobImg);
+        iv_deleteImg = view.findViewById(R.id.iv_deleteJobImg);
 
-        iv_first.setVisibility(View.INVISIBLE);
-        iv_second.setVisibility(View.INVISIBLE);
+        sliderView = view.findViewById(R.id.imageSliderJobAdd);
 
-        iv_cancel_first = view.findViewById(R.id.iv_cancel_first_image);
-        iv_cancel_first.setVisibility(View.INVISIBLE);
-        iv_cancel_second = view.findViewById(R.id.iv_cancel_second_image);
-        iv_cancel_second.setVisibility(View.INVISIBLE);
+
 
 
         return view;
@@ -161,21 +173,33 @@ public class AddJob extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        btn_addImages.setOnClickListener(new View.OnClickListener() {
+        adapter = new SliderAdapter(getContext());
+        sliderView.setSliderAdapter(adapter);
+
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
             @Override
-            public void onClick(View view) {
+            public void run() {
 
-                //Clear images
-                Glide.with(getContext())
-                        .clear(iv_first);
-                Glide.with(getContext())
-                        .clear(iv_second);
-                tv_imageCount.setVisibility(View.INVISIBLE);
-                iv_first.setVisibility(View.INVISIBLE);
-                iv_second.setVisibility(View.INVISIBLE);
-                iv_cancel_first.setVisibility(View.INVISIBLE);
-                iv_cancel_second.setVisibility(View.INVISIBLE);
+                sliderView.setIndicatorAnimation(IndicatorAnimationType.WORM); //set indicator animation by using IndicatorAnimationType. :WORM or THIN_WORM or COLOR or DROP or FILL or NONE or SCALE or SCALE_DOWN or SLIDE and SWAP!!
+                sliderView.setSliderTransformAnimation(SliderAnimations.SIMPLETRANSFORMATION);
+                sliderView.setIndicatorSelectedColor(Color.WHITE);
+                sliderView.setIndicatorUnselectedColor(Color.GRAY);
 
+                sliderView.setOnIndicatorClickListener(new DrawController.ClickListener() {
+                    @Override
+                    public void onIndicatorClicked(int position) {
+                        Log.i("GGG", "onIndicatorClicked: " + sliderView.getCurrentPagePosition());
+                    }
+                });
+
+
+            }
+        }, 600);
+
+        iv_addImg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 Intent intent = new Intent();
                 intent.setType("image/*");
                 intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
@@ -183,6 +207,15 @@ public class AddJob extends Fragment {
                 startActivityForResult(Intent.createChooser(intent, "Select pictures"), PICK_IMAGE_MULTIPLE);
             }
         });
+
+        iv_deleteImg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+
 
         btn_saveJob.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -194,16 +227,12 @@ public class AddJob extends Fragment {
 
 
                 //Content validation
-                if(pTitle.length() >= 10 && pTitle.length() <= 50 && pDesc.length() >= 10 && pDesc.length() <= 400 && (mImageUri != null || mArrayUri.size() > 0)){
+                if(pTitle.length() >= 10 && pTitle.length() <= 50 && pDesc.length() >= 10 && pDesc.length() <= 400 && (initialImages.size() > 0)){
                     job.put("title", pTitle);
                     job.put("description", pDesc);
                     job.put("creation_date", todayDate);
+                    job.put("imageCount", initialImages.size());
 
-                    if(mImageUri == null){
-                        job.put("imageCount", mArrayUri.size());
-                    }else{
-                        job.put("imageCount", 1);
-                    }
                     fStore.collection("user").document(UID)
                             .collection("jobs")
                             .document(pTitle)
@@ -211,25 +240,14 @@ public class AddJob extends Fragment {
                             .addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
-                                    //Toast.makeText(getContext(), "Project created", Toast.LENGTH_SHORT).show();
-                                    if(mArrayUri.size() > 0){
-                                        for(int i = 0; i < mArrayUri.size(); i++){
-                                            Bitmap bitmap = null;
-                                            try {
-                                                bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), mArrayUri.get(i));
-                                                uploadImageToFirebaseStorage(bitmap, i);
-                                            } catch (IOException e) {
-                                                e.printStackTrace();
-                                            }
-                                        }
-                                    }else{
+                                    for(int i = 0; i < mArrayUri.size(); i++){
+                                        Bitmap bitmap = null;
                                         try {
-                                            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), mImageUri);
-                                            uploadSingleImageToFirebase(bitmap);
+                                            bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), Uri.parse(initialImages.get(i).getImageUrl()));
+                                            uploadImageToFirebaseStorage(bitmap, i);
                                         } catch (IOException e) {
                                             e.printStackTrace();
                                         }
-
                                     }
 
                                 }
@@ -264,81 +282,6 @@ public class AddJob extends Fragment {
             }
         });
 
-        iv_cancel_first.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(mArrayUri.size() == 0){
-                    Glide.with(getContext()).clear(iv_first);
-                    iv_first.setVisibility(View.INVISIBLE);
-                    iv_cancel_first.setVisibility(View.INVISIBLE);
-                    tv_imageCount.setVisibility(View.INVISIBLE);
-                    mImageUri = null;
-                }else if(mArrayUri.size() == 1){
-                    Glide.with(getContext()).clear(iv_first);
-                    iv_first.setVisibility(View.INVISIBLE);
-                    iv_cancel_first.setVisibility(View.INVISIBLE);
-                    tv_imageCount.setVisibility(View.INVISIBLE);
-                    mArrayUri.remove(0);
-                }
-                else if(mArrayUri.size() == 2){
-                    Glide.with(getContext()).clear(iv_first);
-                    Glide.with(getContext()).clear(iv_second);
-                    mArrayUri.remove(0);
-                    iv_second.setVisibility(View.INVISIBLE);
-                    iv_cancel_second.setVisibility(View.INVISIBLE);
-                    tv_imageCount.setVisibility(View.INVISIBLE);
-                    Glide.with(getContext()).load(mArrayUri.get(0)).into(iv_first);
-                }else{
-                    Glide.with(getContext()).clear(iv_first);
-                    Glide.with(getContext()).clear(iv_second);
-                    mArrayUri.remove(0);
-                    //iv_second.setVisibility(View.INVISIBLE);
-                    //iv_cancel_second.setVisibility(View.INVISIBLE);
-                    if(mArrayUri.size() == 2){
-                        tv_imageCount.setVisibility(View.INVISIBLE);
-                    }else{
-                        tv_imageCount.setText("+" + (mArrayUri.size() - 2));
-                    }
-                    Glide.with(getContext()).load(mArrayUri.get(0)).into(iv_first);
-                    Glide.with(getContext()).load(mArrayUri.get(1)).into(iv_second);
-                }
-
-
-            }
-        });
-
-        iv_cancel_second.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(mArrayUri.size() == 2){
-                    Glide.with(getContext()).clear(iv_first);
-                    Glide.with(getContext()).clear(iv_second);
-                    mArrayUri.remove(0);
-                    iv_second.setVisibility(View.INVISIBLE);
-                    iv_cancel_second.setVisibility(View.INVISIBLE);
-                    tv_imageCount.setVisibility(View.INVISIBLE);
-                    Glide.with(getContext()).load(mArrayUri.get(0)).into(iv_first);
-                }else{
-                    Glide.with(getContext()).clear(iv_first);
-                    Glide.with(getContext()).clear(iv_second);
-                    mArrayUri.remove(0);
-                    if(mArrayUri.size() == 2){
-                        tv_imageCount.setVisibility(View.INVISIBLE);
-                    }else{
-                        tv_imageCount.setText("+" + (mArrayUri.size() - 2));
-                    }
-                    Glide.with(getContext()).load(mArrayUri.get(0)).into(iv_first);
-                    Glide.with(getContext()).load(mArrayUri.get(1)).into(iv_second);
-                }
-            }
-        });
-
-        tv_imageCount.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(getContext(), "To be added!", Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
     @Override
@@ -351,94 +294,61 @@ public class AddJob extends Fragment {
                 // When an Image is picked
                 if (requestCode == PICK_IMAGE_MULTIPLE && resultCode == getActivity().RESULT_OK
                         && null != data) {
-                    // Get the Image from data
-
                     String[] filePathColumn = { MediaStore.Images.Media.DATA };
                     imagesEncodedList = new ArrayList<String>();
-                    if(data.getData()!=null){
 
-                        //Uri mImageUri=data.getData();
+                    //if one image is selected
+                    if(data.getData() != null){
                         mImageUri = null;
                         mImageUri = data.getData();
 
-                        // Get the cursor
-                        Cursor cursor = getActivity().getContentResolver().query(mImageUri,
-                                filePathColumn, null, null, null);
-                        // Move to first row
+                        SliderItem sliderItem = new SliderItem();
+                        sliderItem.setImageUrl(mImageUri.toString());
+                        initialImages.add(sliderItem);
+                        adapter.addItem(sliderItem);
+
+                        Cursor cursor = getActivity().getContentResolver().query(mImageUri, filePathColumn,
+                                null, null, null);
                         cursor.moveToFirst();
 
-                        Glide.with(getContext())
-                                .load(mImageUri)
-                                .into(iv_first);
-                        iv_first.setVisibility(View.VISIBLE);
-                        iv_cancel_first.setVisibility(View.VISIBLE);
-                        iv_cancel_second.setVisibility(View.INVISIBLE);
-
-
                         int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-                        imageEncoded  = cursor.getString(columnIndex);
+                        imageEncoded = cursor.getString(columnIndex);
                         cursor.close();
 
-                    } else {
-                        if (data.getClipData() != null) {
-                            ClipData mClipData = data.getClipData();
-                            //ArrayList<Uri> mArrayUri = new ArrayList<Uri>();
+                    }else{
+                        //if multiple images are selected
+                        if(data.getClipData() != null) {
+                            ClipData clipData = data.getClipData();
                             mArrayUri.clear();
-                            for (int i = 0; i < mClipData.getItemCount(); i++) {
-
-                                ClipData.Item item = mClipData.getItemAt(i);
+                            for(int i = 0; i < clipData.getItemCount(); i++){
+                                ClipData.Item item = clipData.getItemAt(i);
                                 Uri uri = item.getUri();
                                 mArrayUri.add(uri);
-                                // Get the cursor
-                                Cursor cursor = getActivity().getContentResolver().query(uri, filePathColumn, null, null, null);
-                                // Move to first row
+                                Cursor cursor = getActivity().getContentResolver().query(uri, filePathColumn,
+                                        null, null, null);
                                 cursor.moveToFirst();
 
+                                SliderItem sliderItem = new SliderItem();
+                                sliderItem.setImageUrl(uri.toString());
+                                initialImages.add(sliderItem);
+                                adapter.addItem(sliderItem);
+
+
                                 int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-                                imageEncoded  = cursor.getString(columnIndex);
+                                imageEncoded = cursor.getString(columnIndex);
                                 imagesEncodedList.add(imageEncoded);
                                 cursor.close();
 
                             }
-                            if(mArrayUri.size() > 2){
-                                Glide.with(getContext())
-                                        .load(mArrayUri.get(0))
-                                        .into(iv_first);
-                                Glide.with(getContext())
-                                        .load(mArrayUri.get(1))
-                                        .into(iv_second);
-                                int imageCount = mArrayUri.size() - 2;
-                                tv_imageCount.setText("+" + imageCount);
 
-                                iv_first.setVisibility(View.VISIBLE);
-                                iv_second.setVisibility(View.VISIBLE);
-                                tv_imageCount.setVisibility(View.VISIBLE);
-                                iv_cancel_first.setVisibility(View.VISIBLE);
-                                iv_cancel_second.setVisibility(View.VISIBLE);
 
-                            }else if(mArrayUri.size() == 2){
-                                Glide.with(getContext())
-                                        .load(mArrayUri.get(0))
-                                        .into(iv_first);
-                                Glide.with(getContext())
-                                        .load(mArrayUri.get(1))
-                                        .into(iv_second);
 
-                                iv_first.setVisibility(View.VISIBLE);
-                                iv_second.setVisibility(View.VISIBLE);
-                                tv_imageCount.setVisibility(View.INVISIBLE);
-                                iv_cancel_first.setVisibility(View.VISIBLE);
-                                iv_cancel_second.setVisibility(View.VISIBLE);
-                            }else{
-                                iv_first.setVisibility(View.INVISIBLE);
-                                iv_second.setVisibility(View.INVISIBLE);
-                                tv_imageCount.setVisibility(View.INVISIBLE);
-                                iv_cancel_first.setVisibility(View.INVISIBLE);
-                                iv_cancel_second.setVisibility(View.INVISIBLE);
-                            }
                             Log.d("MULTIPLE IMAGE PICKER: ", "Selected Images" + mArrayUri.size());
                         }
                     }
+
+
+
                 } else {
                     Toast.makeText(getContext(), "Request code: " + requestCode + " and result code: " + resultCode,
                             Toast.LENGTH_LONG).show();
@@ -467,29 +377,39 @@ public class AddJob extends Fragment {
         }
     }
 
-    private void uploadSingleImageToFirebase(Bitmap bitmap){
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-        StorageReference reference = FirebaseStorage.getInstance().getReference()
-                .child("images")
-                .child(UID)
-                .child("jobs")
-                .child(et_jobTitle.getText().toString())
-                .child(todayDate + "_image_0.jpeg");
+    public void addImagesToSlider(View view){
+        if(imageCount == 0){
+            //tv_currentImg.setVisibility(View.INVISIBLE);
+        }else{
+            StorageReference storageReference = FirebaseStorage.getInstance().getReference()
+                    .child("images")
+                    .child(user.getUid())
+                    .child("jobs")
+                    .child(et_jobTitle.getText().toString());
 
-        reference.putBytes(baos.toByteArray())
-                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            for(int l = 0; l < imageCount; l++){
+                SliderItem sliderItem = new SliderItem();
+                StorageReference sr = null;
+                sr = storageReference.child(todayDate + "_image_" + l + ".jpeg");
+                sr.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
                     @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        Log.d("TAG", "Upload of image  successful");
+                    public void onComplete(@NonNull Task<Uri> task) {
+                        if(task.isSuccessful()){
+                            Log.d("URL: ", task.getResult().toString());
+                            sliderItem.setImageUrl(task.getResult().toString());
+                            initialImages.add(sliderItem);
+                            adapter.addItem(sliderItem);
+                        }else{
+                            Log.e("Error loading images", task.getException().getLocalizedMessage());
+                        }
                     }
-                }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.e("TAG", "onFailure: ", e.getCause());
+                });
+
             }
-        });
+        }
     }
+
+
 
 
 
