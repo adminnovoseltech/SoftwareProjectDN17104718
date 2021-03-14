@@ -78,11 +78,13 @@ dependencies {
     //Carousel
     implementation 'com.github.smarteist:autoimageslider:1.4.0'
 
-    //Coil image loader
-    implementation("io.coil-kt:coil:1.1.1")
+
 
     //Picasso
     implementation 'com.squareup.picasso:picasso:2.71828'
+
+    //Image loader
+    implementation 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
 
 
 }

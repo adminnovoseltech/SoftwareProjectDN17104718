@@ -28,7 +28,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -79,10 +78,6 @@ public class AddJob extends Fragment {
 
     String imageEncoded;
     List<String> imagesEncodedList;
-    ImageView iv_first;
-    ImageView iv_second;
-    TextView tv_imageCount;
-
     Button btn_saveJob;
     Button btn_createJob;
     RecyclerView fStoreList;
@@ -108,7 +103,7 @@ public class AddJob extends Fragment {
     SliderView sliderView;
     SliderAdapter adapter;
 
-    List<SliderItem> initialImages = new ArrayList<>();
+    List<SliderItem> imagesArrayList = new ArrayList<>();
 
     public AddJob() {
         // Required empty public constructor
@@ -206,7 +201,8 @@ public class AddJob extends Fragment {
         iv_deleteImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                imagesArrayList.remove(sliderView.getCurrentPagePosition());
+                adapter.deleteItem(sliderView.getCurrentPagePosition());
             }
         });
 
@@ -217,28 +213,28 @@ public class AddJob extends Fragment {
             public void onClick(View view) {
                 //Objects
                 Map<String, Object> job = new HashMap<>();
-                String pTitle = et_jobTitle.getText().toString();
-                String pDesc = et_jobDescription.getText().toString();
+                String jobTitle = et_jobTitle.getText().toString();
+                String jobDescription = et_jobDescription.getText().toString();
 
 
                 //Content validation
-                if(pTitle.length() >= 10 && pTitle.length() <= 50 && pDesc.length() >= 10 && pDesc.length() <= 400 && (initialImages.size() > 0)){
-                    job.put("title", pTitle);
-                    job.put("description", pDesc);
+                if(jobTitle.length() >= 10 && jobTitle.length() <= 50 && jobDescription.length() >= 10 && jobDescription.length() <= 400 && (imagesArrayList.size() > 0)){
+                    job.put("title", jobTitle);
+                    job.put("description", jobDescription);
                     job.put("creation_date", todayDate);
-                    job.put("imageCount", initialImages.size());
+                    job.put("imageCount", imagesArrayList.size());
 
                     fStore.collection("user").document(UID)
                             .collection("jobs")
-                            .document(pTitle)
+                            .document(jobTitle)
                             .set(job)
                             .addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
-                                    for(int i = 0; i < initialImages.size(); i++){
+                                    for(int i = 0; i < imagesArrayList.size(); i++){
                                         Bitmap bitmap = null;
                                         try {
-                                            bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), Uri.parse(initialImages.get(i).getImageUrl()));
+                                            bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), Uri.parse(imagesArrayList.get(i).getImageUrl()));
                                             uploadImageToFirebaseStorage(bitmap, i);
                                         } catch (IOException e) {
                                             e.printStackTrace();
@@ -259,14 +255,14 @@ public class AddJob extends Fragment {
                     getActivity().getSupportFragmentManager().beginTransaction().remove(AddJob.this).commit();
 
                 }else{
-                    if(pTitle.length() < 10 || pTitle.length() > 50){
+                    if(jobTitle.length() < 10 || jobTitle.length() > 50){
                         et_jobTitle.setError("Title length must be between 10 and 50 characters!");
                         et_jobTitle.requestFocus();
-                    }else if(mImageUri == null || mArrayUri.size() == 0){
+                    }else if(imagesArrayList.size() == 0){
                         Toast.makeText(getContext(), "You must attach at least 1 image to the job", Toast.LENGTH_SHORT).show();
                     }
                     else{
-                        if(pDesc.length() < 10){
+                        if(jobDescription.length() < 10){
                             et_jobDescription.setError("Description length must be at least 10 characters!");
                         }else{
                             et_jobDescription.setError("Description can contain max 400 characters!");
@@ -299,7 +295,7 @@ public class AddJob extends Fragment {
 
                         SliderItem sliderItem = new SliderItem();
                         sliderItem.setImageUrl(mImageUri.toString());
-                        initialImages.add(sliderItem);
+                        imagesArrayList.add(sliderItem);
                         adapter.addItem(sliderItem);
 
                         Cursor cursor = getActivity().getContentResolver().query(mImageUri, filePathColumn,
@@ -314,20 +310,16 @@ public class AddJob extends Fragment {
                         //if multiple images are selected
                         if(data.getClipData() != null) {
                             ClipData clipData = data.getClipData();
-                            mArrayUri.clear();
                             for(int i = 0; i < clipData.getItemCount(); i++){
                                 ClipData.Item item = clipData.getItemAt(i);
                                 Uri uri = item.getUri();
-                                mArrayUri.add(uri);
                                 Cursor cursor = getActivity().getContentResolver().query(uri, filePathColumn,
                                         null, null, null);
                                 cursor.moveToFirst();
-
                                 SliderItem sliderItem = new SliderItem();
                                 sliderItem.setImageUrl(uri.toString());
-                                initialImages.add(sliderItem);
+                                imagesArrayList.add(sliderItem);
                                 adapter.addItem(sliderItem);
-
 
                                 int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
                                 imageEncoded = cursor.getString(columnIndex);
@@ -335,7 +327,6 @@ public class AddJob extends Fragment {
                                 cursor.close();
 
                             }
-
                             Log.d("MULTIPLE IMAGE PICKER: ", "Selected Images" + mArrayUri.size());
                         }
                     }

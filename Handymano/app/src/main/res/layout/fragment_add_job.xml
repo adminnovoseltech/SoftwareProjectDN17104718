@@ -74,7 +74,7 @@
             <com.smarteist.autoimageslider.SliderView
                 android:id="@+id/imageSliderJobAdd"
                 android:layout_width="match_parent"
-                android:layout_height="294dp"
+                android:layout_height="250dp"
                 app:sliderAnimationDuration="600"
                 app:sliderAutoCycleDirection="back_and_forth"
                 app:sliderAutoCycleEnabled="false"
@@ -94,11 +94,11 @@
             android:id="@+id/btn_saveJob"
             android:layout_width="300dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
+            android:layout_marginTop="20dp"
             android:text="@string/save_job"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cv_carousel_job_add" />
 
         <ImageView
             android:id="@+id/iv_deleteJobImg"
