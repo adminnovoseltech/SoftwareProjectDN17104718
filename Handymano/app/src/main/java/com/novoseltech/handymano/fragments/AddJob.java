@@ -86,7 +86,6 @@ public class AddJob extends Fragment {
     Button btn_saveJob;
     Button btn_createJob;
     RecyclerView fStoreList;
-    Button btn_addImages;
 
     EditText et_jobTitle;
     EditText et_jobDescription;
@@ -102,9 +101,6 @@ public class AddJob extends Fragment {
     Date dt = Calendar.getInstance().getTime();
     SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy", Locale.getDefault());
     String todayDate = df.format(dt);
-
-    ImageView iv_cancel_first;
-    ImageView iv_cancel_second;
 
     ImageView iv_addImg;
     ImageView iv_deleteImg;
@@ -152,7 +148,6 @@ public class AddJob extends Fragment {
         View view = inflater.inflate(R.layout.fragment_add_job, container, false);
 
         btn_saveJob = view.findViewById(R.id.btn_saveJob);
-        btn_addImages = view.findViewById(R.id.btn_addJobPictures);
         et_jobTitle = view.findViewById(R.id.et_jobTitle);
         et_jobDescription = view.findViewById(R.id.et_jobDescription);
         btn_createJob = getActivity().findViewById(R.id.btn_newJob);
@@ -240,7 +235,7 @@ public class AddJob extends Fragment {
                             .addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
-                                    for(int i = 0; i < mArrayUri.size(); i++){
+                                    for(int i = 0; i < initialImages.size(); i++){
                                         Bitmap bitmap = null;
                                         try {
                                             bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), Uri.parse(initialImages.get(i).getImageUrl()));
@@ -341,13 +336,9 @@ public class AddJob extends Fragment {
 
                             }
 
-
-
                             Log.d("MULTIPLE IMAGE PICKER: ", "Selected Images" + mArrayUri.size());
                         }
                     }
-
-
 
                 } else {
                     Toast.makeText(getContext(), "Request code: " + requestCode + " and result code: " + resultCode,
@@ -376,42 +367,6 @@ public class AddJob extends Fragment {
             }
         }
     }
-
-    public void addImagesToSlider(View view){
-        if(imageCount == 0){
-            //tv_currentImg.setVisibility(View.INVISIBLE);
-        }else{
-            StorageReference storageReference = FirebaseStorage.getInstance().getReference()
-                    .child("images")
-                    .child(user.getUid())
-                    .child("jobs")
-                    .child(et_jobTitle.getText().toString());
-
-            for(int l = 0; l < imageCount; l++){
-                SliderItem sliderItem = new SliderItem();
-                StorageReference sr = null;
-                sr = storageReference.child(todayDate + "_image_" + l + ".jpeg");
-                sr.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Uri> task) {
-                        if(task.isSuccessful()){
-                            Log.d("URL: ", task.getResult().toString());
-                            sliderItem.setImageUrl(task.getResult().toString());
-                            initialImages.add(sliderItem);
-                            adapter.addItem(sliderItem);
-                        }else{
-                            Log.e("Error loading images", task.getException().getLocalizedMessage());
-                        }
-                    }
-                });
-
-            }
-        }
-    }
-
-
-
-
 
     private void uploadImageToFirebaseStorage(Bitmap bitmap, int imgCount) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();

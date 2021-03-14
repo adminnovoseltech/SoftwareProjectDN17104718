@@ -182,13 +182,10 @@ public class EditJob extends Fragment {
         sliderView = view.findViewById(R.id.imageSliderJobEdit);
 
         //Activity elements
-        TextView tv_jb = getActivity().findViewById(R.id.tv_jobTitle);
-        ScrollView sv_jb = getActivity().findViewById(R.id.svJob);
-        CardView cv_jb = getActivity().findViewById(R.id.cv_carousel_job);
-        ImageView iv_jb = getActivity().findViewById(R.id.iv_stdJobMore);
-
-
-
+        tv_jb = getActivity().findViewById(R.id.tv_jobTitle);
+        sv_jb = getActivity().findViewById(R.id.svJob);
+        cv_jb = getActivity().findViewById(R.id.cv_carousel_job);
+        iv_jb = getActivity().findViewById(R.id.iv_stdJobMore);
 
         return view;
     }
@@ -250,11 +247,14 @@ public class EditJob extends Fragment {
         iv_deleteImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getContext(), initialImages.get(0).getImageUrl(), Toast.LENGTH_SHORT);
-                Log.d("DEBUG: ", initialImages.get(sliderView.getCurrentPagePosition()).getImageUrl());
-                initialImages.remove(sliderView.getCurrentPagePosition());
-                adapter.deleteItem(sliderView.getCurrentPagePosition());
 
+                if(initialImages.size() > 0){
+                    initialImages.remove(sliderView.getCurrentPagePosition());
+                    adapter.deleteItem(sliderView.getCurrentPagePosition());
+
+                }else{
+                    Toast.makeText(getContext(), "No image to delete", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -595,17 +595,12 @@ public class EditJob extends Fragment {
                             initialImages.add(sliderItem);
                             adapter.addItem(sliderItem);
 
-
                             int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
                             imageEncoded = cursor.getString(columnIndex);
                             imagesEncodedList.add(imageEncoded);
                             cursor.close();
 
-
-
                         }
-
-
 
                         Log.d("MULTIPLE IMAGE PICKER: ", "Selected Images" + mArrayUri.size());
                     }
@@ -620,34 +615,29 @@ public class EditJob extends Fragment {
     }
 
     public void addImagesToSlider(View view){
-        if(imageCount == 0){
-            //tv_currentImg.setVisibility(View.INVISIBLE);
-        }else{
-            StorageReference storageReference = FirebaseStorage.getInstance().getReference()
-                    .child("images")
-                    .child(user.getUid())
-                    .child("jobs")
-                    .child(JOB_ID);
 
-            for(int l = 0; l < imageCount; l++){
-                SliderItem sliderItem = new SliderItem();
-                StorageReference sr = null;
-                sr = storageReference.child(jobCreationDate + "_image_" + l + ".jpeg");
-                sr.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Uri> task) {
-                        if(task.isSuccessful()){
-                            Log.d("URL: ", task.getResult().toString());
-                            sliderItem.setImageUrl(task.getResult().toString());
-                            initialImages.add(sliderItem);
-                            adapter.addItem(sliderItem);
-                        }else{
-                            Log.e("Error loading images", task.getException().getLocalizedMessage());
-                        }
+        StorageReference storageReference = FirebaseStorage.getInstance().getReference()
+                .child("images")
+                .child(user.getUid())
+                .child("jobs")
+                .child(JOB_ID);
+        for(int l = 0; l < imageCount; l++){
+            SliderItem sliderItem = new SliderItem();
+            StorageReference sr = null;
+            sr = storageReference.child(jobCreationDate + "_image_" + l + ".jpeg");
+            sr.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                @Override
+                public void onComplete(@NonNull Task<Uri> task) {
+                    if(task.isSuccessful()){
+                        Log.d("URL: ", task.getResult().toString());
+                        sliderItem.setImageUrl(task.getResult().toString());
+                        initialImages.add(sliderItem);
+                        adapter.addItem(sliderItem);
+                    }else{
+                        Log.e("Error loading images", task.getException().getLocalizedMessage());
                     }
-                });
-
-            }
+                }
+            });
         }
 
     }
