@@ -28,6 +28,7 @@ import com.novoseltech.handymano.MainActivity;
 import com.novoseltech.handymano.R;
 import com.novoseltech.handymano.fragments.AddProject;
 import com.novoseltech.handymano.model.ProjectsModel;
+import com.novoseltech.handymano.views.professional.HomeActivityProfessional;
 import com.novoseltech.handymano.views.professional.ProfessionalProfileActivity;
 
 public class ProjectsActivity extends AppCompatActivity {
@@ -148,6 +149,10 @@ public class ProjectsActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void ClickProjects(View view){
+        this.recreate();
+    }
+
 
     public static void openDrawer(DrawerLayout drawerLayout) {
         //Open drawer layout
@@ -156,6 +161,11 @@ public class ProjectsActivity extends AppCompatActivity {
 
     public void ClickLogOut(View view) {
         logout();
+    }
+
+    public void ClickHome(View view){
+        Intent intent = new Intent(ProjectsActivity.this, HomeActivityProfessional.class);
+        startActivity(intent);
     }
 
     public void logout(){
@@ -191,4 +201,5 @@ public class ProjectsActivity extends AppCompatActivity {
         //Show dialog
         builder.show();
     }
+
 }

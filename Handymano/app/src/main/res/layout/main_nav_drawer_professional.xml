@@ -34,7 +34,8 @@
         android:id="@+id/homeNavigation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:onClick="ClickHome">
 
         <TextView
             android:layout_width="0dp"
@@ -83,7 +84,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:onClick="ClickProjects">
 
         <TextView
             android:layout_width="0dp"

@@ -150,10 +150,6 @@ public class EditJob extends Fragment {
     CardView cv_jb;
     ImageView iv_jb;
 
-
-
-
-
     ImageView iv_temp;
     public EditJob() {
         // Required empty public constructor
