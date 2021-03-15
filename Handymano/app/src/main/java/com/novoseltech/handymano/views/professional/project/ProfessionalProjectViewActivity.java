@@ -3,6 +3,9 @@ package com.novoseltech.handymano.views.professional.project;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -14,7 +17,9 @@ import android.util.Log;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.PopupMenu;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -28,9 +33,9 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.novoseltech.handymano.R;
 import com.novoseltech.handymano.adapter.SliderAdapter;
+import com.novoseltech.handymano.fragments.EditJob;
+import com.novoseltech.handymano.fragments.EditProject;
 import com.novoseltech.handymano.model.SliderItem;
-import com.novoseltech.handymano.views.standard.job.JobsActivity;
-import com.novoseltech.handymano.views.standard.job.StandardJobViewActivity;
 import com.smarteist.autoimageslider.IndicatorView.animation.type.IndicatorAnimationType;
 import com.smarteist.autoimageslider.IndicatorView.draw.controller.DrawController;
 import com.smarteist.autoimageslider.SliderAnimations;
@@ -53,21 +58,39 @@ public class ProfessionalProjectViewActivity extends AppCompatActivity implement
     FirebaseFirestore fStore = FirebaseFirestore.getInstance();
     FirebaseUser user = mAuth.getCurrentUser();
 
+    //Layout
+    ConstraintLayout cl_projectView;
+    TextView tv_projectTitle;
+    ScrollView svProject;
+    CardView cv_carousel_project;
+    ImageView iv_projectMore;
+
+    String currentFragment;
+    EditProject editProjectFragment = new EditProject();
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_professional_project);
 
         PROJECT_ID = getIntent().getStringExtra("PROJECT_ID");
+        cl_projectView = findViewById(R.id.cl_ProjectViewProfessional);
 
-        sliderView = findViewById(R.id.imageSlider);
+        sliderView = findViewById(R.id.imageSliderProject);
         adapter = new SliderAdapter(getApplicationContext());
         sliderView.setSliderAdapter(adapter);
 
+        iv_projectMore = findViewById(R.id.iv_proProjectMore);
+
         //Layout objects
-        TextView tv_projectTitle = findViewById(R.id.tv_projectTitle);
+        tv_projectTitle = findViewById(R.id.tv_projectTitle);
         TextView tv_projectDescription = findViewById(R.id.tv_projectDescription);
         tv_projectTitle.setText(PROJECT_ID);
+
+        svProject = findViewById(R.id.svProject);
+        cv_carousel_project = findViewById(R.id.cv_carousel_project);
 
         DocumentReference documentReference = fStore.collection("user")
                 .document(user.getUid())
@@ -96,12 +119,9 @@ public class ProfessionalProjectViewActivity extends AppCompatActivity implement
             }
         }, 300);
 
-        Handler handler1 = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                Toast.makeText(getApplicationContext(), "Loading images", Toast.LENGTH_SHORT).show();
-
 
                 sliderView.setIndicatorAnimation(IndicatorAnimationType.WORM); //set indicator animation by using IndicatorAnimationType. :WORM or THIN_WORM or COLOR or DROP or FILL or NONE or SCALE or SCALE_DOWN or SLIDE and SWAP!!
                 sliderView.setSliderTransformAnimation(SliderAnimations.SIMPLETRANSFORMATION);
@@ -119,13 +139,7 @@ public class ProfessionalProjectViewActivity extends AppCompatActivity implement
                 });
             }
         }, 600);
-
-
-
-
-
     }
-
 
     public void addImagesToSlider(View view){
         StorageReference storageReference = FirebaseStorage.getInstance().getReference()
@@ -158,9 +172,20 @@ public class ProfessionalProjectViewActivity extends AppCompatActivity implement
     public boolean onMenuItemClick(MenuItem menuItem) {
         switch (menuItem.getItemId()) {
             case R.id.option_edit:
-                Toast.makeText(getApplicationContext(), "Will start work with this", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getApplicationContext(), "Will start work with this", Toast.LENGTH_SHORT).show();
+                Bundle bundle = new Bundle();
+                bundle.putString("PROJECT_ID", PROJECT_ID);
 
+                editProjectFragment.setArguments(bundle);
+                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                transaction.replace(R.id.frame_edit_project, editProjectFragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
 
+                tv_projectTitle.setVisibility(View.GONE);
+                svProject.setVisibility(View.GONE);
+                cv_carousel_project.setVisibility(View.GONE);
+                iv_projectMore.setVisibility(View.GONE);
 
 
                 return true;

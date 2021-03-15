@@ -77,8 +77,6 @@ public class StandardJobViewActivity extends AppCompatActivity implements PopupM
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_standard_job_view);
 
-
-
         JOB_ID = getIntent().getStringExtra("JOB_ID");
         cl_jobView = findViewById(R.id.cl_jobViewStandard);
 
@@ -123,12 +121,9 @@ public class StandardJobViewActivity extends AppCompatActivity implements PopupM
             }
         }, 300);
 
-        Handler handler1 = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                //Toast.makeText(getApplicationContext(), "Loading images", Toast.LENGTH_SHORT).show();
-
 
                 sliderView.setIndicatorAnimation(IndicatorAnimationType.WORM); //set indicator animation by using IndicatorAnimationType. :WORM or THIN_WORM or COLOR or DROP or FILL or NONE or SCALE or SCALE_DOWN or SLIDE and SWAP!!
                 sliderView.setSliderTransformAnimation(SliderAnimations.SIMPLETRANSFORMATION);
@@ -138,7 +133,6 @@ public class StandardJobViewActivity extends AppCompatActivity implements PopupM
                 sliderView.setScrollTimeInSec(4); //set scroll delay in seconds :
                 sliderView.startAutoCycle();
 
-
                 sliderView.setOnIndicatorClickListener(new DrawController.ClickListener() {
                     @Override
                     public void onIndicatorClicked(int position) {
@@ -147,7 +141,6 @@ public class StandardJobViewActivity extends AppCompatActivity implements PopupM
                 });
             }
         }, 600);
-
     }
 
     public void addImagesToSlider(View view){
@@ -191,8 +184,6 @@ public class StandardJobViewActivity extends AppCompatActivity implements PopupM
                 Bundle bundle = new Bundle();
                 bundle.putString("JOB_ID", JOB_ID);
 
-                //Toast.makeText(getApplicationContext(), "Will start work with this", Toast.LENGTH_SHORT).show();
-                //EditJob editJobFragment = new EditJob();
                 editJobFragment.setArguments(bundle);
                 FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                 transaction.replace(R.id.frame_edit_job, editJobFragment);

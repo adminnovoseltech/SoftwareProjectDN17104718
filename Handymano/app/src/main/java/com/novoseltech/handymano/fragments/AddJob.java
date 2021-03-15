@@ -150,11 +150,7 @@ public class AddJob extends Fragment {
 
         iv_addImg = view.findViewById(R.id.iv_addJobImg);
         iv_deleteImg = view.findViewById(R.id.iv_deleteJobImg);
-
         sliderView = view.findViewById(R.id.imageSliderJobAdd);
-
-
-
 
         return view;
     }
@@ -201,8 +197,13 @@ public class AddJob extends Fragment {
         iv_deleteImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                imagesArrayList.remove(sliderView.getCurrentPagePosition());
-                adapter.deleteItem(sliderView.getCurrentPagePosition());
+                if(imagesArrayList.size() > 0){
+                    imagesArrayList.remove(sliderView.getCurrentPagePosition());
+                    adapter.deleteItem(sliderView.getCurrentPagePosition());
+                }else{
+                    Toast.makeText(getContext(), "No images to delete", Toast.LENGTH_SHORT).show();
+                }
+
             }
         });
 

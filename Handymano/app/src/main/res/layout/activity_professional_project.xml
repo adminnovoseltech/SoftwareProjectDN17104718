@@ -21,7 +21,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ScrollView
-        android:id="@+id/scrollView3"
+        android:id="@+id/svProject"
         android:layout_width="match_parent"
         android:layout_height="300dp"
         android:layout_marginTop="30dp"
@@ -29,7 +29,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cv_carousel">
+        app:layout_constraintTop_toBottomOf="@+id/cv_carousel_project">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -51,7 +51,7 @@
     </ScrollView>
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/cv_carousel"
+        android:id="@+id/cv_carousel_project"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -63,7 +63,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <com.smarteist.autoimageslider.SliderView
-            android:id="@+id/imageSlider"
+            android:id="@+id/imageSliderProject"
             android:layout_width="match_parent"
             android:layout_height="300dp"
             app:sliderAnimationDuration="600"
@@ -91,6 +91,17 @@
         android:src="@drawable/ic_extend"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <FrameLayout
+        android:id="@+id/frame_edit_project"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+    </FrameLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
