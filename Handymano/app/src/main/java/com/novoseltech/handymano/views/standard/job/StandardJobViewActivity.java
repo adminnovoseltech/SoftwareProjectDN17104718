@@ -5,6 +5,8 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.content.DialogInterface;
@@ -41,6 +43,8 @@ import com.smarteist.autoimageslider.IndicatorView.draw.controller.DrawControlle
 import com.smarteist.autoimageslider.SliderAnimations;
 import com.smarteist.autoimageslider.SliderView;
 
+import java.util.List;
+
 public class StandardJobViewActivity extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener{
 
     private static final String TAG = "LOG: ";
@@ -64,11 +68,16 @@ public class StandardJobViewActivity extends AppCompatActivity implements PopupM
     CardView cv_carousel_job;
     ImageView iv_jobMore;
 
+    String currentFragment;
+    EditJob editJobFragment = new EditJob();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_standard_job_view);
+
+
 
         JOB_ID = getIntent().getStringExtra("JOB_ID");
         cl_jobView = findViewById(R.id.cl_jobViewStandard);
@@ -139,10 +148,6 @@ public class StandardJobViewActivity extends AppCompatActivity implements PopupM
             }
         }, 600);
 
-
-
-
-
     }
 
     public void addImagesToSlider(View view){
@@ -187,7 +192,7 @@ public class StandardJobViewActivity extends AppCompatActivity implements PopupM
                 bundle.putString("JOB_ID", JOB_ID);
 
                 //Toast.makeText(getApplicationContext(), "Will start work with this", Toast.LENGTH_SHORT).show();
-                EditJob editJobFragment = new EditJob();
+                //EditJob editJobFragment = new EditJob();
                 editJobFragment.setArguments(bundle);
                 FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                 transaction.replace(R.id.frame_edit_job, editJobFragment);
@@ -255,5 +260,19 @@ public class StandardJobViewActivity extends AppCompatActivity implements PopupM
         MenuInflater inflater = popupMenu.getMenuInflater();
         inflater.inflate(R.menu.actions, popupMenu.getMenu());
         popupMenu.show();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        FragmentManager fm = getSupportFragmentManager();
+
+        if(editJobFragment.isVisible()){
+            fm.beginTransaction().remove(editJobFragment).commit();
+            tv_jobTitle.setVisibility(View.VISIBLE);
+            svJob.setVisibility(View.VISIBLE);
+            cv_carousel_job.setVisibility(View.VISIBLE);
+            iv_jobMore.setVisibility(View.VISIBLE);
+        }
     }
 }
