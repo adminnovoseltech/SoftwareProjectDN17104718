@@ -150,7 +150,10 @@ public class ProjectsActivity extends AppCompatActivity {
     }
 
     public void ClickProjects(View view){
-        this.recreate();
+        //recreate the activity
+
+        finish();
+        startActivity(getIntent());
     }
 
 

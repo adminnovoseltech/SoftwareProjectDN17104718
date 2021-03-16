@@ -197,6 +197,13 @@ public class JobsActivity extends AppCompatActivity {
         }
     }
 
+    public void ClickJobs(View view){
+        //recreate the activity
+
+        finish();
+        startActivity(getIntent());
+    }
+
     public void ClickLogOut(View view) {
         logout();
     }

@@ -6,6 +6,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -43,9 +45,11 @@ import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.novoseltech.handymano.MainActivity;
 import com.novoseltech.handymano.R;
 import com.novoseltech.handymano.fragments.AddressSelect;
 import com.novoseltech.handymano.fragments.PasswordConfirmationDialog;
+import com.novoseltech.handymano.views.professional.project.ProfessionalProjectViewActivity;
 import com.novoseltech.handymano.views.standard.StandardProfileActivity;
 
 import java.io.ByteArrayOutputStream;
@@ -519,6 +523,8 @@ public class ProfessionalProfileActivity extends AppCompatActivity implements Pa
         return address;
 
     }
+
+
 
 
 }

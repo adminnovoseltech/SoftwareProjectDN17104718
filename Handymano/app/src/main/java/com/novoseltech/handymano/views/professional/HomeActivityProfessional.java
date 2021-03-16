@@ -101,6 +101,13 @@ public class HomeActivityProfessional extends AppCompatActivity {
         drawerLayout.openDrawer(GravityCompat.START);
     }
 
+    public void ClickHome(View view){
+        //recreate the activity
+
+        finish();
+        startActivity(getIntent());
+    }
+
     public void ClickLogOut(View view) {
         logout();
     }
