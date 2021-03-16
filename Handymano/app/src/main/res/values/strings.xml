@@ -62,5 +62,6 @@
     <string name="option_1">Edit</string>
     <string name="option_2">Delete</string>
     <string name="save_changes">Save changes</string>
+    <string name="experience">Experience</string>
 
 </resources>
