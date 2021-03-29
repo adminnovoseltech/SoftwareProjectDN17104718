@@ -23,7 +23,7 @@ import com.novoseltech.handymano.MainActivity;
 import com.novoseltech.handymano.R;
 import com.novoseltech.handymano.views.professional.project.ProjectsActivity;
 
-public class HomeActivityProfessional extends AppCompatActivity {
+public class  HomeActivityProfessional extends AppCompatActivity {
 
     private static final String TAG = "LOG: ";
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
