@@ -3,8 +3,10 @@ package com.novoseltech.handymano.views.standard;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,6 +26,8 @@ import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.novoseltech.handymano.R;
+import com.novoseltech.handymano.views.standard.project.ProjectList;
+import com.novoseltech.handymano.views.standard.project.ViewProject;
 
 import java.util.List;
 
@@ -33,6 +37,7 @@ public class ViewProfessionalActivity extends AppCompatActivity{
     TextView tv_tradeCategory;
     TextView tv_tradeExperience;
     TextView tv_tradeLastProject;
+    TextView tv_viewTradeAllProjects;
 
     //Firebase objects
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
@@ -114,11 +119,31 @@ public class ViewProfessionalActivity extends AppCompatActivity{
                 tv_tradeCategory = findViewById(R.id.tv_tradeCategory);
                 tv_tradeExperience = findViewById(R.id.tv_tradeExperience);
                 tv_tradeLastProject = findViewById(R.id.tv_tradeLastProject);
+                tv_viewTradeAllProjects = findViewById(R.id.tv_tradeViewAllProjects);
 
                 tv_tradeName.setText(tradeName);
                 tv_tradeCategory.setText(tradeCategory);
                 tv_tradeExperience.setText(tradeExperience);
                 tv_tradeLastProject.setText("Last project: " + lastProject);
+
+                tv_viewTradeAllProjects.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent  = new Intent(getApplicationContext(), ProjectList.class);
+                        intent.putExtra("USER_ID", user_id);
+                        startActivity(intent);
+                    }
+                });
+
+                tv_tradeLastProject.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent  = new Intent(getApplicationContext(), ViewProject.class);
+                        intent.putExtra("USER_ID", user_id);
+                        intent.putExtra("PROJECT_ID", lastProject);
+                        startActivity(intent);
+                    }
+                });
 
 
 
