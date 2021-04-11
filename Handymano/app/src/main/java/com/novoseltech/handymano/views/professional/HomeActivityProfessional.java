@@ -21,6 +21,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.novoseltech.handymano.Functions;
 import com.novoseltech.handymano.MainActivity;
 import com.novoseltech.handymano.R;
+import com.novoseltech.handymano.views.professional.job.JobsList;
 import com.novoseltech.handymano.views.professional.project.ProjectsActivity;
 
 public class  HomeActivityProfessional extends AppCompatActivity {
@@ -82,6 +83,15 @@ public class  HomeActivityProfessional extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(HomeActivityProfessional.this, ProjectsActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        jobsNavLayout = drawerLayout.findViewById(R.id.jobsNavigation);
+        jobsNavLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(HomeActivityProfessional.this, JobsList.class);
                 startActivity(intent);
             }
         });
