@@ -53,10 +53,10 @@ import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.novoseltech.handymano.Functions;
 import com.novoseltech.handymano.MainActivity;
 import com.novoseltech.handymano.R;
 import com.novoseltech.handymano.model.ServicesModel;
+import com.novoseltech.handymano.views.message.MessageMenu;
 import com.novoseltech.handymano.views.professional.HomeActivityProfessional;
 import com.novoseltech.handymano.views.standard.job.JobsActivity;
 
@@ -421,7 +421,10 @@ public class HomeActivityStandard extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                drawerLayout.closeDrawer(GravityCompat.START);
+                //drawerLayout.closeDrawer(GravityCompat.START);
+
+                Intent intent = new Intent(HomeActivityStandard.this, MessageMenu.class);
+                startActivity(intent);
             }
         });
 
@@ -743,7 +746,7 @@ public class HomeActivityStandard extends AppCompatActivity {
 
         public ServicesViewHolder(@NonNull View itemView) {
             super(itemView);
-            list_username = itemView.findViewById(R.id.list_username);
+            list_username = itemView.findViewById(R.id.tv_chatSenderUsername);
             list_category = itemView.findViewById(R.id.list_category);
             list_distance = itemView.findViewById(R.id.list_distance);
         }

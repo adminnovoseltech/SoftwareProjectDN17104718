@@ -899,7 +899,7 @@ public class HomeActivity extends AppCompatActivity {
 
         public ServicesViewHolder(@NonNull View itemView) {
             super(itemView);
-            list_username = itemView.findViewById(R.id.list_username);
+            list_username = itemView.findViewById(R.id.tv_chatSenderUsername);
             list_category = itemView.findViewById(R.id.list_category);
             list_distance = itemView.findViewById(R.id.list_distance);
         }

@@ -19,7 +19,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".views.professional.job.ViewJob"></activity>
+        <activity android:name=".views.message.ChatActivity"></activity>
+        <activity android:name=".views.message.MessageMenu" />
+        <activity android:name=".views.professional.job.ViewJob" />
         <activity android:name=".views.professional.job.JobsList" />
         <activity android:name=".views.standard.project.ProjectList" />
         <activity android:name=".views.standard.project.ViewProject" />
