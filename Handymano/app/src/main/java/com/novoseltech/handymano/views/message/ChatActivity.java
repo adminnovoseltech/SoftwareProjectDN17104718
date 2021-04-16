@@ -6,9 +6,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -19,11 +21,16 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.SetOptions;
 import com.novoseltech.handymano.R;
 import com.novoseltech.handymano.adapter.ChatAdapter;
 import com.novoseltech.handymano.model.ChatModel;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class ChatActivity extends AppCompatActivity {
 
@@ -34,6 +41,12 @@ public class ChatActivity extends AppCompatActivity {
     ChatAdapter chatAdapter;
 
     String SENDER_NAME = "";
+    String RECIPIENT_ID = "";
+    String TRADE_NAME = "";
+    String MODE = "";
+
+    List<String> messageRecipientsSender = new ArrayList<>();
+    List<String> messageRecipientsReceiver = new ArrayList<>();
 
 
     @Override
@@ -41,23 +54,66 @@ public class ChatActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
 
-
-
-        String RECEIPIENT_ID = getIntent().getStringExtra("USER_ID");
-        //String RECEIPIENT_NAME =
+        MODE = getIntent().getStringExtra("MODE");
 
         FirebaseFirestore fStore = FirebaseFirestore.getInstance();
-
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         String UID = user.getUid();
 
-        String messageReceiver;
-        String messageReceiverUID;
+        et_chatMessage = findViewById(R.id.et_chatMessage);
 
-        CollectionReference chatReference = fStore.collection("chat").document(UID).collection(RECEIPIENT_ID);
-        CollectionReference receiverReference = fStore.collection("chat").document(RECEIPIENT_ID).collection(UID);
+        if(MODE.equals("PROFILE_VISIT")){
+            RECIPIENT_ID = getIntent().getStringExtra("TRADE_ID");
+            TRADE_NAME = getIntent().getStringExtra("TRADE_NAME");
+
+        }else{
+            RECIPIENT_ID = getIntent().getStringExtra("USER_ID");
+        }
 
 
+        CollectionReference chatReference = fStore.collection("chat").document(UID).collection(RECIPIENT_ID);
+        CollectionReference receiverReference = fStore.collection("chat").document(RECIPIENT_ID).collection(UID);
+
+
+
+        //CHECK IF RECIPIENTS CHAT DOCUMENT CONTAINS LIST OF CHATS
+        fStore.collection("chat").document(RECIPIENT_ID)
+                .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful()){
+
+                    if(task.getResult().contains("recipients")){
+                        DocumentSnapshot documentSnapshot = task.getResult();
+                        messageRecipientsReceiver = (List<String>) documentSnapshot.get("recipients");
+                    }else{
+                        messageRecipientsReceiver.add("");
+                    }
+
+                }
+            }
+        });
+
+        //CHECK IF MY CHAT DOCUMENT CONTAINS LIST OF CHATS
+        fStore.collection("chat").document(UID)
+                .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful()){
+
+                    if(task.getResult().contains("recipients")){
+                        DocumentSnapshot documentSnapshot = task.getResult();
+                        messageRecipientsSender = (List<String>) documentSnapshot.get("recipients");
+                    }else{
+                        messageRecipientsSender.add("");
+                    }
+
+                }
+            }
+        });
+
+
+        //GET MY USERNAME
         fStore.collection("user").document(UID)
         .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -69,7 +125,7 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
 
-        et_chatMessage = findViewById(R.id.et_chatMessage);
+
 
         findViewById(R.id.ic_sendMessage).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -77,14 +133,53 @@ public class ChatActivity extends AppCompatActivity {
                 ChatModel chat = new ChatModel(user.getUid(),SENDER_NAME, et_chatMessage.getText().toString(), new Date());
 
                 receiverReference.add(chat);
-
-
                 chatReference.add(chat);
-
                 et_chatMessage.setText("");
 
-                Log.d("receiverMessage is ", String.valueOf(receiverReference));
-                //Log.d("chat is ", chat.);
+                Log.d("LOG TESTING: ", RECIPIENT_ID+","+TRADE_NAME);
+
+
+                if(!messageRecipientsReceiver.contains(UID + "," + SENDER_NAME)){
+
+
+
+                    if(messageRecipientsReceiver.get(0).equals("")){
+                        messageRecipientsReceiver.clear();
+                        messageRecipientsReceiver.add(UID + "," + SENDER_NAME);
+                    }else{
+                        messageRecipientsReceiver.add(UID + "," + SENDER_NAME);
+                    }
+                    fStore.collection("chat").document(RECIPIENT_ID)
+                            .update("recipients", messageRecipientsReceiver)
+                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    Log.d("LOG: ", "Updated recipients");
+                                }
+                            });
+
+
+
+                }
+
+                if(!messageRecipientsSender.contains(RECIPIENT_ID + "," + TRADE_NAME)){
+                    if(messageRecipientsSender.get(0).equals("")){
+                        messageRecipientsSender.add(RECIPIENT_ID+','+TRADE_NAME);
+                        messageRecipientsSender.clear();
+                    }else{
+                        messageRecipientsSender.add(RECIPIENT_ID+','+TRADE_NAME);
+                    }
+
+                    fStore.collection("chat").document(UID)
+                            .update("recipients", messageRecipientsSender)
+                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    Log.d("LOG: ", "Updated recipients");
+                                }
+                            });
+                }
+
 
             }
         });
@@ -95,7 +190,7 @@ public class ChatActivity extends AppCompatActivity {
         rv_chatContent.setLayoutManager(linearLayoutManager);
 
         Query query = FirebaseFirestore.getInstance()
-                .collection("chat").document(UID).collection(RECEIPIENT_ID).orderBy("timestamp", Query.Direction.ASCENDING);
+                .collection("chat").document(UID).collection(RECIPIENT_ID).orderBy("timestamp", Query.Direction.ASCENDING);
 
         FirestoreRecyclerOptions<ChatModel> options = new FirestoreRecyclerOptions.Builder<ChatModel>().setQuery(query, ChatModel.class).build();
         chatAdapter = new ChatAdapter(options, SENDER_NAME);
@@ -106,6 +201,8 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
         rv_chatContent.setAdapter(chatAdapter);
+
+
 
     }
 

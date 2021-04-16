@@ -149,6 +149,16 @@
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/view3" />
+
+            <ImageView
+                android:id="@+id/iv_messageTrade"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="25dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/tv_tradeName"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_message" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 

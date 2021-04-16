@@ -53,6 +53,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
                 Intent intent = new Intent(context, ChatActivity.class);
                 intent.putExtra("USER_ID", userID);
                 intent.putExtra("USERNAME", username);
+                intent.putExtra("MODE", "MENU");
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(intent);
 
