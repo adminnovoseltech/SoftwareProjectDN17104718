@@ -5,9 +5,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -23,7 +21,6 @@ import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -36,14 +33,11 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.novoseltech.handymano.R;
 import com.novoseltech.handymano.adapter.SliderAdapter;
-import com.novoseltech.handymano.fragments.EditJob;
 import com.novoseltech.handymano.model.SliderItem;
 import com.smarteist.autoimageslider.IndicatorView.animation.type.IndicatorAnimationType;
 import com.smarteist.autoimageslider.IndicatorView.draw.controller.DrawController;
 import com.smarteist.autoimageslider.SliderAnimations;
 import com.smarteist.autoimageslider.SliderView;
-
-import java.util.List;
 
 public class StandardJobViewActivity extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener{
 
@@ -67,10 +61,6 @@ public class StandardJobViewActivity extends AppCompatActivity implements PopupM
     ScrollView svJob;
     CardView cv_carousel_job;
     ImageView iv_jobMore;
-
-    String currentFragment;
-    EditJob editJobFragment = new EditJob();
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -181,19 +171,11 @@ public class StandardJobViewActivity extends AppCompatActivity implements PopupM
     public boolean onMenuItemClick(MenuItem menuItem) {
         switch (menuItem.getItemId()){
             case R.id.option_edit:
-                Bundle bundle = new Bundle();
-                bundle.putString("JOB_ID", JOB_ID);
 
-                editJobFragment.setArguments(bundle);
-                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.frame_edit_job, editJobFragment);
-                transaction.addToBackStack(null);
-                transaction.commit();
+                Intent intent = new Intent(StandardJobViewActivity.this, EditJob.class);
+                intent.putExtra("JOB_ID", JOB_ID);
+                startActivity(intent);
 
-                tv_jobTitle.setVisibility(View.GONE);
-                svJob.setVisibility(View.GONE);
-                cv_carousel_job.setVisibility(View.GONE);
-                iv_jobMore.setVisibility(View.GONE);
                 return true;
             case R.id.option_delete:
                 AlertDialog.Builder deleteJobDialog = new AlertDialog.Builder(StandardJobViewActivity.this);
@@ -253,17 +235,4 @@ public class StandardJobViewActivity extends AppCompatActivity implements PopupM
         popupMenu.show();
     }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        FragmentManager fm = getSupportFragmentManager();
-
-        if(editJobFragment.isVisible()){
-            fm.beginTransaction().remove(editJobFragment).commit();
-            tv_jobTitle.setVisibility(View.VISIBLE);
-            svJob.setVisibility(View.VISIBLE);
-            cv_carousel_job.setVisibility(View.VISIBLE);
-            iv_jobMore.setVisibility(View.VISIBLE);
-        }
-    }
 }

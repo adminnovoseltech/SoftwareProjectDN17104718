@@ -1,39 +1,34 @@
-package com.novoseltech.handymano.fragments;
+package com.novoseltech.handymano.views.standard.job;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import android.Manifest;
-import android.app.DownloadManager;
 import android.content.ClipData;
-import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.media.Image;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
-import androidx.cardview.widget.CardView;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
-
 import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -42,11 +37,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.target.CustomTarget;
-import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
-import com.google.android.gms.common.data.BitmapTeleporter;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -59,29 +51,18 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-//import com.nostra13.universalimageloader.core.ImageLoader;
 import com.novoseltech.handymano.R;
 import com.novoseltech.handymano.adapter.SliderAdapter;
-import com.novoseltech.handymano.functions.ImageDownloader;
 import com.novoseltech.handymano.model.SliderItem;
-import com.novoseltech.handymano.views.standard.job.JobsActivity;
 import com.smarteist.autoimageslider.IndicatorView.animation.type.IndicatorAnimationType;
 import com.smarteist.autoimageslider.IndicatorView.draw.controller.DrawController;
 import com.smarteist.autoimageslider.SliderAnimations;
 import com.smarteist.autoimageslider.SliderView;
 
-
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -91,28 +72,15 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+public class EditJob extends AppCompatActivity {
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link EditJob#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class EditJob extends Fragment {
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
     ConstraintLayout cl_editJob;
     ConstraintLayout cl_savingChanges;
 
     String JOB_ID;
     String jobCreationDate = "";
     long imageCount = 0;
+    String JOB_CATEGORY = "N/A";
 
     int PICK_IMAGE_MULTIPLE = 1000;
     private static final int WRITE_REQUEST = 1;
@@ -141,85 +109,39 @@ public class EditJob extends Fragment {
 
     SliderView sliderView;
     SliderAdapter adapter;
-
     List<SliderItem> initialImages = new ArrayList<>();
-
-    //Activity elements
-    TextView tv_jb;
-    ScrollView sv_jb;
-    CardView cv_jb;
-    ImageView iv_jb;
-
     ImageView iv_temp;
-    public EditJob() {
-        // Required empty public constructor
-    }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment EditJob.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static EditJob newInstance(String param1, String param2) {
-        EditJob fragment = new EditJob();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-
-
+    AutoCompleteTextView dropdownJobCategory;
+    private String jobCategory ="";
+    AutoCompleteTextView dropdownJobStatus;
+    String jobStatus = "";
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
+        setContentView(R.layout.activity_edit_job);
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_edit_job, container, false);
-        // Inflate the layout for this fragment
-        cl_editJob = view.findViewById(R.id.cl_editJob);
-        cl_savingChanges = view.findViewById(R.id.cl_savingChanges);
+        cl_editJob = findViewById(R.id.cl_editJob);
+        cl_savingChanges = findViewById(R.id.cl_savingChanges);
         cl_savingChanges.setVisibility(View.GONE);
-        JOB_ID = getArguments().getString("JOB_ID");
+        JOB_ID = getIntent().getStringExtra("JOB_ID");
 
-        et_jobTitle = view.findViewById(R.id.et_ej_jobTitle);
+        et_jobTitle = findViewById(R.id.et_ej_jobTitle);
         et_jobTitle.setText(JOB_ID);
-        et_jobDescription = view.findViewById(R.id.et_ej_jobDescription);
-        iv_deleteImg = view.findViewById(R.id.iv_deleteImgFromStack);
-        iv_addImg = view.findViewById(R.id.iv_addImageToStack);
-        btn_saveChanges = view.findViewById(R.id.btn_saveJobChanges);
+        et_jobDescription = findViewById(R.id.et_ej_jobDescription);
+        iv_deleteImg = findViewById(R.id.iv_deleteImgFromStack);
+        iv_addImg = findViewById(R.id.iv_addImageToStack);
+        btn_saveChanges = findViewById(R.id.btn_saveJobChanges);
 
-        sliderView = view.findViewById(R.id.imageSliderJobEdit);
+        sliderView = findViewById(R.id.imageSliderJobEdit);
 
-        //Activity elements
-        tv_jb = getActivity().findViewById(R.id.tv_jobTitle);
-        sv_jb = getActivity().findViewById(R.id.svJob);
-        cv_jb = getActivity().findViewById(R.id.cv_carousel_job);
-        iv_jb = getActivity().findViewById(R.id.iv_stdJobMore);
+        iv_temp = findViewById(R.id.iv_temp);
 
+        dropdownJobCategory = findViewById(R.id.dropdownJobCategory_edit);
+        dropdownJobStatus = findViewById(R.id.dropdownJobStatus_edit);
 
-        iv_temp = view.findViewById(R.id.iv_temp);
-        return view;
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        adapter = new SliderAdapter(getContext());
+        adapter = new SliderAdapter(this);
         sliderView.setSliderAdapter(adapter);
 
         DocumentReference documentReference = fStore.collection("user")
@@ -235,6 +157,11 @@ public class EditJob extends Fragment {
                     et_jobDescription.setText(documentSnapshot.getString("description"));
                     jobCreationDate = documentSnapshot.getString("creation_date");
                     imageCount = documentSnapshot.getLong("imageCount");
+                    jobCategory = documentSnapshot.getString("category");
+                    dropdownJobCategory.setText(jobCategory);
+                    jobStatus = documentSnapshot.getString("status");
+                    dropdownJobStatus.setText(jobStatus);
+
 
                 }
             }
@@ -269,6 +196,85 @@ public class EditJob extends Fragment {
             }
         }, 600);
 
+        //Job category - creating the dropdown
+        final String[] JOB_CATEGORY = new String[] {
+                "Builder",
+                "Carpenter",
+                "Plumber",
+                "Electrician",
+                "Metal worker"
+        };
+
+        ArrayAdapter<String> adapterJobCategory = new ArrayAdapter<>(this, R.layout.services_category_layout, R.id.tv_1, JOB_CATEGORY);
+
+        //final AutoCompleteTextView dropdownJobCategory = view.findViewById(R.id.dropdownJobCategory);
+        dropdownJobCategory.setAdapter(adapterJobCategory);
+        dropdownJobCategory.setInputType(0);
+
+        dropdownJobCategory.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if(dropdownJobCategory.getEditableText().toString().equals("Builder")){
+                    jobCategory = "Building";
+                    Toast.makeText(getApplicationContext(), jobCategory, Toast.LENGTH_SHORT).show();
+                }else if(dropdownJobCategory.getEditableText().toString().equals("Carpenter")){
+                    jobCategory = "Carpentry";
+                    Toast.makeText(getApplicationContext(), jobCategory, Toast.LENGTH_SHORT).show();
+                }else if(dropdownJobCategory.getEditableText().toString().equals("Plumber")){
+                    jobCategory = "Plumbing";
+                    Toast.makeText(getApplicationContext(), jobCategory, Toast.LENGTH_SHORT).show();
+                }else if(dropdownJobCategory.getEditableText().toString().equals("Electrician")){
+                    jobCategory = "Electricity";
+                    Toast.makeText(getApplicationContext(), jobCategory, Toast.LENGTH_SHORT).show();
+                }else if(dropdownJobCategory.getEditableText().toString().equals("Metal worker")){
+                    jobCategory = "Metal works";
+                    Toast.makeText(getApplicationContext(), jobCategory, Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        //Job status - creating the dropdown
+        final String[] JOB_STATUS = new String[] {
+                "Active",
+                "Private"
+        };
+
+        ArrayAdapter<String> adapterJobStatus = new ArrayAdapter<>(this, R.layout.services_category_layout, R.id.tv_1, JOB_STATUS);
+
+        dropdownJobStatus.setAdapter(adapterJobStatus);
+        dropdownJobStatus.setInputType(0);
+
+        dropdownJobStatus.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if(dropdownJobStatus.getEditableText().toString().equals("Active")){
+                    jobStatus = "Active";
+                }else if(dropdownJobStatus.getEditableText().toString().equals("Private")){
+                    jobStatus = "Private";
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
         iv_deleteImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -278,7 +284,7 @@ public class EditJob extends Fragment {
                     adapter.deleteItem(sliderView.getCurrentPagePosition());
 
                 }else{
-                    Toast.makeText(getContext(), "No image to delete", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "No image to delete", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -328,7 +334,7 @@ public class EditJob extends Fragment {
                                     Environment.DIRECTORY_PICTURES + "/Handymano");
 
                             Uri tempImgUri =
-                                    getActivity().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                                    getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                                             values);
 
                             //For
@@ -343,7 +349,7 @@ public class EditJob extends Fragment {
                                     Log.d("NEW tempImgUri", tempImgUri.toString());
                                     OutputStream imageOutStream;
                                     try {
-                                        imageOutStream = getActivity().getContentResolver().openOutputStream(tempImgUri);
+                                        imageOutStream = getContentResolver().openOutputStream(tempImgUri);
                                         Glide.with(view)
                                                 .asBitmap()
                                                 .load(initialImages.get(i).getImageUrl())
@@ -378,8 +384,8 @@ public class EditJob extends Fragment {
                                     OutputStream imageOutStream;
                                     Bitmap bitmap;
                                     try {
-                                        imageOutStream = getActivity().getContentResolver().openOutputStream(tempImgUri);
-                                        bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), uri);
+                                        imageOutStream = getContentResolver().openOutputStream(tempImgUri);
+                                        bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
                                         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, imageOutStream);
                                         imageOutStream.close();
                                     } catch (FileNotFoundException e) {
@@ -392,7 +398,7 @@ public class EditJob extends Fragment {
                                     images.add(tempImgUri);
                                 }
 
-                            //If Android SDK is between 23 and 27 (inclusive)
+                                //If Android SDK is between 23 and 27 (inclusive)
                             }else{
                                 //If image is from Firebase Storage
                                 if(uri.toString().contains("firebasestorage.googleapis")){
@@ -403,7 +409,7 @@ public class EditJob extends Fragment {
                                             .into(new CustomTarget<Bitmap>() {
                                                 @Override
                                                 public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-                                                    String path = MediaStore.Images.Media.insertImage(getActivity().getContentResolver(), resource, "Title", null);
+                                                    String path = MediaStore.Images.Media.insertImage(getContentResolver(), resource, "Title", null);
                                                     Log.d("URI", path);
                                                     Uri tmpUri = Uri.parse(path);
                                                     images.add(tmpUri);
@@ -420,11 +426,11 @@ public class EditJob extends Fragment {
 
                                     try {
                                         Bitmap bitmap = null;
-                                        bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), uri);
+                                        bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
                                         Uri tmpUri = null;
                                         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
                                         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
-                                        String path = MediaStore.Images.Media.insertImage(getActivity().getContentResolver(), bitmap, "Title", null);
+                                        String path = MediaStore.Images.Media.insertImage(getContentResolver(), bitmap, "Title", null);
                                         tmpUri = Uri.parse(path);
                                         images.add(tmpUri);
                                     } catch (IOException e) {
@@ -446,6 +452,8 @@ public class EditJob extends Fragment {
                                     job.put("description", jobDescription);
                                     job.put("creation_date", todayDate);
                                     job.put("imageCount", images.size());
+                                    job.put("category", jobCategory);
+                                    job.put("status", jobStatus);
 
                                     //If job title is not changed
                                     //Update the document
@@ -486,9 +494,9 @@ public class EditJob extends Fragment {
                                                             for(int i = 0; i < images.size(); i++){
                                                                 Bitmap bitmap = null;
                                                                 try {
-                                                                    bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), images.get(i));
+                                                                    bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), images.get(i));
                                                                     uploadImageToFirebaseStorage(bitmap, i);
-                                                                    getActivity().getContentResolver().delete(images.get(i), null, null);
+                                                                    getContentResolver().delete(images.get(i), null, null);
                                                                 } catch (IOException e) {
                                                                     e.printStackTrace();
                                                                 }
@@ -558,7 +566,7 @@ public class EditJob extends Fragment {
                                                             for(int i = 0; i < images.size(); i++){
                                                                 Bitmap bitmap = null;
                                                                 try {
-                                                                    bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), images.get(i));
+                                                                    bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), images.get(i));
                                                                     uploadImageToFirebaseStorage(bitmap, i);
                                                                 } catch (IOException e) {
                                                                     e.printStackTrace();
@@ -577,15 +585,10 @@ public class EditJob extends Fragment {
                                         });
                                     }
 
-                                    getActivity().getSupportFragmentManager().beginTransaction().remove(EditJob.this).commit();
-                                    Intent intent = new Intent(getActivity(), JobsActivity.class);
+                                    Intent intent = new Intent(EditJob.this, JobsActivity.class);
                                     startActivity(intent);
                                     cl_editJob.setVisibility(View.VISIBLE);
                                     cl_savingChanges.setVisibility(View.GONE);
-                                    tv_jb.setVisibility(View.VISIBLE);
-                                    sv_jb.setVisibility(View.VISIBLE);
-                                    cv_jb.setVisibility(View.VISIBLE);
-                                    iv_jb.setVisibility(View.VISIBLE);
 
 
                                 }else{
@@ -604,7 +607,7 @@ public class EditJob extends Fragment {
                         et_jobTitle.setError("Title length must be between 10 and 50 characters!");
                         et_jobTitle.requestFocus();
                     }else if(initialImages.size() == 0){
-                        Toast.makeText(getContext(), "You must attach at least 1 image to the job", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "You must attach at least 1 image to the job", Toast.LENGTH_SHORT).show();
                     }
                     else{
                         if(et_jobDescription.getText().toString().length() < 10){
@@ -618,7 +621,6 @@ public class EditJob extends Fragment {
 
             }
         });
-
     }
 
     private void uploadImageToFirebaseStorage(Bitmap bitmap, int imgCount) {
@@ -647,12 +649,12 @@ public class EditJob extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(getActivity(), new String[]{
+        if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getParent(), new String[]{
                     Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, PICK_IMAGE_MULTIPLE);
         }else{
-            if(requestCode == PICK_IMAGE_MULTIPLE && resultCode == getActivity().RESULT_OK &&
-            data != null){
+            if(requestCode == PICK_IMAGE_MULTIPLE && resultCode == RESULT_OK &&
+                    data != null){
                 String[] filePathColumn = { MediaStore.Images.Media.DATA };
                 imagesEncodedList = new ArrayList<String>();
 
@@ -666,7 +668,7 @@ public class EditJob extends Fragment {
                     initialImages.add(sliderItem);
                     adapter.addItem(sliderItem);
 
-                    Cursor cursor = getActivity().getContentResolver().query(mImageUri, filePathColumn,
+                    Cursor cursor = getContentResolver().query(mImageUri, filePathColumn,
                             null, null, null);
                     cursor.moveToFirst();
 
@@ -683,7 +685,7 @@ public class EditJob extends Fragment {
                             ClipData.Item item = clipData.getItemAt(i);
                             Uri uri = item.getUri();
                             mArrayUri.add(uri);
-                            Cursor cursor = getActivity().getContentResolver().query(uri, filePathColumn,
+                            Cursor cursor = getContentResolver().query(uri, filePathColumn,
                                     null, null, null);
                             cursor.moveToFirst();
 
@@ -705,7 +707,7 @@ public class EditJob extends Fragment {
 
 
             }else {
-                Toast.makeText(getContext(), "Request code: " + requestCode + " and result code: " + resultCode,
+                Toast.makeText(getApplicationContext(), "Request code: " + requestCode + " and result code: " + resultCode,
                         Toast.LENGTH_LONG).show();
             }
         }
@@ -740,7 +742,7 @@ public class EditJob extends Fragment {
     }
 
     private boolean checkPermission() {
-        int result = ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        int result = ContextCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
         if (result == PackageManager.PERMISSION_GRANTED) {
             return true;
         } else {
@@ -750,10 +752,10 @@ public class EditJob extends Fragment {
 
     private void requestPermission() {
 
-        if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), android.Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-            Toast.makeText(getContext(), "Write External Storage permission allows us to do store images. Please allow this permission in App Settings.", Toast.LENGTH_LONG).show();
+        if (ActivityCompat.shouldShowRequestPermissionRationale(getParent(), android.Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            Toast.makeText(getApplicationContext(), "Write External Storage permission allows us to do store images. Please allow this permission in App Settings.", Toast.LENGTH_LONG).show();
         } else {
-            ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, WRITE_REQUEST);
+            ActivityCompat.requestPermissions(getParent(), new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, WRITE_REQUEST);
         }
     }
 
@@ -769,8 +771,4 @@ public class EditJob extends Fragment {
                 break;
         }
     }
-
-
 }
-
-

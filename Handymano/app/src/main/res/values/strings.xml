@@ -64,5 +64,6 @@
     <string name="save_changes">Save changes</string>
     <string name="experience">Experience</string>
     <string name="job_category">Job category</string>
+    <string name="job_status">Job status</string>
 
 </resources>
