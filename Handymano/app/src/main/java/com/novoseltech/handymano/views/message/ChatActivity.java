@@ -6,11 +6,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -21,16 +19,13 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.SetOptions;
 import com.novoseltech.handymano.R;
 import com.novoseltech.handymano.adapter.ChatAdapter;
 import com.novoseltech.handymano.model.ChatModel;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class ChatActivity extends AppCompatActivity {
 
@@ -42,7 +37,7 @@ public class ChatActivity extends AppCompatActivity {
 
     String SENDER_NAME = "";
     String RECIPIENT_ID = "";
-    String TRADE_NAME = "";
+    String RECIPIENT_NAME = "";
     String MODE = "";
 
     List<String> messageRecipientsSender = new ArrayList<>();
@@ -64,9 +59,17 @@ public class ChatActivity extends AppCompatActivity {
 
         if(MODE.equals("PROFILE_VISIT")){
             RECIPIENT_ID = getIntent().getStringExtra("TRADE_ID");
-            TRADE_NAME = getIntent().getStringExtra("TRADE_NAME");
+            RECIPIENT_NAME = getIntent().getStringExtra("TRADE_NAME");
 
-        }else{
+        }else if(MODE.equals("JOB_VISIT")){
+            RECIPIENT_ID = getIntent().getStringExtra("ADVERTISER_ID");
+            RECIPIENT_NAME = getIntent().getStringExtra("ADVERTISER_NAME");
+
+            String JOB_ID = getIntent().getStringExtra("JOB_ID");
+            String JOB_DATE = getIntent().getStringExtra("JOB_DATE");
+            et_chatMessage.setText("Hello, I would like to offer my services on job ad " + "'" + JOB_ID + "'" +" that you posted on " + JOB_DATE + ".");
+        }
+        else{
             RECIPIENT_ID = getIntent().getStringExtra("USER_ID");
         }
 
@@ -136,7 +139,6 @@ public class ChatActivity extends AppCompatActivity {
                 chatReference.add(chat);
                 et_chatMessage.setText("");
 
-                Log.d("LOG TESTING: ", RECIPIENT_ID+","+TRADE_NAME);
 
 
                 if(!messageRecipientsReceiver.contains(UID + "," + SENDER_NAME)){
@@ -162,12 +164,12 @@ public class ChatActivity extends AppCompatActivity {
 
                 }
 
-                if(!messageRecipientsSender.contains(RECIPIENT_ID + "," + TRADE_NAME)){
+                if(!messageRecipientsSender.contains(RECIPIENT_ID + "," + RECIPIENT_NAME)){
                     if(messageRecipientsSender.get(0).equals("")){
-                        messageRecipientsSender.add(RECIPIENT_ID+','+TRADE_NAME);
+                        messageRecipientsSender.add(RECIPIENT_ID+','+ RECIPIENT_NAME);
                         messageRecipientsSender.clear();
                     }else{
-                        messageRecipientsSender.add(RECIPIENT_ID+','+TRADE_NAME);
+                        messageRecipientsSender.add(RECIPIENT_ID+','+ RECIPIENT_NAME);
                     }
 
                     fStore.collection("chat").document(UID)

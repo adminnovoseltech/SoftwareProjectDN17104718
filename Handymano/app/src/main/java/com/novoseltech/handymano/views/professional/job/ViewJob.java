@@ -3,12 +3,14 @@ package com.novoseltech.handymano.views.professional.job;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -23,6 +25,8 @@ import com.google.firebase.storage.StorageReference;
 import com.novoseltech.handymano.R;
 import com.novoseltech.handymano.adapter.SliderAdapter;
 import com.novoseltech.handymano.model.SliderItem;
+import com.novoseltech.handymano.views.message.ChatActivity;
+import com.novoseltech.handymano.views.standard.ViewProfessionalActivity;
 import com.smarteist.autoimageslider.IndicatorView.animation.type.IndicatorAnimationType;
 import com.smarteist.autoimageslider.IndicatorView.draw.controller.DrawController;
 import com.smarteist.autoimageslider.SliderAnimations;
@@ -32,6 +36,7 @@ public class ViewJob extends AppCompatActivity {
 
     String JOB_ID;
     String USER_ID;
+    String USER_NAME;
 
     String jobCreationDate = "";
     long imageCount = 0;
@@ -44,6 +49,8 @@ public class ViewJob extends AppCompatActivity {
     FirebaseFirestore fStore = FirebaseFirestore.getInstance();
     FirebaseUser user = mAuth.getCurrentUser();
 
+    Button btnMessageAdvertiser;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,7 +58,8 @@ public class ViewJob extends AppCompatActivity {
 
         TextView tv_proJobTitle = findViewById(R.id.tv_professionalJobTitle);
         TextView tv_tradeJobDescription = findViewById(R.id.tv_tradeJobDescription);
-
+        TextView tv_tradePostedBy = findViewById(R.id.tv_postedBy);
+        btnMessageAdvertiser = findViewById(R.id.btn_messageAdvertiser);
         JOB_ID = getIntent().getStringExtra("JOB_ID");
         USER_ID = getIntent().getStringExtra("USER_ID");
 
@@ -60,6 +68,18 @@ public class ViewJob extends AppCompatActivity {
         sliderView = findViewById(R.id.is_tradeJobImagesSlider);
         adapter = new SliderAdapter(getApplicationContext());
         sliderView.setSliderAdapter(adapter);
+
+        fStore.collection("user").document(USER_ID)
+                .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful()){
+                    DocumentSnapshot documentSnapshot = task.getResult();
+                    USER_NAME = documentSnapshot.getString("username");
+
+                }
+            }
+        });
 
 
         DocumentReference documentReference = fStore.collection("user")
@@ -107,8 +127,23 @@ public class ViewJob extends AppCompatActivity {
                         Log.i("GGG", "onIndicatorClicked: " + sliderView.getCurrentPagePosition());
                     }
                 });
+
+                tv_tradePostedBy.setText("Posted by " + USER_NAME + " on " + jobCreationDate);
             }
         }, 600);
+
+        btnMessageAdvertiser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ViewJob.this, ChatActivity.class);
+                intent.putExtra("MODE", "JOB_VISIT");
+                intent.putExtra("ADVERTISER_ID", USER_ID);
+                intent.putExtra("ADVERTISER_NAME", USER_NAME);
+                intent.putExtra("JOB_ID", JOB_ID);
+                intent.putExtra("JOB_DATE", jobCreationDate);
+                startActivity(intent);
+            }
+        });
 
 
     }

@@ -59,8 +59,7 @@ tools:context=".views.professional.project.ProjectsActivity">
     android:layout_gravity="start"
     android:background="@android:color/white">
 
-    <include
-        layout="@layout/main_nav_drawer_professional" />
+    <include layout="@layout/main_nav_drawer_professional" />
 
 
 </LinearLayout>

@@ -65,5 +65,6 @@
     <string name="experience">Experience</string>
     <string name="job_category">Job category</string>
     <string name="job_status">Job status</string>
+    <string name="message_advertiser">Message advertiser</string>
 
 </resources>
