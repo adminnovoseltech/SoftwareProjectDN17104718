@@ -44,10 +44,11 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, ChatAdapter
 
     @Override
     protected void onBindViewHolder(@NonNull ViewHolder holder, int position, @NonNull ChatModel model) {
+        MESSAGE_SENDER = model.getSender();
         holder.message.setText(model.getMessage());
         holder.sender.setText(model.getSender());
         holder.timestamp.setText(p.format(model.getTimestamp()));
-        MESSAGE_SENDER = model.getSender();
+
     }
 
     @NonNull
@@ -55,23 +56,35 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, ChatAdapter
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view;
 
-        if(CURRENT_USERNAME.equals(MESSAGE_SENDER)){
+        /*if(CURRENT_USERNAME.equals(MESSAGE_SENDER)){
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_right, parent, false);
+            Log.d("USERNAME", MESSAGE_SENDER);
         }else{
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_left, parent, false);
-        }
-
-        /*if(viewType == MSG_TYPE_RIGHT){
-            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_left, parent, false);
-        }else{
-            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_right, parent, false);
-            Log.d("viewType is: ", String.valueOf(viewType));
         }*/
+
+        if(viewType == MSG_TYPE_RIGHT){
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_right, parent, false);
+        }else{
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_left, parent, false);
+
+        }
 
 
 
         return new ViewHolder(view);
     }
+
+    @Override
+    public int getItemViewType(int position) {
+        if(getItem(position).getUser_id().equals(user.getUid())){
+            return MSG_TYPE_RIGHT;
+        }else{
+            return MSG_TYPE_LEFT;
+        }
+
+    }
+
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView sender, message, timestamp;

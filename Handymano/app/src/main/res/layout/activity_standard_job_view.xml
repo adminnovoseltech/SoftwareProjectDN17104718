@@ -78,7 +78,15 @@
             app:sliderIndicatorSelectedColor="#5A5A5A"
             app:sliderIndicatorUnselectedColor="#FFF"
             app:sliderScrollTimeInSec="1"
-            app:sliderStartAutoCycle="true" />
+            app:sliderStartAutoCycle="true" >
+
+            <FrameLayout
+                android:id="@+id/frame_edit_job"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+            </FrameLayout>
+        </com.smarteist.autoimageslider.SliderView>
 
     </androidx.cardview.widget.CardView>
 
@@ -86,23 +94,11 @@
         android:id="@+id/iv_stdJobMore"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="40dp"
         android:onClick="showJobMenu"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_extend" />
-
-    <FrameLayout
-        android:id="@+id/frame_edit_job"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-    </FrameLayout>
-
+        app:srcCompat="@drawable/ic_more_vert" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

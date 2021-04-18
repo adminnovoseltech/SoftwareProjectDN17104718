@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:contentDescription="Burger menu"
         android:onClick="ClickMenu"
-        android:src="@drawable/ic_menu" />
+        android:src="@drawable/ic_baseline_menu"/>
 
 
 </LinearLayout>
