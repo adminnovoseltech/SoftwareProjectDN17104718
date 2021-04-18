@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
@@ -39,9 +40,6 @@ public class MainActivity extends AppCompatActivity {
     String accountType = "";
     String email = "";
 
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,7 +48,6 @@ public class MainActivity extends AppCompatActivity {
         etEmail = findViewById(R.id.loginEmailInput);
         etPassword = findViewById(R.id.loginPasswordInput);
         mAuth = FirebaseAuth.getInstance();
-
 
         btn_passwordReset = findViewById(R.id.forgotPassword);
 
@@ -179,19 +176,27 @@ public class MainActivity extends AppCompatActivity {
                                 }
                             });
 
-                    if(accountType.equals("Professional")){
-                        finish();
-                        Intent intent = new Intent(MainActivity.this, HomeActivityProfessional.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivity(intent);
-                    }else if(accountType.equals("Standard")){
-                        finish();
-                        Intent intent = new Intent(MainActivity.this, HomeActivityStandard.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivity(intent);
-                    }else{
-                        Toast.makeText(getApplicationContext(), "Account type not recognized.", Toast.LENGTH_SHORT).show();
-                    }
+                    Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            if(accountType.equals("Professional")){
+                                finish();
+                                Intent intent = new Intent(MainActivity.this, HomeActivityProfessional.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                startActivity(intent);
+                            }else if(accountType.equals("Standard")){
+                                finish();
+                                Intent intent = new Intent(MainActivity.this, HomeActivityStandard.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                startActivity(intent);
+                            }else{
+                                Toast.makeText(getApplicationContext(), "Account type not recognized.", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    }, 500);
+
+
                 }else{
                     Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                 }

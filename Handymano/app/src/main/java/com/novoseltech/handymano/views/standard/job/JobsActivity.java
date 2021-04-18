@@ -4,24 +4,19 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
@@ -31,7 +26,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.novoseltech.handymano.MainActivity;
 import com.novoseltech.handymano.R;
-import com.novoseltech.handymano.fragments.AddJob;
 import com.novoseltech.handymano.model.JobsModel;
 
 public class JobsActivity extends AppCompatActivity {
@@ -111,14 +105,17 @@ public class JobsActivity extends AppCompatActivity {
         btn_newJob.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AddJob addJob_fragment = new AddJob();
+                /*AddJob addJob_fragment = new AddJob();
                 FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                 transaction.replace(R.id.frame_job_add, addJob_fragment);
                 transaction.addToBackStack(null);
                 transaction.commit();
 
                 btn_newJob.setVisibility(View.GONE);
-                fStoreList.setVisibility(View.GONE);
+                fStoreList.setVisibility(View.GONE);*/
+
+                Intent intent = new Intent(JobsActivity.this, CreateJob.class);
+                startActivity(intent);
             }
         });
     }
