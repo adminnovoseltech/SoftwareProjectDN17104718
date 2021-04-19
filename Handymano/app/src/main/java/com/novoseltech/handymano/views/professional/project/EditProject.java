@@ -1,4 +1,12 @@
-package com.novoseltech.handymano.fragments;
+package com.novoseltech.handymano.views.professional.project;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.content.ClipData;
@@ -12,22 +20,11 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.cardview.widget.CardView;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
-
 import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -53,7 +50,6 @@ import com.google.firebase.storage.UploadTask;
 import com.novoseltech.handymano.R;
 import com.novoseltech.handymano.adapter.SliderAdapter;
 import com.novoseltech.handymano.model.SliderItem;
-import com.novoseltech.handymano.views.professional.project.ProjectsActivity;
 import com.smarteist.autoimageslider.IndicatorView.animation.type.IndicatorAnimationType;
 import com.smarteist.autoimageslider.IndicatorView.draw.controller.DrawController;
 import com.smarteist.autoimageslider.SliderAnimations;
@@ -72,21 +68,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link EditProject#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class EditProject extends Fragment {
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+public class EditProject extends AppCompatActivity {
 
     ConstraintLayout cl_editProject;
     ConstraintLayout cl_savingProjectChanges;
@@ -133,72 +115,35 @@ public class EditProject extends Fragment {
 
     ImageView iv_temp;
 
-    public EditProject() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment EditProject.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static EditProject newInstance(String param1, String param2) {
-        EditProject fragment = new EditProject();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
+        setContentView(R.layout.activity_edit_project);
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_edit_project, container, false);
-        // Inflate the layout for this fragment
-
-        cl_editProject = view.findViewById(R.id.cl_editProject);
-        cl_savingProjectChanges = view.findViewById(R.id.cl_savingProjectChanges);
+        cl_editProject = findViewById(R.id.cl_editProject);
+        cl_savingProjectChanges = findViewById(R.id.cl_savingProjectChanges);
         cl_savingProjectChanges.setVisibility(View.GONE);
-        PROJECT_ID = getArguments().getString("PROJECT_ID");
+        PROJECT_ID = getIntent().getStringExtra("PROJECT_ID");
 
-        et_projectTitle = view.findViewById(R.id.et_ep_projectTitle);
+        et_projectTitle = findViewById(R.id.et_ep_projectTitle);
         et_projectTitle.setText(PROJECT_ID);
-        et_projectDescription = view.findViewById(R.id.et_ep_projectDescription);
-        iv_deleteImg = view.findViewById(R.id.iv_deleteImgFromProjectStack);
-        iv_addImg = view.findViewById(R.id.iv_addImageToProjectStack);
-        btn_saveChanges = view.findViewById(R.id.btn_saveProjectChanges);
+        et_projectDescription = findViewById(R.id.et_ep_projectDescription);
+        iv_deleteImg = findViewById(R.id.iv_deleteImgFromProjectStack);
+        iv_addImg = findViewById(R.id.iv_addImageToProjectStack);
+        btn_saveChanges = findViewById(R.id.btn_saveProjectChanges);
 
-        sliderView = view.findViewById(R.id.imageSliderProjectEdit);
+        sliderView = findViewById(R.id.imageSliderProjectEdit);
 
         //Activity elements
-        tv_pr = getActivity().findViewById(R.id.tv_projectTitle);
-        sv_pr = getActivity().findViewById(R.id.svProject);
-        cv_pr = getActivity().findViewById(R.id.cv_carousel_project);
-        iv_pr = getActivity().findViewById(R.id.iv_proProjectMore);
+        //tv_pr = getActivity().findViewById(R.id.tv_projectTitle);
+        //sv_pr = getActivity().findViewById(R.id.svProject);
+        //cv_pr = getActivity().findViewById(R.id.cv_carousel_project);
+        //iv_pr = getActivity().findViewById(R.id.iv_proProjectMore);
 
 
-        iv_temp = view.findViewById(R.id.iv_temp1);
-        return view;
-    }
+        iv_temp = findViewById(R.id.iv_temp1);
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        adapter = new SliderAdapter(getContext());
+        adapter = new SliderAdapter(getApplicationContext());
         sliderView.setSliderAdapter(adapter);
 
         DocumentReference documentReference = fStore.collection("user")
@@ -257,7 +202,7 @@ public class EditProject extends Fragment {
                     adapter.deleteItem(sliderView.getCurrentPagePosition());
 
                 }else{
-                    Toast.makeText(getContext(), "No image to delete", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "No image to delete", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -307,7 +252,7 @@ public class EditProject extends Fragment {
                                     Environment.DIRECTORY_PICTURES + "/Handymano");
 
                             Uri tempImgUri =
-                                    getActivity().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                                    getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                                             values);
 
                             //For
@@ -322,7 +267,7 @@ public class EditProject extends Fragment {
                                     Log.d("NEW tempImgUri", tempImgUri.toString());
                                     OutputStream imageOutStream;
                                     try {
-                                        imageOutStream = getActivity().getContentResolver().openOutputStream(tempImgUri);
+                                        imageOutStream = getContentResolver().openOutputStream(tempImgUri);
                                         Glide.with(view)
                                                 .asBitmap()
                                                 .load(initialImages.get(i).getImageUrl())
@@ -357,8 +302,8 @@ public class EditProject extends Fragment {
                                     OutputStream imageOutStream;
                                     Bitmap bitmap;
                                     try {
-                                        imageOutStream = getActivity().getContentResolver().openOutputStream(tempImgUri);
-                                        bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), uri);
+                                        imageOutStream = getContentResolver().openOutputStream(tempImgUri);
+                                        bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
                                         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, imageOutStream);
                                         imageOutStream.close();
                                     } catch (FileNotFoundException e) {
@@ -382,7 +327,7 @@ public class EditProject extends Fragment {
                                             .into(new CustomTarget<Bitmap>() {
                                                 @Override
                                                 public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-                                                    String path = MediaStore.Images.Media.insertImage(getActivity().getContentResolver(), resource, "Title", null);
+                                                    String path = MediaStore.Images.Media.insertImage(getContentResolver(), resource, "Title", null);
                                                     Log.d("URI", path);
                                                     Uri tmpUri = Uri.parse(path);
                                                     images.add(tmpUri);
@@ -399,11 +344,11 @@ public class EditProject extends Fragment {
 
                                     try {
                                         Bitmap bitmap = null;
-                                        bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), uri);
+                                        bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
                                         Uri tmpUri = null;
                                         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
                                         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
-                                        String path = MediaStore.Images.Media.insertImage(getActivity().getContentResolver(), bitmap, "Title", null);
+                                        String path = MediaStore.Images.Media.insertImage(getContentResolver(), bitmap, "Title", null);
                                         tmpUri = Uri.parse(path);
                                         images.add(tmpUri);
                                     } catch (IOException e) {
@@ -465,9 +410,9 @@ public class EditProject extends Fragment {
                                                             for(int i = 0; i < images.size(); i++){
                                                                 Bitmap bitmap = null;
                                                                 try {
-                                                                    bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), images.get(i));
+                                                                    bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), images.get(i));
                                                                     uploadImageToFirebaseStorage(bitmap, i);
-                                                                    getActivity().getContentResolver().delete(images.get(i), null, null);
+                                                                    getContentResolver().delete(images.get(i), null, null);
                                                                 } catch (IOException e) {
                                                                     e.printStackTrace();
                                                                 }
@@ -537,7 +482,7 @@ public class EditProject extends Fragment {
                                                             for(int i = 0; i < images.size(); i++){
                                                                 Bitmap bitmap = null;
                                                                 try {
-                                                                    bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), images.get(i));
+                                                                    bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), images.get(i));
                                                                     uploadImageToFirebaseStorage(bitmap, i);
                                                                 } catch (IOException e) {
                                                                     e.printStackTrace();
@@ -556,8 +501,8 @@ public class EditProject extends Fragment {
                                         });
                                     }
 
-                                    getActivity().getSupportFragmentManager().beginTransaction().remove(EditProject.this).commit();
-                                    Intent intent = new Intent(getActivity(), ProjectsActivity.class);
+                                    //getSupportFragmentManager().beginTransaction().remove(com.novoseltech.handymano.fragments.EditProject.this).commit();
+                                    Intent intent = new Intent(EditProject.this, ProjectsActivity.class);
                                     startActivity(intent);
                                     cl_editProject.setVisibility(View.VISIBLE);
                                     cl_savingProjectChanges.setVisibility(View.GONE);
@@ -583,7 +528,7 @@ public class EditProject extends Fragment {
                         et_projectTitle.setError("Title length must be between 10 and 50 characters!");
                         et_projectTitle.requestFocus();
                     }else if(initialImages.size() == 0){
-                        Toast.makeText(getContext(), "You must attach at least 1 image to the project", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "You must attach at least 1 image to the project", Toast.LENGTH_SHORT).show();
                     }
                     else{
                         if(et_projectDescription.getText().toString().length() < 10){
@@ -625,11 +570,11 @@ public class EditProject extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(getActivity(), new String[]{
+        if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getParent(), new String[]{
                     Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, PICK_IMAGE_MULTIPLE);
         }else{
-            if(requestCode == PICK_IMAGE_MULTIPLE && resultCode == getActivity().RESULT_OK &&
+            if(requestCode == PICK_IMAGE_MULTIPLE && resultCode == RESULT_OK &&
                     data != null){
                 String[] filePathColumn = { MediaStore.Images.Media.DATA };
                 imagesEncodedList = new ArrayList<String>();
@@ -644,7 +589,7 @@ public class EditProject extends Fragment {
                     initialImages.add(sliderItem);
                     adapter.addItem(sliderItem);
 
-                    Cursor cursor = getActivity().getContentResolver().query(mImageUri, filePathColumn,
+                    Cursor cursor = getContentResolver().query(mImageUri, filePathColumn,
                             null, null, null);
                     cursor.moveToFirst();
 
@@ -661,7 +606,7 @@ public class EditProject extends Fragment {
                             ClipData.Item item = clipData.getItemAt(i);
                             Uri uri = item.getUri();
                             mArrayUri.add(uri);
-                            Cursor cursor = getActivity().getContentResolver().query(uri, filePathColumn,
+                            Cursor cursor = getContentResolver().query(uri, filePathColumn,
                                     null, null, null);
                             cursor.moveToFirst();
 
@@ -683,7 +628,7 @@ public class EditProject extends Fragment {
 
 
             }else {
-                Toast.makeText(getContext(), "Request code: " + requestCode + " and result code: " + resultCode,
+                Toast.makeText(getApplicationContext(), "Request code: " + requestCode + " and result code: " + resultCode,
                         Toast.LENGTH_LONG).show();
             }
         }
@@ -718,7 +663,7 @@ public class EditProject extends Fragment {
     }
 
     private boolean checkPermission() {
-        int result = ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        int result = ContextCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
         if (result == PackageManager.PERMISSION_GRANTED) {
             return true;
         } else {
@@ -728,10 +673,10 @@ public class EditProject extends Fragment {
 
     private void requestPermission() {
 
-        if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), android.Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-            Toast.makeText(getContext(), "Write External Storage permission allows us to store images. Please allow this permission in App Settings.", Toast.LENGTH_LONG).show();
+        if (ActivityCompat.shouldShowRequestPermissionRationale(getParent(), android.Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            Toast.makeText(getApplicationContext(), "Write External Storage permission allows us to store images. Please allow this permission in App Settings.", Toast.LENGTH_LONG).show();
         } else {
-            ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, WRITE_REQUEST);
+            ActivityCompat.requestPermissions(getParent(), new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, WRITE_REQUEST);
         }
     }
 

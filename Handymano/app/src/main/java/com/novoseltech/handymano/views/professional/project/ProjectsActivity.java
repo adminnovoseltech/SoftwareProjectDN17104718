@@ -26,7 +26,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.novoseltech.handymano.MainActivity;
 import com.novoseltech.handymano.R;
-import com.novoseltech.handymano.fragments.AddProject;
 import com.novoseltech.handymano.model.ProjectsModel;
 import com.novoseltech.handymano.views.professional.HomeActivityProfessional;
 import com.novoseltech.handymano.views.professional.ProfessionalProfileActivity;
@@ -102,14 +101,17 @@ public class ProjectsActivity extends AppCompatActivity {
         btn_createProject.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AddProject addProject_fragment = new AddProject();
+                /*AddProject addProject_fragment = new AddProject();
                 FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                 transaction.replace(R.id.frame_project_add, addProject_fragment);
                 transaction.addToBackStack(null);
                 transaction.commit();
 
                 btn_createProject.setVisibility(View.GONE);
-                fStoreList.setVisibility(View.GONE);
+                fStoreList.setVisibility(View.GONE);*/
+
+                Intent intent = new Intent(ProjectsActivity.this, CreateProject.class);
+                startActivity(intent);
             }
         });
 

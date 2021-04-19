@@ -33,7 +33,6 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.novoseltech.handymano.R;
 import com.novoseltech.handymano.adapter.SliderAdapter;
-import com.novoseltech.handymano.fragments.EditProject;
 import com.novoseltech.handymano.model.SliderItem;
 import com.smarteist.autoimageslider.IndicatorView.animation.type.IndicatorAnimationType;
 import com.smarteist.autoimageslider.IndicatorView.draw.controller.DrawController;
@@ -172,9 +171,10 @@ public class ProfessionalProjectViewActivity extends AppCompatActivity implement
         switch (menuItem.getItemId()) {
             case R.id.option_edit:
                 //Toast.makeText(getApplicationContext(), "Will start work with this", Toast.LENGTH_SHORT).show();
-                Bundle bundle = new Bundle();
-                bundle.putString("PROJECT_ID", PROJECT_ID);
-
+                Intent intent = new Intent(ProfessionalProjectViewActivity.this, EditProject.class);
+                intent.putExtra("PROJECT_ID", PROJECT_ID);
+                startActivity(intent);
+/*
                 editProjectFragment.setArguments(bundle);
                 FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                 transaction.replace(R.id.frame_edit_project, editProjectFragment);
@@ -184,7 +184,7 @@ public class ProfessionalProjectViewActivity extends AppCompatActivity implement
                 tv_projectTitle.setVisibility(View.GONE);
                 svProject.setVisibility(View.GONE);
                 cv_carousel_project.setVisibility(View.GONE);
-                iv_projectMore.setVisibility(View.GONE);
+                iv_projectMore.setVisibility(View.GONE);*/
 
 
                 return true;

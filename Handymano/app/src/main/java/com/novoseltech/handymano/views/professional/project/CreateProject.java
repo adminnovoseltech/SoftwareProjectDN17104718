@@ -1,4 +1,10 @@
-package com.novoseltech.handymano.fragments;
+package com.novoseltech.handymano.views.professional.project;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
 import android.content.ClipData;
@@ -9,23 +15,15 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -55,21 +53,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link AddProject#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class AddProject extends Fragment {
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+public class CreateProject extends AppCompatActivity {
 
     int PICK_IMAGE_MULTIPLE = 2014;
     long imageCount = 0;
@@ -103,64 +87,22 @@ public class AddProject extends Fragment {
 
     List<SliderItem> imagesArrayList = new ArrayList<>();
 
-
-
-
-    public AddProject() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment AddProject.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static AddProject newInstance(String param1, String param2) {
-        AddProject fragment = new AddProject();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
+        setContentView(R.layout.activity_create_project);
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_add_project, container, false);
+        btn_saveProject = findViewById(R.id.btn_saveProject);
+        et_projectTitle = findViewById(R.id.et_projectTitle);
+        et_projectDescription = findViewById(R.id.et_projectDescription);
+        //btn_createProject = getActivity().findViewById(R.id.btn_createProject);
+        //fStoreList = getActivity().findViewById(R.id.firestoreListProjects);
 
-        btn_saveProject = view.findViewById(R.id.btn_saveProject);
-        et_projectTitle = view.findViewById(R.id.et_projectTitle);
-        et_projectDescription = view.findViewById(R.id.et_projectDescription);
-        btn_createProject = getActivity().findViewById(R.id.btn_createProject);
-        fStoreList = getActivity().findViewById(R.id.firestoreListProjects);
+        iv_addImg = findViewById(R.id.iv_addProjectImg);
+        iv_deleteImg = findViewById(R.id.iv_deleteProjectImg);
+        sliderView = findViewById(R.id.imagesSliderProjectAdd);
 
-        iv_addImg = view.findViewById(R.id.iv_addProjectImg);
-        iv_deleteImg = view.findViewById(R.id.iv_deleteProjectImg);
-        sliderView = view.findViewById(R.id.imagesSliderProjectAdd);
-
-        return view;
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        adapter = new SliderAdapter(getContext());
+        adapter = new SliderAdapter(getApplicationContext());
         sliderView.setSliderAdapter(adapter);
 
         Handler handler = new Handler();
@@ -202,7 +144,7 @@ public class AddProject extends Fragment {
                     imagesArrayList.remove(sliderView.getCurrentPagePosition());
                     adapter.deleteItem(sliderView.getCurrentPagePosition());
                 }else{
-                    Toast.makeText(getContext(), "No images to delete", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "No images to delete", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -233,7 +175,7 @@ public class AddProject extends Fragment {
                                     for(int i = 0; i < imagesArrayList.size(); i++){
                                         Bitmap bitmap = null;
                                         try {
-                                            bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), Uri.parse(imagesArrayList.get(i).getImageUrl()));
+                                            bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), Uri.parse(imagesArrayList.get(i).getImageUrl()));
                                             uploadImageToFirebaseStorage(bitmap, i);
                                         } catch (IOException e) {
                                             e.printStackTrace();
@@ -245,20 +187,22 @@ public class AddProject extends Fragment {
                             .addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
-                                    Toast.makeText(getContext(), e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getApplicationContext(), e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                                 }
                             });
 
-                    btn_createProject.setVisibility(View.VISIBLE);
+                    /*btn_createProject.setVisibility(View.VISIBLE);
                     fStoreList.setVisibility(View.VISIBLE);
-                    getActivity().getSupportFragmentManager().beginTransaction().remove(AddProject.this).commit();
+                    getActivity().getSupportFragmentManager().beginTransaction().remove(CreateProject.this).commit();*/
+                    Intent intent = new Intent(CreateProject.this, ProjectsActivity.class);
+                    startActivity(intent);
 
                 }else{
                     if(projectTitle.length() < 10 || projectTitle.length() > 50){
                         et_projectTitle.setError("Title length must be between 10 and 50 characters!");
                         et_projectTitle.requestFocus();
                     }else if(imagesArrayList.size() == 0){
-                        Toast.makeText(getContext(), "You must attach at least 1 image to the project", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "You must attach at least 1 image to the project", Toast.LENGTH_SHORT).show();
                     }
                     else{
                         if(projectDescription.length() < 10){
@@ -272,104 +216,17 @@ public class AddProject extends Fragment {
             }
         });
 
-
-
-        /*btn_saveProject.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //Objects
-                Map<String, Object> project = new HashMap<>();
-                String pTitle = et_projectTitle.getText().toString();
-                String pDesc = et_projectDescription.getText().toString();
-
-
-                //Content validation
-                if(pTitle.length() >= 10 && pTitle.length() <= 50 && pDesc.length() >= 10 && pDesc.length() <= 400 && (mImageUri != null || mArrayUri.size() > 0)){
-                    project.put("title", pTitle);
-                    project.put("description", pDesc);
-                    project.put("creation_date", todayDate);
-
-                    if(mImageUri == null){
-                        project.put("imageCount", mArrayUri.size());
-                    }else{
-                        project.put("imageCount", 1);
-                    }
-                    fStore.collection("user").document(UID)
-                            .collection("projects")
-                            .document(pTitle)
-                            .set(project)
-                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    //Toast.makeText(getContext(), "Project created", Toast.LENGTH_SHORT).show();
-                                    if(mArrayUri.size() > 0){
-                                        for(int i = 0; i < mArrayUri.size(); i++){
-                                            Bitmap bitmap = null;
-                                            try {
-                                                bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), mArrayUri.get(i));
-                                                uploadImageToFirebaseStorage(bitmap, i);
-                                            } catch (IOException e) {
-                                                e.printStackTrace();
-                                            }
-
-                                        }
-                                    }else{
-                                        try {
-                                            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), mImageUri);
-                                            uploadSingleImageToFirebase(bitmap);
-                                        } catch (IOException e) {
-                                            e.printStackTrace();
-                                        }
-
-                                    }
-
-                                }
-                            })
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Toast.makeText(getContext(), e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-                                }
-                            });
-
-                    btn_createProject.setVisibility(View.VISIBLE);
-                    fStoreList.setVisibility(View.VISIBLE);
-                    getActivity().getSupportFragmentManager().beginTransaction().remove(AddProject.this).commit();
-
-                }else{
-                    if(pTitle.length() < 10 || pTitle.length() > 50){
-                        et_projectTitle.setError("Title length must be between 10 and 50 characters!");
-                        et_projectTitle.requestFocus();
-                    }else if(mImageUri == null || mArrayUri.size() == 0){
-                        Toast.makeText(getContext(), "You must attach at least 1 image to the project", Toast.LENGTH_SHORT).show();
-                    }
-                    else{
-                        if(pDesc.length() < 10){
-                            et_projectDescription.setError("Description length must be at least 10 characters!");
-                        }else{
-                            et_projectDescription.setError("Description can contain max 400 characters!");
-                        }
-                        et_projectDescription.requestFocus();
-                    }
-                }
-
-            }
-
-        });
-*/
-
-
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         try {
-            if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(getActivity(), new String[]{
+            if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(getParent(), new String[]{
                         Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, PICK_IMAGE_MULTIPLE);
             }else{
                 // When an Image is picked
-                if (requestCode == PICK_IMAGE_MULTIPLE && resultCode == getActivity().RESULT_OK
+                if (requestCode == PICK_IMAGE_MULTIPLE && resultCode == RESULT_OK
                         && null != data) {
                     String[] filePathColumn = { MediaStore.Images.Media.DATA };
                     imagesEncodedList = new ArrayList<String>();
@@ -384,7 +241,7 @@ public class AddProject extends Fragment {
                         imagesArrayList.add(sliderItem);
                         adapter.addItem(sliderItem);
 
-                        Cursor cursor = getActivity().getContentResolver().query(mImageUri, filePathColumn,
+                        Cursor cursor = getContentResolver().query(mImageUri, filePathColumn,
                                 null, null, null);
                         cursor.moveToFirst();
 
@@ -399,7 +256,7 @@ public class AddProject extends Fragment {
                             for(int i = 0; i < clipData.getItemCount(); i++){
                                 ClipData.Item item = clipData.getItemAt(i);
                                 Uri uri = item.getUri();
-                                Cursor cursor = getActivity().getContentResolver().query(uri, filePathColumn,
+                                Cursor cursor = getContentResolver().query(uri, filePathColumn,
                                         null, null, null);
                                 cursor.moveToFirst();
                                 SliderItem sliderItem = new SliderItem();
@@ -418,12 +275,12 @@ public class AddProject extends Fragment {
                     }
 
                 } else {
-                    Toast.makeText(getContext(), "Request code: " + requestCode + " and result code: " + resultCode,
+                    Toast.makeText(getApplicationContext(), "Request code: " + requestCode + " and result code: " + resultCode,
                             Toast.LENGTH_LONG).show();
                 }
             }
         } catch (Exception e) {
-            Toast.makeText(getContext(), "Something went wrong", Toast.LENGTH_LONG)
+            Toast.makeText(getApplicationContext(), "Something went wrong", Toast.LENGTH_LONG)
                     .show();
         }
         super.onActivityResult(requestCode, resultCode, data);
