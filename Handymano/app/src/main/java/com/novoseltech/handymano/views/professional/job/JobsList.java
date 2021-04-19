@@ -2,12 +2,19 @@ package com.novoseltech.handymano.views.professional.job;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.View;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -16,13 +23,20 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.novoseltech.handymano.MainActivity;
 import com.novoseltech.handymano.R;
 import com.novoseltech.handymano.adapter.JobsAdapter;
+import com.novoseltech.handymano.views.professional.HomeActivityProfessional;
+import com.novoseltech.handymano.views.professional.ProfessionalProfileActivity;
+import com.novoseltech.handymano.views.professional.project.ProjectsActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class JobsList extends AppCompatActivity {
+
+    //Navigation drawer
+    DrawerLayout drawerLayout;
 
     private static final String TAG = "";
 
@@ -44,6 +58,7 @@ public class JobsList extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_jobs_list);
+        drawerLayout = findViewById(R.id.drawer_layout_professional);
 
         mAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();
@@ -71,7 +86,10 @@ public class JobsList extends AppCompatActivity {
                                                 @Override
                                                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
                                                     for(QueryDocumentSnapshot documentSnapshot : task.getResult()){
-                                                        jobsAL.add(docId + ',' + documentSnapshot.getId());
+                                                        if(documentSnapshot.getString("status").equals("Active")){
+                                                            jobsAL.add(docId + ',' + documentSnapshot.getId());
+                                                        }
+
                                                     }
                                                 }
                                             });
@@ -121,5 +139,86 @@ public class JobsList extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         //adapter.
+    }
+
+    public void ClickMenu(View view) {
+        openDrawer(drawerLayout);
+    }
+
+    public void ClickProfile(View view) {
+        Intent intent = new Intent(JobsList.this, ProfessionalProfileActivity.class);
+        finish();
+        startActivity(intent);
+    }
+
+    public void ClickProjects(View view){
+        //recreate the activity
+
+        Intent intent = new Intent(JobsList.this, ProjectsActivity.class);
+        finish();
+        startActivity(intent);
+    }
+
+    public void ClickJobs(View view){
+
+
+        finish();
+        startActivity(getIntent());
+    }
+
+
+    public static void openDrawer(DrawerLayout drawerLayout) {
+        //Open drawer layout
+        drawerLayout.openDrawer(GravityCompat.START);
+    }
+
+    public void ClickLogOut(View view) {
+        logout();
+    }
+
+    public void ClickHome(View view){
+        Intent intent = new Intent(JobsList.this, HomeActivityProfessional.class);
+        finish();
+        startActivity(intent);
+    }
+
+    public void logout(){
+        //Close app
+        //Initialize alert dialog
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        //Set title
+        builder.setTitle("Log out");
+        //Set message
+        builder.setMessage("Are you sure you want to log out ?");
+        //Yes button
+        builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+                FirebaseAuth.getInstance().signOut();
+                finish();
+                Intent intent = new Intent(JobsList.this, MainActivity.class);
+                startActivity(intent);
+                //functions.redirectActivity(HomeActivityProfessional.this, MainActivity.class);
+
+            }
+        });
+
+        //No button
+        builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                //Dismiss dialog
+                dialogInterface.dismiss();
+            }
+        });
+        //Show dialog
+        builder.show();
+    }
+
+    @Override
+    public void onBackPressed() {
+        //super.onBackPressed();
+        Toast.makeText(getApplicationContext(), "Works", Toast.LENGTH_SHORT).show();
     }
 }

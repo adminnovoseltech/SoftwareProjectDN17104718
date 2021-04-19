@@ -73,6 +73,7 @@ public class  HomeActivityProfessional extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(HomeActivityProfessional.this, ProfessionalProfileActivity.class);
+                finish();
                 startActivity(intent);
 
             }
@@ -84,6 +85,7 @@ public class  HomeActivityProfessional extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(HomeActivityProfessional.this, ProjectsActivity.class);
+                finish();
                 startActivity(intent);
             }
         });
@@ -93,6 +95,7 @@ public class  HomeActivityProfessional extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(HomeActivityProfessional.this, JobsList.class);
+                finish();
                 startActivity(intent);
             }
         });
@@ -102,6 +105,7 @@ public class  HomeActivityProfessional extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(HomeActivityProfessional.this, MessageMenu.class);
+                finish();
                 startActivity(intent);
             }
         });

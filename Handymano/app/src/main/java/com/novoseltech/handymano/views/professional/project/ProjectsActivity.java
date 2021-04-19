@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
@@ -29,6 +30,7 @@ import com.novoseltech.handymano.R;
 import com.novoseltech.handymano.model.ProjectsModel;
 import com.novoseltech.handymano.views.professional.HomeActivityProfessional;
 import com.novoseltech.handymano.views.professional.ProfessionalProfileActivity;
+import com.novoseltech.handymano.views.professional.job.JobsList;
 
 public class ProjectsActivity extends AppCompatActivity {
 
@@ -148,6 +150,7 @@ public class ProjectsActivity extends AppCompatActivity {
 
     public void ClickProfile(View view) {
         Intent intent = new Intent(ProjectsActivity.this, ProfessionalProfileActivity.class);
+        finish();
         startActivity(intent);
     }
 
@@ -156,6 +159,12 @@ public class ProjectsActivity extends AppCompatActivity {
 
         finish();
         startActivity(getIntent());
+    }
+
+    public void ClickJobs(View view){
+        Intent intent = new Intent(ProjectsActivity.this, JobsList.class);
+        finish();
+        startActivity(intent);
     }
 
 
@@ -170,6 +179,7 @@ public class ProjectsActivity extends AppCompatActivity {
 
     public void ClickHome(View view){
         Intent intent = new Intent(ProjectsActivity.this, HomeActivityProfessional.class);
+        finish();
         startActivity(intent);
     }
 
@@ -207,4 +217,9 @@ public class ProjectsActivity extends AppCompatActivity {
         builder.show();
     }
 
+    @Override
+    public void onBackPressed() {
+        //super.onBackPressed();
+        Toast.makeText(getApplicationContext(), "Works", Toast.LENGTH_SHORT).show();
+    }
 }
