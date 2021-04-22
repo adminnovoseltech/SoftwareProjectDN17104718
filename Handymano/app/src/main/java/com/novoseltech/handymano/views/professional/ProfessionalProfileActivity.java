@@ -4,6 +4,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.Manifest;
 import android.app.AlertDialog;
@@ -49,7 +51,10 @@ import com.novoseltech.handymano.MainActivity;
 import com.novoseltech.handymano.R;
 import com.novoseltech.handymano.fragments.AddressSelect;
 import com.novoseltech.handymano.fragments.PasswordConfirmationDialog;
+import com.novoseltech.handymano.views.message.MessageMenu;
+import com.novoseltech.handymano.views.professional.job.JobsList;
 import com.novoseltech.handymano.views.professional.project.ProfessionalProjectViewActivity;
+import com.novoseltech.handymano.views.professional.project.ProjectsActivity;
 import com.novoseltech.handymano.views.standard.StandardProfileActivity;
 
 import java.io.ByteArrayOutputStream;
@@ -60,6 +65,8 @@ import java.util.Locale;
 import java.util.Map;
 
 public class ProfessionalProfileActivity extends AppCompatActivity implements PasswordConfirmationDialog.PasswordConfirmationDialogListener{
+
+    DrawerLayout drawerLayout;
 
     private static final String TAG = "LOG: ";
     private static final int PICK_FROM_GALLERY = 10000;
@@ -117,6 +124,7 @@ public class ProfessionalProfileActivity extends AppCompatActivity implements Pa
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_professional_profile);
+        drawerLayout = findViewById(R.id.drawer_layout_professional);
 
         TextView tv_pp_username = findViewById(R.id.tv_pp_username);
         TextView tv_pp_email = findViewById(R.id.tv_pp_email);
@@ -242,13 +250,13 @@ public class ProfessionalProfileActivity extends AppCompatActivity implements Pa
                 tv_pp_email.setVisibility(View.VISIBLE);
                 tv_currentAddress.setVisibility(View.VISIBLE);
 
-                Log.d("tmplat", String.valueOf(latitude));
+                /*Log.d("tmplat", String.valueOf(latitude));
                 Log.d("tmplat", String.valueOf(longitude));
                 Log.d("tmprad", String.valueOf(radius));
 
                 Log.d("tmpAddress",tmpAddress);
                 Log.d("addressfromcoordinates", getAddressFromLatLng(latitude, longitude));
-
+*/
                 //If nothing was changed
                 if(et_pp_username.getText().toString().equals(username) &&
                         et_pp_phoneNo.getText().toString().equals(phoneNo) &&
@@ -538,6 +546,95 @@ public class ProfessionalProfileActivity extends AppCompatActivity implements Pa
 
         return address;
 
+    }
+
+    public void ClickMenu(View view) {
+        openDrawer(drawerLayout);
+    }
+
+    public void ClickProfile(View view) {
+
+
+        //recreate the activity
+
+        finish();
+        startActivity(getIntent());
+    }
+
+    public void ClickProjects(View view){
+        finish();
+        Intent intent = new Intent(ProfessionalProfileActivity.this, ProjectsActivity.class);
+        startActivity(intent);
+    }
+
+    public void ClickJobs(View view){
+        finish();
+        Intent intent = new Intent(ProfessionalProfileActivity.this, JobsList.class);
+        startActivity(intent);
+    }
+
+
+    public static void openDrawer(DrawerLayout drawerLayout) {
+        //Open drawer layout
+        drawerLayout.openDrawer(GravityCompat.START);
+    }
+
+    public void ClickLogOut(View view) {
+        logout();
+    }
+
+    public void ClickHome(View view){
+        finish();
+        Intent intent = new Intent(ProfessionalProfileActivity.this, HomeActivityProfessional.class);
+
+        startActivity(intent);
+    }
+
+    public void ClickMessages(View view){
+        finish();
+        Intent intent = new Intent(ProfessionalProfileActivity.this, MessageMenu.class);
+        intent.putExtra("USER_TYPE", "Professional");
+        startActivity(intent);
+    }
+
+    public void logout(){
+        //Close app
+        //Initialize alert dialog
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        //Set title
+        builder.setTitle("Log out");
+        //Set message
+        builder.setMessage("Are you sure you want to log out ?");
+        //Yes button
+        builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+                FirebaseAuth.getInstance().signOut();
+                finish();
+                Intent intent = new Intent(ProfessionalProfileActivity.this, MainActivity.class);
+                startActivity(intent);
+                //functions.redirectActivity(HomeActivityProfessional.this, MainActivity.class);
+
+            }
+        });
+
+        //No button
+        builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                //Dismiss dialog
+                dialogInterface.dismiss();
+            }
+        });
+        //Show dialog
+        builder.show();
+    }
+
+    @Override
+    public void onBackPressed() {
+        //super.onBackPressed();
+        Toast.makeText(getApplicationContext(), "Works", Toast.LENGTH_SHORT).show();
     }
 
 

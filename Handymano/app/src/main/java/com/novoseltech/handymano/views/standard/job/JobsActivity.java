@@ -27,6 +27,9 @@ import com.google.firebase.firestore.Query;
 import com.novoseltech.handymano.MainActivity;
 import com.novoseltech.handymano.R;
 import com.novoseltech.handymano.model.JobsModel;
+import com.novoseltech.handymano.views.message.MessageMenu;
+import com.novoseltech.handymano.views.standard.HomeActivityStandard;
+import com.novoseltech.handymano.views.standard.StandardProfileActivity;
 
 public class JobsActivity extends AppCompatActivity {
 
@@ -206,11 +209,18 @@ public class JobsActivity extends AppCompatActivity {
     }
 
     public void ClickHome(View view) {
+        Intent intent = new Intent(JobsActivity.this, HomeActivityStandard.class);
+        startActivity(intent);
     }
 
     public void ClickProfile(View view) {
+        Intent intent = new Intent(JobsActivity.this, StandardProfileActivity.class);
+        startActivity(intent);
     }
 
     public void ClickMessages(View view) {
+        Intent intent = new Intent(JobsActivity.this, MessageMenu.class);
+        intent.putExtra("USER_TYPE", "Standard");
+        startActivity(intent);
     }
 }

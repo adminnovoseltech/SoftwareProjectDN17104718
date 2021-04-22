@@ -105,6 +105,7 @@ public class  HomeActivityProfessional extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(HomeActivityProfessional.this, MessageMenu.class);
+                intent.putExtra("USER_TYPE", "Professional");
                 finish();
                 startActivity(intent);
             }

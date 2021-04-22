@@ -501,15 +501,11 @@ public class EditProject extends AppCompatActivity {
                                         });
                                     }
 
-                                    //getSupportFragmentManager().beginTransaction().remove(com.novoseltech.handymano.fragments.EditProject.this).commit();
+                                    finish();
                                     Intent intent = new Intent(EditProject.this, ProjectsActivity.class);
                                     startActivity(intent);
                                     cl_editProject.setVisibility(View.VISIBLE);
                                     cl_savingProjectChanges.setVisibility(View.GONE);
-                                    tv_pr.setVisibility(View.VISIBLE);
-                                    sv_pr.setVisibility(View.VISIBLE);
-                                    cv_pr.setVisibility(View.VISIBLE);
-                                    iv_pr.setVisibility(View.VISIBLE);
 
 
                                 }else{

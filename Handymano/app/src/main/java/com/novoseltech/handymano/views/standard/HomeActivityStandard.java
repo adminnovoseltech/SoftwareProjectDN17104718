@@ -424,6 +424,7 @@ public class HomeActivityStandard extends AppCompatActivity {
                 //drawerLayout.closeDrawer(GravityCompat.START);
 
                 Intent intent = new Intent(HomeActivityStandard.this, MessageMenu.class);
+                intent.putExtra("USER_TYPE", "Standard");
                 startActivity(intent);
             }
         });

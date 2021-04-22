@@ -4,7 +4,7 @@ xmlns:app="http://schemas.android.com/apk/res-auto"
 xmlns:tools="http://schemas.android.com/tools"
 android:layout_width="match_parent"
 android:layout_height="match_parent"
-android:id="@+id/drawer_layout_standard"
+android:id="@+id/drawer_layout_professional"
 tools:context=".views.message.MessageMenu">
 
 <LinearLayout
@@ -28,6 +28,7 @@ tools:context=".views.message.MessageMenu">
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </LinearLayout>
@@ -38,8 +39,7 @@ tools:context=".views.message.MessageMenu">
     android:layout_gravity="start"
     android:background="@android:color/white">
 
-    <include
-        layout="@layout/main_nav_drawer_standard" />
+    <include layout="@layout/main_nav_drawer_professional" />
 
 
 </LinearLayout>
@@ -47,5 +47,4 @@ tools:context=".views.message.MessageMenu">
 
 
 </androidx.drawerlayout.widget.DrawerLayout>
-
 

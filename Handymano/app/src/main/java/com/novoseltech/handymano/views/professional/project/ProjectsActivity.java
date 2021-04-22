@@ -28,6 +28,7 @@ import com.google.firebase.firestore.Query;
 import com.novoseltech.handymano.MainActivity;
 import com.novoseltech.handymano.R;
 import com.novoseltech.handymano.model.ProjectsModel;
+import com.novoseltech.handymano.views.message.MessageMenu;
 import com.novoseltech.handymano.views.professional.HomeActivityProfessional;
 import com.novoseltech.handymano.views.professional.ProfessionalProfileActivity;
 import com.novoseltech.handymano.views.professional.job.JobsList;
@@ -149,8 +150,8 @@ public class ProjectsActivity extends AppCompatActivity {
     }
 
     public void ClickProfile(View view) {
-        Intent intent = new Intent(ProjectsActivity.this, ProfessionalProfileActivity.class);
         finish();
+        Intent intent = new Intent(ProjectsActivity.this, ProfessionalProfileActivity.class);
         startActivity(intent);
     }
 
@@ -161,9 +162,16 @@ public class ProjectsActivity extends AppCompatActivity {
         startActivity(getIntent());
     }
 
-    public void ClickJobs(View view){
-        Intent intent = new Intent(ProjectsActivity.this, JobsList.class);
+    public void ClickMessages(View view){
         finish();
+        Intent intent = new Intent(ProjectsActivity.this, MessageMenu.class);
+        intent.putExtra("USER_TYPE", "Professional");
+        startActivity(intent);
+    }
+
+    public void ClickJobs(View view){
+        finish();
+        Intent intent = new Intent(ProjectsActivity.this, JobsList.class);
         startActivity(intent);
     }
 
@@ -178,8 +186,9 @@ public class ProjectsActivity extends AppCompatActivity {
     }
 
     public void ClickHome(View view){
-        Intent intent = new Intent(ProjectsActivity.this, HomeActivityProfessional.class);
         finish();
+        Intent intent = new Intent(ProjectsActivity.this, HomeActivityProfessional.class);
+
         startActivity(intent);
     }
 
