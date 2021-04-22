@@ -20,7 +20,9 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.novoseltech.handymano.MainActivity;
@@ -51,6 +53,10 @@ public class JobsList extends AppCompatActivity {
     RecyclerView rv_regularJobList;
     RecyclerView.Adapter adapter;
 
+    GeoPoint tradeGP;
+    String tradeRadius;
+    String tradeCategory;
+
 
 
 
@@ -67,6 +73,20 @@ public class JobsList extends AppCompatActivity {
         rv_regularJobList = findViewById(R.id.rv_regularJobList);
 
         //Query
+
+        fStore.collection("user").document(user.getUid())
+                .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful()){
+                    DocumentSnapshot documentSnapshot = task.getResult();
+                    tradeGP = documentSnapshot.getGeoPoint("location");
+                    tradeRadius = documentSnapshot.getString("radius");
+                    tradeCategory = documentSnapshot.getString("category");
+
+                }
+            }
+        });
 
 
         fStore.collection("user").get()
@@ -86,7 +106,11 @@ public class JobsList extends AppCompatActivity {
                                                 @Override
                                                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
                                                     for(QueryDocumentSnapshot documentSnapshot : task.getResult()){
-                                                        if(documentSnapshot.getString("status").equals("Active")){
+                                                        GeoPoint jobGP = documentSnapshot.getGeoPoint("location");
+                                                        String jobCategory = documentSnapshot.getString("category");
+
+                                                        if(documentSnapshot.getString("status").equals("Active") && (distanceBetweenTwoCoordinates(jobGP.getLatitude(), jobGP.getLongitude(),
+                                                                 tradeGP.getLatitude(), tradeGP.getLongitude()) <= Double.parseDouble(tradeRadius) || tradeRadius.equals("0")) && jobCategory.equals(tradeCategory)){
                                                             jobsAL.add(docId + ',' + documentSnapshot.getId());
                                                         }
 
@@ -214,6 +238,31 @@ public class JobsList extends AppCompatActivity {
         });
         //Show dialog
         builder.show();
+    }
+
+    public double distanceBetweenTwoCoordinates(double lat1, double lon1, double lat2, double lon2){
+        //https://www.movable-type.co.uk/scripts/latlong.html
+        //Used 'haversine' formula to calculate the distance between two coordinates
+
+        int earthRadius = 6371;
+
+        double dLat = degreesToRadians(lat2 - lat1);
+        double dLon = degreesToRadians(lon2 - lon1);
+
+        lat1 = degreesToRadians(lat1);
+        lat2 = degreesToRadians(lat2);
+
+        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2)
+                + Math.sin(dLon / 2) * Math.sin(dLon / 2)
+                * Math.cos(lat1) * Math.cos(lat2);
+
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+        return earthRadius * c;
+    }
+
+    public double degreesToRadians(double degrees){
+        return degrees * (Math.PI / 180);
     }
 
     @Override

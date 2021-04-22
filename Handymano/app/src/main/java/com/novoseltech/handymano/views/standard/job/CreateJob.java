@@ -161,11 +161,11 @@ public class CreateJob extends AppCompatActivity {
 
         //Job category - creating the dropdown
         final String[] JOB_CATEGORY = new String[] {
-                "Builder",
-                "Carpenter",
-                "Plumber",
-                "Electrician",
-                "Metal worker"
+                "Building",
+                "Carpentry",
+                "Plumbing",
+                "Electricity",
+                "Metal works"
         };
 
         ArrayAdapter<String> adapterJobCategory = new ArrayAdapter<>(this, R.layout.services_category_layout, R.id.tv_1, JOB_CATEGORY);
@@ -181,21 +181,16 @@ public class CreateJob extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if(dropdownJobCategory.getEditableText().toString().equals("Builder")){
-                    jobCategory = "Building";
-                    Toast.makeText(getApplicationContext(), jobCategory, Toast.LENGTH_SHORT).show();
-                }else if(dropdownJobCategory.getEditableText().toString().equals("Carpenter")){
-                    jobCategory = "Carpentry";
-                    Toast.makeText(getApplicationContext(), jobCategory, Toast.LENGTH_SHORT).show();
-                }else if(dropdownJobCategory.getEditableText().toString().equals("Plumber")){
-                    jobCategory = "Plumbing";
-                    Toast.makeText(getApplicationContext(), jobCategory, Toast.LENGTH_SHORT).show();
-                }else if(dropdownJobCategory.getEditableText().toString().equals("Electrician")){
-                    jobCategory = "Electricity";
-                    Toast.makeText(getApplicationContext(), jobCategory, Toast.LENGTH_SHORT).show();
-                }else if(dropdownJobCategory.getEditableText().toString().equals("Metal worker")){
-                    jobCategory = "Metal works";
-                    Toast.makeText(getApplicationContext(), jobCategory, Toast.LENGTH_SHORT).show();
+                if(dropdownJobCategory.getEditableText().toString().equals("Building")){
+                    jobCategory = "Builder";
+                }else if(dropdownJobCategory.getEditableText().toString().equals("Carpentry")){
+                    jobCategory = "Carpenter";
+                }else if(dropdownJobCategory.getEditableText().toString().equals("Plumbing")){
+                    jobCategory = "Plumber";
+                }else if(dropdownJobCategory.getEditableText().toString().equals("Electricity")){
+                    jobCategory = "Electrician";
+                }else if(dropdownJobCategory.getEditableText().toString().equals("Metal works")){
+                    jobCategory = "Metal worker";
                 }
             }
 
@@ -280,7 +275,7 @@ public class CreateJob extends AppCompatActivity {
                     job.put("description", jobDescription);
                     job.put("creation_date", todayDate);
                     job.put("imageCount", imagesArrayList.size());
-                    job.put("status", "active");
+                    job.put("status", "Active");
                     job.put("category", jobCategory);
                     job.put("location", gp);
 
@@ -312,7 +307,6 @@ public class CreateJob extends AppCompatActivity {
 
                     btn_createJob.setVisibility(View.VISIBLE);
                     fStoreList.setVisibility(View.VISIBLE);
-                    //getActivity().getSupportFragmentManager().beginTransaction().remove(AddJob.this).commit();
 
                 }else{
                     if(jobTitle.length() < 10 || jobTitle.length() > 50){

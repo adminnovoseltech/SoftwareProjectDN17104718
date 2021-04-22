@@ -10,6 +10,8 @@ import androidx.fragment.app.FragmentManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.location.Address;
+import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -38,6 +40,9 @@ import com.smarteist.autoimageslider.IndicatorView.animation.type.IndicatorAnima
 import com.smarteist.autoimageslider.IndicatorView.draw.controller.DrawController;
 import com.smarteist.autoimageslider.SliderAnimations;
 import com.smarteist.autoimageslider.SliderView;
+
+import java.util.List;
+import java.util.Locale;
 
 public class StandardJobViewActivity extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener{
 
@@ -233,6 +238,30 @@ public class StandardJobViewActivity extends AppCompatActivity implements PopupM
         MenuInflater inflater = popupMenu.getMenuInflater();
         inflater.inflate(R.menu.actions, popupMenu.getMenu());
         popupMenu.show();
+    }
+
+    private String getCompleteAddressString(double LATITUDE, double LONGITUDE) {
+        String strAdd = "";
+        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+        try {
+            List<Address> addresses = geocoder.getFromLocation(LATITUDE, LONGITUDE, 1);
+            if (addresses != null) {
+                Address returnedAddress = addresses.get(0);
+                StringBuilder strReturnedAddress = new StringBuilder("");
+
+                for (int i = 0; i <= returnedAddress.getMaxAddressLineIndex(); i++) {
+                    strReturnedAddress.append(returnedAddress.getAddressLine(i)).append("\n");
+                }
+                strAdd = strReturnedAddress.toString();
+                Log.d("My Current", strReturnedAddress.toString());
+            } else {
+                Log.d("My Current", "No Address returned!");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.d("My Current", "Cannot get Address!");
+        }
+        return strAdd;
     }
 
 }

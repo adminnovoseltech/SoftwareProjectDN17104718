@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.location.Address;
+import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -20,17 +22,20 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.novoseltech.handymano.R;
 import com.novoseltech.handymano.adapter.SliderAdapter;
 import com.novoseltech.handymano.model.SliderItem;
 import com.novoseltech.handymano.views.message.ChatActivity;
-import com.novoseltech.handymano.views.standard.ViewProfessionalActivity;
 import com.smarteist.autoimageslider.IndicatorView.animation.type.IndicatorAnimationType;
 import com.smarteist.autoimageslider.IndicatorView.draw.controller.DrawController;
 import com.smarteist.autoimageslider.SliderAnimations;
 import com.smarteist.autoimageslider.SliderView;
+
+import java.util.List;
+import java.util.Locale;
 
 public class ViewJob extends AppCompatActivity {
 
@@ -59,6 +64,7 @@ public class ViewJob extends AppCompatActivity {
         TextView tv_proJobTitle = findViewById(R.id.tv_professionalJobTitle);
         TextView tv_tradeJobDescription = findViewById(R.id.tv_tradeJobDescription);
         TextView tv_tradePostedBy = findViewById(R.id.tv_postedBy);
+        TextView tv_jobAddress = findViewById(R.id.tv_jobAddressTradeView);
         btnMessageAdvertiser = findViewById(R.id.btn_messageAdvertiser);
         JOB_ID = getIntent().getStringExtra("JOB_ID");
         USER_ID = getIntent().getStringExtra("USER_ID");
@@ -95,6 +101,9 @@ public class ViewJob extends AppCompatActivity {
                     tv_tradeJobDescription.setText(documentSnapshot.getString("description"));
                     jobCreationDate = documentSnapshot.getString("creation_date");
                     imageCount = documentSnapshot.getLong("imageCount");
+
+                    GeoPoint gp = documentSnapshot.getGeoPoint("location");
+                    tv_jobAddress.setText(getCompleteAddressString(gp.getLatitude(), gp.getLongitude()));
 
                 }
             }
@@ -141,6 +150,7 @@ public class ViewJob extends AppCompatActivity {
                 intent.putExtra("ADVERTISER_NAME", USER_NAME);
                 intent.putExtra("JOB_ID", JOB_ID);
                 intent.putExtra("JOB_DATE", jobCreationDate);
+                intent.putExtra("JOB_ADDRESS", tv_jobAddress.getText());
                 startActivity(intent);
             }
         });
@@ -180,5 +190,29 @@ public class ViewJob extends AppCompatActivity {
             }
         }
 
+    }
+
+    private String getCompleteAddressString(double LATITUDE, double LONGITUDE) {
+        String strAdd = "";
+        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+        try {
+            List<Address> addresses = geocoder.getFromLocation(LATITUDE, LONGITUDE, 1);
+            if (addresses != null) {
+                Address returnedAddress = addresses.get(0);
+                StringBuilder strReturnedAddress = new StringBuilder("");
+
+                for (int i = 0; i <= returnedAddress.getMaxAddressLineIndex(); i++) {
+                    strReturnedAddress.append(returnedAddress.getAddressLine(i)).append("\n");
+                }
+                strAdd = strReturnedAddress.toString();
+                Log.d("My Current", strReturnedAddress.toString());
+            } else {
+                Log.d("My Current", "No Address returned!");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.d("My Current", "Cannot get Address!");
+        }
+        return strAdd;
     }
 }

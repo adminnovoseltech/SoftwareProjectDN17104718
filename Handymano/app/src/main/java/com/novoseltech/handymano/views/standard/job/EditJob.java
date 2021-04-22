@@ -184,9 +184,12 @@ public class EditJob extends AppCompatActivity {
                     jobCreationDate = documentSnapshot.getString("creation_date");
                     imageCount = documentSnapshot.getLong("imageCount");
                     jobCategory = documentSnapshot.getString("category");
-                    dropdownJobCategory.setText(jobCategory);
+
+
+
+                    //dropdownJobCategory.setText(jobCategory);
                     jobStatus = documentSnapshot.getString("status");
-                    dropdownJobStatus.setText(jobStatus);
+                    //dropdownJobStatus.setText(jobStatus);
                     GeoPoint gp = documentSnapshot.getGeoPoint("location");
                     tmpLat = gp.getLatitude();
                     tmpLon = gp.getLongitude();
@@ -223,23 +226,40 @@ public class EditJob extends AppCompatActivity {
                 });
 
 
+
+
             }
         }, 600);
 
         //Job category - creating the dropdown
         final String[] JOB_CATEGORY = new String[] {
-                "Builder",
-                "Carpenter",
-                "Plumber",
-                "Electrician",
-                "Metal worker"
+                "Building",
+                "Carpentry",
+                "Plumbing",
+                "Electricity",
+                "Metal works"
         };
+
+
+        if(jobCategory.equals("Builder")){
+            dropdownJobCategory.setText("Building");
+        }else if(jobCategory.equals("Carpenter")){
+            dropdownJobCategory.setText("Carpentry");
+        }else if(jobCategory.equals("Plumber")){
+            dropdownJobCategory.setText("Plumbing");
+        }else if(jobCategory.equals("Electrician")){
+            dropdownJobCategory.setText("Electricity");
+        }else if(jobCategory.equals("Metal worker")){
+            dropdownJobCategory.setText("Metal works");
+        }
 
         ArrayAdapter<String> adapterJobCategory = new ArrayAdapter<>(this, R.layout.services_category_layout, R.id.tv_1, JOB_CATEGORY);
 
         //final AutoCompleteTextView dropdownJobCategory = view.findViewById(R.id.dropdownJobCategory);
         dropdownJobCategory.setAdapter(adapterJobCategory);
         dropdownJobCategory.setInputType(0);
+
+
 
         dropdownJobCategory.addTextChangedListener(new TextWatcher() {
             @Override
@@ -249,21 +269,16 @@ public class EditJob extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if(dropdownJobCategory.getEditableText().toString().equals("Builder")){
-                    jobCategory = "Building";
-                    Toast.makeText(getApplicationContext(), jobCategory, Toast.LENGTH_SHORT).show();
-                }else if(dropdownJobCategory.getEditableText().toString().equals("Carpenter")){
-                    jobCategory = "Carpentry";
-                    Toast.makeText(getApplicationContext(), jobCategory, Toast.LENGTH_SHORT).show();
-                }else if(dropdownJobCategory.getEditableText().toString().equals("Plumber")){
-                    jobCategory = "Plumbing";
-                    Toast.makeText(getApplicationContext(), jobCategory, Toast.LENGTH_SHORT).show();
-                }else if(dropdownJobCategory.getEditableText().toString().equals("Electrician")){
-                    jobCategory = "Electricity";
-                    Toast.makeText(getApplicationContext(), jobCategory, Toast.LENGTH_SHORT).show();
-                }else if(dropdownJobCategory.getEditableText().toString().equals("Metal worker")){
-                    jobCategory = "Metal works";
-                    Toast.makeText(getApplicationContext(), jobCategory, Toast.LENGTH_SHORT).show();
+                if(dropdownJobCategory.getEditableText().toString().equals("Building")){
+                    jobCategory = "Builder";
+                }else if(dropdownJobCategory.getEditableText().toString().equals("Carpentry")){
+                    jobCategory = "Carpenter";
+                }else if(dropdownJobCategory.getEditableText().toString().equals("Plumbing")){
+                    jobCategory = "Plumber";
+                }else if(dropdownJobCategory.getEditableText().toString().equals("Electricity")){
+                    jobCategory = "Electrician";
+                }else if(dropdownJobCategory.getEditableText().toString().equals("Metal works")){
+                    jobCategory = "Metal worker";
                 }
             }
 
@@ -278,6 +293,8 @@ public class EditJob extends AppCompatActivity {
                 "Active",
                 "Private"
         };
+
+        dropdownJobStatus.setText(jobStatus);
 
         ArrayAdapter<String> adapterJobStatus = new ArrayAdapter<>(this, R.layout.services_category_layout, R.id.tv_1, JOB_STATUS);
 

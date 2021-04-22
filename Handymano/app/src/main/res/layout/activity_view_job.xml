@@ -28,7 +28,7 @@
         app:cardCornerRadius="6dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_postedBy">
+        app:layout_constraintTop_toBottomOf="@+id/tv_jobAddressTradeView">
 
         <com.smarteist.autoimageslider.SliderView
             android:id="@+id/is_tradeJobImagesSlider"
@@ -103,5 +103,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_professionalJobTitle" />
+
+    <TextView
+        android:id="@+id/tv_jobAddressTradeView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="JobAddress"
+        android:textStyle="italic"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_postedBy" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
