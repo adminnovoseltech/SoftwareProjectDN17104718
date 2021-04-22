@@ -2,9 +2,12 @@ package com.novoseltech.handymano.views.standard.project;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -12,20 +15,31 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.material.imageview.ShapeableImageView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
+import com.novoseltech.handymano.MainActivity;
 import com.novoseltech.handymano.R;
 import com.novoseltech.handymano.model.ProjectsModel;
+import com.novoseltech.handymano.views.message.MessageMenu;
 import com.novoseltech.handymano.views.professional.project.ProfessionalProjectViewActivity;
 import com.novoseltech.handymano.views.professional.project.ProjectsActivity;
+import com.novoseltech.handymano.views.standard.HomeActivityStandard;
+import com.novoseltech.handymano.views.standard.StandardProfileActivity;
 import com.novoseltech.handymano.views.standard.ViewProfessionalActivity;
+import com.novoseltech.handymano.views.standard.job.JobsActivity;
+import com.novoseltech.handymano.views.standard.job.StandardJobViewActivity;
 
 
 public class ProjectList extends AppCompatActivity {
+
+    //Navigation drawer
+    DrawerLayout drawerLayout;
 
     private RecyclerView rv_tradeProjectList;
     private FirestoreRecyclerAdapter adapter;
@@ -39,11 +53,21 @@ public class ProjectList extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_project_list);
 
+        drawerLayout = findViewById(R.id.drawer_layout_standard);
+
         String user_id = getIntent().getStringExtra("USER_ID");
 
         mAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();
         user = mAuth.getCurrentUser();
+
+        TextView tv_UserName = drawerLayout.findViewById(R.id.text_UserName_Standard);
+        ShapeableImageView profileImage = drawerLayout.findViewById(R.id.profilePicture);
+        if(user.getPhotoUrl() != null){
+            Glide.with(getApplicationContext())
+                    .load(user.getPhotoUrl())
+                    .into(profileImage);
+        }
 
         rv_tradeProjectList = findViewById(R.id.rv_tradeProjectList);
 
@@ -111,4 +135,83 @@ public class ProjectList extends AppCompatActivity {
         super.onStart();
         adapter.startListening();
     }
+
+    public void logout(){
+        //Close app
+        //Initialize alert dialog
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
+        //Set title
+        builder.setTitle("Log out");
+        //Set message
+        builder.setMessage("Are you sure you want to log out ?");
+        //Yes button
+        builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                FirebaseAuth.getInstance().signOut();
+                finish();
+                Intent intent = new Intent(ProjectList.this, MainActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        //No button
+        builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                //Dismiss dialog
+                dialogInterface.dismiss();
+            }
+        });
+        //Show dialog
+        builder.show();
+    }
+
+    public void ClickMenu(View view) {
+        openDrawer(drawerLayout);
+    }
+
+    public static void openDrawer(DrawerLayout drawerLayout) {
+        //Open drawer layout
+        drawerLayout.openDrawer(GravityCompat.START);
+    }
+
+    public static void closeDrawer(DrawerLayout drawerLayout) {
+        //Close drawer layout
+        //Check condition
+        if(drawerLayout.isDrawerOpen(GravityCompat.START)){
+            //When drawer is open
+            //Close drawer
+            drawerLayout.closeDrawer(GravityCompat.START);
+        }
+    }
+
+    public void ClickJobs(View view){
+        //recreate the activity
+
+        Intent intent = new Intent(ProjectList.this, JobsActivity.class);
+        startActivity(intent);
+    }
+
+    public void ClickLogOut(View view) {
+        logout();
+    }
+
+    public void ClickHome(View view) {
+        Intent intent = new Intent(ProjectList.this, HomeActivityStandard.class);
+        startActivity(intent);
+    }
+
+    public void ClickProfile(View view) {
+        Intent intent = new Intent(ProjectList.this, StandardProfileActivity.class);
+        startActivity(intent);
+    }
+
+    public void ClickMessages(View view) {
+        Intent intent = new Intent(ProjectList.this, MessageMenu.class);
+        intent.putExtra("USER_TYPE", "Standard");
+        startActivity(intent);
+    }
+
+
 }

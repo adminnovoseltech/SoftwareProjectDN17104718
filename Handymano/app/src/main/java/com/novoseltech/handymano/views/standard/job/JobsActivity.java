@@ -17,9 +17,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.material.imageview.ShapeableImageView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -57,6 +60,14 @@ public class JobsActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();
         user = mAuth.getCurrentUser();
+
+        TextView tv_UserName = drawerLayout.findViewById(R.id.text_UserName_Standard);
+        ShapeableImageView profileImage = drawerLayout.findViewById(R.id.profilePicture);
+        if(user.getPhotoUrl() != null){
+            Glide.with(getApplicationContext())
+                    .load(user.getPhotoUrl())
+                    .into(profileImage);
+        }
 
         fStoreList = findViewById(R.id.firestoreListJobs);
 
@@ -222,5 +233,10 @@ public class JobsActivity extends AppCompatActivity {
         Intent intent = new Intent(JobsActivity.this, MessageMenu.class);
         intent.putExtra("USER_TYPE", "Standard");
         startActivity(intent);
+    }
+
+    @Override
+    public void onBackPressed() {
+
     }
 }

@@ -41,6 +41,7 @@ import com.novoseltech.handymano.views.professional.HomeActivityProfessional;
 import com.novoseltech.handymano.views.professional.ProfessionalProfileActivity;
 import com.novoseltech.handymano.views.professional.job.JobsList;
 import com.novoseltech.handymano.views.professional.project.ProjectsActivity;
+import com.novoseltech.handymano.views.standard.HomeActivityStandard;
 import com.novoseltech.handymano.views.standard.StandardProfileActivity;
 import com.novoseltech.handymano.views.standard.job.JobsActivity;
 
@@ -194,7 +195,7 @@ public class MessageMenu extends AppCompatActivity {
             homeNavLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(MessageMenu.this, HomeActivityProfessional.class);
+                    Intent intent = new Intent(MessageMenu.this, HomeActivityStandard.class);
                     finish();
                     startActivity(intent);
                 }

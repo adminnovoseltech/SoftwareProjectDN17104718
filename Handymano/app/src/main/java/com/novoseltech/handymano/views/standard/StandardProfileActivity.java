@@ -4,8 +4,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -41,8 +44,12 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.novoseltech.handymano.MainActivity;
 import com.novoseltech.handymano.R;
 import com.novoseltech.handymano.fragments.PasswordConfirmationDialog;
+import com.novoseltech.handymano.views.message.MessageMenu;
+import com.novoseltech.handymano.views.standard.job.JobsActivity;
+import com.novoseltech.handymano.views.standard.job.StandardJobViewActivity;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -53,10 +60,14 @@ import java.util.Map;
 
 public class StandardProfileActivity extends AppCompatActivity implements PasswordConfirmationDialog.PasswordConfirmationDialogListener {
 
+    //Navigation drawer
+    DrawerLayout drawerLayout;
+
     private static final String TAG = "LOG: ";
     private static final int PICK_FROM_GALLERY = 10000;
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
     FirebaseFirestore fStore = FirebaseFirestore.getInstance();
+    FirebaseUser user = mAuth.getCurrentUser();
     String UID = mAuth.getCurrentUser().getUid();
 
     String username;
@@ -87,6 +98,15 @@ public class StandardProfileActivity extends AppCompatActivity implements Passwo
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_standard_profile);
+        drawerLayout = findViewById(R.id.drawer_layout_standard);
+
+        TextView tv_UserName = drawerLayout.findViewById(R.id.text_UserName_Standard);
+        ShapeableImageView profileImage = drawerLayout.findViewById(R.id.profilePicture);
+        if(user.getPhotoUrl() != null){
+            Glide.with(getApplicationContext())
+                    .load(user.getPhotoUrl())
+                    .into(profileImage);
+        }
 
         TextView tv_sp_username = findViewById(R.id.tv_sp_username);
         TextView tv_sp_email = findViewById(R.id.tv_sp_email);
@@ -391,6 +411,83 @@ public class StandardProfileActivity extends AppCompatActivity implements Passwo
     public void applyPass(String password){
 
         pass = password;
+    }
+
+    public void logout(){
+        //Close app
+        //Initialize alert dialog
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
+        //Set title
+        builder.setTitle("Log out");
+        //Set message
+        builder.setMessage("Are you sure you want to log out ?");
+        //Yes button
+        builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                FirebaseAuth.getInstance().signOut();
+                finish();
+                Intent intent = new Intent(StandardProfileActivity.this, MainActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        //No button
+        builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                //Dismiss dialog
+                dialogInterface.dismiss();
+            }
+        });
+        //Show dialog
+        builder.show();
+    }
+
+    public void ClickMenu(View view) {
+        openDrawer(drawerLayout);
+    }
+
+    public static void openDrawer(DrawerLayout drawerLayout) {
+        //Open drawer layout
+        drawerLayout.openDrawer(GravityCompat.START);
+    }
+
+    public static void closeDrawer(DrawerLayout drawerLayout) {
+        //Close drawer layout
+        //Check condition
+        if(drawerLayout.isDrawerOpen(GravityCompat.START)){
+            //When drawer is open
+            //Close drawer
+            drawerLayout.closeDrawer(GravityCompat.START);
+        }
+    }
+
+    public void ClickJobs(View view){
+        //recreate the activity
+
+        Intent intent = new Intent(StandardProfileActivity.this, JobsActivity.class);
+        startActivity(intent);
+    }
+
+    public void ClickLogOut(View view) {
+        logout();
+    }
+
+    public void ClickHome(View view) {
+        Intent intent = new Intent(StandardProfileActivity.this, HomeActivityStandard.class);
+        startActivity(intent);
+    }
+
+    public void ClickProfile(View view) {
+        finish();
+        startActivity(getIntent());
+    }
+
+    public void ClickMessages(View view) {
+        Intent intent = new Intent(StandardProfileActivity.this, MessageMenu.class);
+        intent.putExtra("USER_TYPE", "Standard");
+        startActivity(intent);
     }
 
 

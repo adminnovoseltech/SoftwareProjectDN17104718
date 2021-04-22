@@ -5,6 +5,8 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentManager;
 
 import android.content.DialogInterface;
@@ -24,8 +26,10 @@ import android.widget.PopupMenu;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.imageview.ShapeableImageView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -33,9 +37,13 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.novoseltech.handymano.MainActivity;
 import com.novoseltech.handymano.R;
 import com.novoseltech.handymano.adapter.SliderAdapter;
 import com.novoseltech.handymano.model.SliderItem;
+import com.novoseltech.handymano.views.message.MessageMenu;
+import com.novoseltech.handymano.views.standard.HomeActivityStandard;
+import com.novoseltech.handymano.views.standard.StandardProfileActivity;
 import com.smarteist.autoimageslider.IndicatorView.animation.type.IndicatorAnimationType;
 import com.smarteist.autoimageslider.IndicatorView.draw.controller.DrawController;
 import com.smarteist.autoimageslider.SliderAnimations;
@@ -45,6 +53,9 @@ import java.util.List;
 import java.util.Locale;
 
 public class StandardJobViewActivity extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener{
+
+    //Navigation drawer
+    DrawerLayout drawerLayout;
 
     private static final String TAG = "LOG: ";
     String JOB_ID;
@@ -71,6 +82,15 @@ public class StandardJobViewActivity extends AppCompatActivity implements PopupM
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_standard_job_view);
+        drawerLayout = findViewById(R.id.drawer_layout_standard);
+
+        TextView tv_UserName = drawerLayout.findViewById(R.id.text_UserName_Standard);
+        ShapeableImageView profileImage = drawerLayout.findViewById(R.id.profilePicture);
+        if(user.getPhotoUrl() != null){
+            Glide.with(getApplicationContext())
+                    .load(user.getPhotoUrl())
+                    .into(profileImage);
+        }
 
         JOB_ID = getIntent().getStringExtra("JOB_ID");
         cl_jobView = findViewById(R.id.cl_jobViewStandard);
@@ -262,6 +282,83 @@ public class StandardJobViewActivity extends AppCompatActivity implements PopupM
             Log.d("My Current", "Cannot get Address!");
         }
         return strAdd;
+    }
+
+    public void logout(){
+        //Close app
+        //Initialize alert dialog
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
+        //Set title
+        builder.setTitle("Log out");
+        //Set message
+        builder.setMessage("Are you sure you want to log out ?");
+        //Yes button
+        builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                FirebaseAuth.getInstance().signOut();
+                finish();
+                Intent intent = new Intent(StandardJobViewActivity.this, MainActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        //No button
+        builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                //Dismiss dialog
+                dialogInterface.dismiss();
+            }
+        });
+        //Show dialog
+        builder.show();
+    }
+
+    public void ClickMenu(View view) {
+        openDrawer(drawerLayout);
+    }
+
+    public static void openDrawer(DrawerLayout drawerLayout) {
+        //Open drawer layout
+        drawerLayout.openDrawer(GravityCompat.START);
+    }
+
+    public static void closeDrawer(DrawerLayout drawerLayout) {
+        //Close drawer layout
+        //Check condition
+        if(drawerLayout.isDrawerOpen(GravityCompat.START)){
+            //When drawer is open
+            //Close drawer
+            drawerLayout.closeDrawer(GravityCompat.START);
+        }
+    }
+
+    public void ClickJobs(View view){
+        //recreate the activity
+
+        Intent intent = new Intent(StandardJobViewActivity.this, JobsActivity.class);
+        startActivity(intent);
+    }
+
+    public void ClickLogOut(View view) {
+        logout();
+    }
+
+    public void ClickHome(View view) {
+        Intent intent = new Intent(StandardJobViewActivity.this, HomeActivityStandard.class);
+        startActivity(intent);
+    }
+
+    public void ClickProfile(View view) {
+        Intent intent = new Intent(StandardJobViewActivity.this, StandardProfileActivity.class);
+        startActivity(intent);
+    }
+
+    public void ClickMessages(View view) {
+        Intent intent = new Intent(StandardJobViewActivity.this, MessageMenu.class);
+        intent.putExtra("USER_TYPE", "Standard");
+        startActivity(intent);
     }
 
 }

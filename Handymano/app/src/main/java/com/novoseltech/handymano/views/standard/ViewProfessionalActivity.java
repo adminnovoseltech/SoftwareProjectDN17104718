@@ -2,7 +2,10 @@ package com.novoseltech.handymano.views.standard;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
@@ -15,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -23,6 +27,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.imageview.ShapeableImageView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -30,8 +35,12 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.novoseltech.handymano.MainActivity;
 import com.novoseltech.handymano.R;
 import com.novoseltech.handymano.views.message.ChatActivity;
+import com.novoseltech.handymano.views.message.MessageMenu;
+import com.novoseltech.handymano.views.standard.job.JobsActivity;
+import com.novoseltech.handymano.views.standard.job.StandardJobViewActivity;
 import com.novoseltech.handymano.views.standard.project.ProjectList;
 import com.novoseltech.handymano.views.standard.project.ViewProject;
 
@@ -40,6 +49,9 @@ import java.util.List;
 import java.util.Locale;
 
 public class ViewProfessionalActivity extends AppCompatActivity{
+
+    //Navigation drawer
+    DrawerLayout drawerLayout;
 
     TextView tv_tradeName;
     TextView tv_tradeCategory;
@@ -71,6 +83,15 @@ public class ViewProfessionalActivity extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_professional);
+        drawerLayout = findViewById(R.id.drawer_layout_standard);
+
+        TextView tv_UserName = drawerLayout.findViewById(R.id.text_UserName_Standard);
+        ShapeableImageView profileImage = drawerLayout.findViewById(R.id.profilePicture);
+        if(user.getPhotoUrl() != null){
+            Glide.with(getApplicationContext())
+                    .load(user.getPhotoUrl())
+                    .into(profileImage);
+        }
 
         String user_id = getIntent().getStringExtra("USER_ID");
 
@@ -280,6 +301,82 @@ public class ViewProfessionalActivity extends AppCompatActivity{
     }
 
 
+    public void logout(){
+        //Close app
+        //Initialize alert dialog
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
+        //Set title
+        builder.setTitle("Log out");
+        //Set message
+        builder.setMessage("Are you sure you want to log out ?");
+        //Yes button
+        builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                FirebaseAuth.getInstance().signOut();
+                finish();
+                Intent intent = new Intent(ViewProfessionalActivity.this, MainActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        //No button
+        builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                //Dismiss dialog
+                dialogInterface.dismiss();
+            }
+        });
+        //Show dialog
+        builder.show();
+    }
+
+    public void ClickMenu(View view) {
+        openDrawer(drawerLayout);
+    }
+
+    public static void openDrawer(DrawerLayout drawerLayout) {
+        //Open drawer layout
+        drawerLayout.openDrawer(GravityCompat.START);
+    }
+
+    public static void closeDrawer(DrawerLayout drawerLayout) {
+        //Close drawer layout
+        //Check condition
+        if(drawerLayout.isDrawerOpen(GravityCompat.START)){
+            //When drawer is open
+            //Close drawer
+            drawerLayout.closeDrawer(GravityCompat.START);
+        }
+    }
+
+    public void ClickJobs(View view){
+        //recreate the activity
+
+        Intent intent = new Intent(ViewProfessionalActivity.this, JobsActivity.class);
+        startActivity(intent);
+    }
+
+    public void ClickLogOut(View view) {
+        logout();
+    }
+
+    public void ClickHome(View view) {
+        Intent intent = new Intent(ViewProfessionalActivity.this, HomeActivityStandard.class);
+        startActivity(intent);
+    }
+
+    public void ClickProfile(View view) {
+        Intent intent = new Intent(ViewProfessionalActivity.this, StandardProfileActivity.class);
+        startActivity(intent);
+    }
+
+    public void ClickMessages(View view) {
+        Intent intent = new Intent(ViewProfessionalActivity.this, MessageMenu.class);
+        intent.putExtra("USER_TYPE", "Standard");
+        startActivity(intent);
+    }
 
 
 }
