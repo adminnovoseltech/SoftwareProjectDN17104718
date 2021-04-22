@@ -30,7 +30,9 @@ import com.google.firebase.firestore.GeoPoint;
 import com.novoseltech.handymano.fragments.AddressSelect;
 import com.novoseltech.handymano.views.professional.HomeActivityProfessional;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class BusinessRegistrationActivity extends AppCompatActivity {
@@ -116,6 +118,9 @@ public class BusinessRegistrationActivity extends AppCompatActivity {
         btn_chooseLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Bundle bundle = new Bundle();
+                bundle.putString("mode", "NewReg");
+                af.setArguments(bundle);
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.frame_location, af)
                         .commit();
@@ -331,7 +336,9 @@ public class BusinessRegistrationActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "User registered successfully", Toast.LENGTH_SHORT).show();
                     UID = mAuth.getCurrentUser().getUid();
                     DocumentReference docReference = fStore.collection("user").document(UID);
+                    DocumentReference docReferenceChat = fStore.collection("chat").document(UID);
                     Map<String, Object> user = new HashMap<>();
+                    Map<String, Object> chatMap = new HashMap<>();
 
                     GeoPoint gp = new GeoPoint(latitude, longitude);
                     user.put("username", username);
@@ -341,9 +348,10 @@ public class BusinessRegistrationActivity extends AppCompatActivity {
                     user.put("category", businessCategory);
                     user.put("experience", businessExperience);
                     user.put("location", gp);
-                    //user.put("latitude", latitude);
-                    //user.put("longitude", longitude);
                     user.put("radius", radius);
+
+                    List<String> chatList = new ArrayList<>();
+                    chatMap.put("recipients", chatList);
 
 
                     docReference.set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -352,6 +360,14 @@ public class BusinessRegistrationActivity extends AppCompatActivity {
                             System.out.println("onSuccess: user profile " + UID + "created!");
                         }
                     });
+
+                    docReferenceChat.set(chatMap).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            System.out.println("Chat list created");
+                        }
+                    });
+
                     Intent intent = new Intent(BusinessRegistrationActivity.this, HomeActivityProfessional.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     finish();
