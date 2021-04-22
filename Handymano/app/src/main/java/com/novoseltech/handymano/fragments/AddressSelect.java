@@ -27,6 +27,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.material.textfield.TextInputLayout;
 import com.novoseltech.handymano.R;
 
 import java.io.IOException;
@@ -51,8 +52,10 @@ public class AddressSelect extends Fragment implements OnMapReadyCallback{
 
     Button btn_searchLocation;
 
+
     EditText et_address;
     EditText et_radius;
+    TextInputLayout til_radius;
 
 
     //SupportMapFragment mapFragment;
@@ -112,6 +115,7 @@ public class AddressSelect extends Fragment implements OnMapReadyCallback{
 
         et_address = view.findViewById(R.id.address_textInput);
         et_radius = view.findViewById(R.id.radius_textInput);
+        til_radius = view.findViewById(R.id.radius_layout);
 
         //Setting default radius
         et_radius.setText("0");
@@ -151,6 +155,20 @@ public class AddressSelect extends Fragment implements OnMapReadyCallback{
                     coordinates[2] = tmpRad;
 
 
+                }else if(mode.equals("New")){
+                    LatLng point = new LatLng(53.2734, -7.77832031);
+                    googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(point, 7));
+
+                    et_radius.setFocusable(false);
+                }else if(mode.equals("JobEdit")){
+                    LatLng point = new LatLng(tmpLat, tmpLon);
+                    googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(point, 7));
+                    addMarkerToTheMap(point);
+
+                    coordinates[0] = String.valueOf(tmpLat);
+                    coordinates[1] = String.valueOf(tmpLon);
+
+                    til_radius.setVisibility(View.GONE);
                 }else{
                     LatLng point = new LatLng(53.2734, -7.77832031);
                     googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(point, 7));

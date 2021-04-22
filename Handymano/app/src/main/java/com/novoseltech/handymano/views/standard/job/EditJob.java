@@ -17,6 +17,8 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.location.Address;
+import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -31,6 +33,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -48,11 +51,13 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.novoseltech.handymano.R;
 import com.novoseltech.handymano.adapter.SliderAdapter;
+import com.novoseltech.handymano.fragments.AddressSelect;
 import com.novoseltech.handymano.model.SliderItem;
 import com.smarteist.autoimageslider.IndicatorView.animation.type.IndicatorAnimationType;
 import com.smarteist.autoimageslider.IndicatorView.draw.controller.DrawController;
@@ -117,10 +122,31 @@ public class EditJob extends AppCompatActivity {
     AutoCompleteTextView dropdownJobStatus;
     String jobStatus = "";
 
+
+    //Job address
+    Button btn_saveAddress;
+    FrameLayout fl_editJobAddress;
+    ImageView iv_editJobAddress;
+    TextView tv_jobAddress;
+    double tmpLat;
+    double tmpLon;
+
+    double newLat;
+    double newLon;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_job);
+
+        //Job address
+        btn_saveAddress = findViewById(R.id.btn_saveEditJobAddress);
+        btn_saveAddress.setVisibility(View.GONE);
+        iv_editJobAddress = findViewById(R.id.iv_editJobAddressButton);
+        tv_jobAddress = findViewById(R.id.tv_jobAddressEdit);
+        fl_editJobAddress = findViewById(R.id.fl_editJobAddress);
+        fl_editJobAddress.setVisibility(View.GONE);
+        AddressSelect af = new AddressSelect();
 
         cl_editJob = findViewById(R.id.cl_editJob);
         cl_savingChanges = findViewById(R.id.cl_savingChanges);
@@ -161,6 +187,10 @@ public class EditJob extends AppCompatActivity {
                     dropdownJobCategory.setText(jobCategory);
                     jobStatus = documentSnapshot.getString("status");
                     dropdownJobStatus.setText(jobStatus);
+                    GeoPoint gp = documentSnapshot.getGeoPoint("location");
+                    tmpLat = gp.getLatitude();
+                    tmpLon = gp.getLongitude();
+                    tv_jobAddress.setText(getCompleteAddressString(tmpLat, tmpLon));
 
 
                 }
@@ -299,6 +329,38 @@ public class EditJob extends AppCompatActivity {
                 startActivityForResult(Intent.createChooser(intent, "Select pictures"), PICK_IMAGE_MULTIPLE);
 
 
+            }
+        });
+
+        iv_editJobAddress.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cl_editJob.setVisibility(View.GONE);
+                fl_editJobAddress.setVisibility(View.VISIBLE);
+                btn_saveAddress.setVisibility(View.VISIBLE);
+
+                Bundle bundle = new Bundle();
+                bundle.putString("mode", "JobEdit");
+                bundle.putDouble("lat", tmpLat);
+                bundle.putDouble("lon", tmpLon);
+                af.setArguments(bundle);
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fl_editJobAddress, af)
+                        .commit();
+            }
+        });
+
+        btn_saveAddress.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tmpLat = Double.parseDouble(af.getLocationData(0));
+                tmpLon = Double.parseDouble(af.getLocationData(1));
+
+                tv_jobAddress.setText(getCompleteAddressString(tmpLat, tmpLon));
+
+                btn_saveAddress.setVisibility(View.GONE);
+                cl_editJob.setVisibility(View.VISIBLE);
+                fl_editJobAddress.setVisibility(View.GONE);
             }
         });
 
@@ -454,6 +516,8 @@ public class EditJob extends AppCompatActivity {
                                     job.put("imageCount", images.size());
                                     job.put("category", jobCategory);
                                     job.put("status", jobStatus);
+                                    GeoPoint gp = new GeoPoint(tmpLat, tmpLon);
+                                    job.put("location", gp);
 
                                     //If job title is not changed
                                     //Update the document
@@ -770,5 +834,30 @@ public class EditJob extends AppCompatActivity {
                 }
                 break;
         }
+    }
+
+
+    private String getCompleteAddressString(double LATITUDE, double LONGITUDE) {
+        String strAdd = "";
+        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+        try {
+            List<Address> addresses = geocoder.getFromLocation(LATITUDE, LONGITUDE, 1);
+            if (addresses != null) {
+                Address returnedAddress = addresses.get(0);
+                StringBuilder strReturnedAddress = new StringBuilder("");
+
+                for (int i = 0; i <= returnedAddress.getMaxAddressLineIndex(); i++) {
+                    strReturnedAddress.append(returnedAddress.getAddressLine(i)).append("\n");
+                }
+                strAdd = strReturnedAddress.toString();
+                Log.d("My Current", strReturnedAddress.toString());
+            } else {
+                Log.d("My Current", "No Address returned!");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.d("My Current", "Cannot get Address!");
+        }
+        return strAdd;
     }
 }

@@ -3,6 +3,7 @@ package com.novoseltech.handymano.views.standard.job;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -13,6 +14,8 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.location.Address;
+import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -25,7 +28,9 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -35,11 +40,13 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.novoseltech.handymano.R;
 import com.novoseltech.handymano.adapter.SliderAdapter;
+import com.novoseltech.handymano.fragments.AddressSelect;
 import com.novoseltech.handymano.model.SliderItem;
 import com.smarteist.autoimageslider.IndicatorView.animation.type.IndicatorAnimationType;
 import com.smarteist.autoimageslider.IndicatorView.draw.controller.DrawController;
@@ -93,10 +100,28 @@ public class CreateJob extends AppCompatActivity {
     AutoCompleteTextView dropdownJobCategory;
     private String jobCategory ="N/A";
 
+    TextView tv_jobAddressAdd;
+    ImageView iv_jobAddressAdd;
+    ConstraintLayout cl_jobCreationLayout;
+    FrameLayout fl_jobAddressLayout;
+    Button btn_saveJobLocation;
+
+    double latitude = 0.0;
+    double longitude = 0.0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_job);
+
+        //Address selection
+        cl_jobCreationLayout = findViewById(R.id.cl_jobCreationLayout);
+        fl_jobAddressLayout = findViewById(R.id.fl_jobAddressLayout);
+        fl_jobAddressLayout.setVisibility(View.GONE);
+        btn_saveJobLocation = findViewById(R.id.btn_saveJobLocationData);
+        btn_saveJobLocation.setVisibility(View.GONE);
+        AddressSelect af = new AddressSelect();
+
 
         btn_saveJob = findViewById(R.id.btn_saveJob);
         et_jobTitle = findViewById(R.id.et_jobTitle);
@@ -109,6 +134,9 @@ public class CreateJob extends AppCompatActivity {
 
         adapter = new SliderAdapter(getApplicationContext());
         sliderView.setSliderAdapter(adapter);
+
+        tv_jobAddressAdd = findViewById(R.id.tv_jobAddressCreate);
+        iv_jobAddressAdd = findViewById(R.id.iv_locationButton);
 
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
@@ -142,7 +170,6 @@ public class CreateJob extends AppCompatActivity {
 
         ArrayAdapter<String> adapterJobCategory = new ArrayAdapter<>(this, R.layout.services_category_layout, R.id.tv_1, JOB_CATEGORY);
 
-        //final AutoCompleteTextView dropdownJobCategory = view.findViewById(R.id.dropdownJobCategory);
         dropdownJobCategory.setAdapter(adapterJobCategory);
         dropdownJobCategory.setInputType(0);
 
@@ -202,6 +229,38 @@ public class CreateJob extends AppCompatActivity {
             }
         });
 
+        iv_jobAddressAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cl_jobCreationLayout.setVisibility(View.GONE);
+                fl_jobAddressLayout.setVisibility(View.VISIBLE);
+                btn_saveJobLocation.setVisibility(View.VISIBLE);
+
+                Bundle bundle = new Bundle();
+                bundle.putString("mode", "New");
+                af.setArguments(bundle);
+
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fl_jobAddressLayout, af)
+                        .commit();
+            }
+        });
+
+        btn_saveJobLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                latitude = Double.parseDouble(af.getLocationData(0));
+                longitude = Double.parseDouble(af.getLocationData(1));
+
+                fl_jobAddressLayout.setVisibility(View.GONE);
+                cl_jobCreationLayout.setVisibility(View.VISIBLE);
+
+                tv_jobAddressAdd.setText(getCompleteAddressString(latitude, longitude));
+
+                btn_saveJobLocation.setVisibility(View.GONE);
+            }
+        });
+
 
 
         btn_saveJob.setOnClickListener(new View.OnClickListener() {
@@ -214,13 +273,16 @@ public class CreateJob extends AppCompatActivity {
 
 
                 //Content validation
-                if(jobTitle.length() >= 10 && jobTitle.length() <= 50 && jobDescription.length() >= 10 && jobDescription.length() <= 400 && (imagesArrayList.size() > 0) && !jobCategory.equals("N/A")){
+                if(jobTitle.length() >= 10 && jobTitle.length() <= 50 && jobDescription.length() >= 10 && jobDescription.length() <= 400
+                        && (imagesArrayList.size() > 0) && !jobCategory.equals("N/A") && latitude != 0.0 && longitude != 0.0){
+                    GeoPoint gp = new GeoPoint(latitude, longitude);
                     job.put("title", jobTitle);
                     job.put("description", jobDescription);
                     job.put("creation_date", todayDate);
                     job.put("imageCount", imagesArrayList.size());
                     job.put("status", "active");
                     job.put("category", jobCategory);
+                    job.put("location", gp);
 
                     fStore.collection("user").document(UID)
                             .collection("jobs")
@@ -260,6 +322,10 @@ public class CreateJob extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(), "You must attach at least 1 image to the job", Toast.LENGTH_SHORT).show();
                     }else if(jobCategory.equals("N/A")){
                         Toast.makeText(getApplicationContext(), "Job category must be selected", Toast.LENGTH_SHORT).show();
+                    }else if(latitude == 0.0){
+                        Toast.makeText(getApplicationContext(), "Job location must be specified", Toast.LENGTH_SHORT).show();
+                    }else if(longitude == 0.0){
+                        Toast.makeText(getApplicationContext(), "Job location must be specified", Toast.LENGTH_SHORT).show();
                     }else{
                         if(jobDescription.length() < 10){
                             et_jobDescription.setError("Description length must be at least 10 characters!");
@@ -380,5 +446,29 @@ public class CreateJob extends AppCompatActivity {
                 Log.e("TAG", "onFailure: ", e.getCause());
             }
         });
+    }
+
+    private String getCompleteAddressString(double LATITUDE, double LONGITUDE) {
+        String strAdd = "";
+        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+        try {
+            List<Address> addresses = geocoder.getFromLocation(LATITUDE, LONGITUDE, 1);
+            if (addresses != null) {
+                Address returnedAddress = addresses.get(0);
+                StringBuilder strReturnedAddress = new StringBuilder("");
+
+                for (int i = 0; i <= returnedAddress.getMaxAddressLineIndex(); i++) {
+                    strReturnedAddress.append(returnedAddress.getAddressLine(i)).append("\n");
+                }
+                strAdd = strReturnedAddress.toString();
+                Log.d("My Current", strReturnedAddress.toString());
+            } else {
+                Log.d("My Current", "No Address returned!");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.d("My Current", "Cannot get Address!");
+        }
+        return strAdd;
     }
 }
