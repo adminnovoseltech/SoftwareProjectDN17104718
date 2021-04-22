@@ -101,9 +101,6 @@ public class CreateJob extends AppCompatActivity {
         btn_saveJob = findViewById(R.id.btn_saveJob);
         et_jobTitle = findViewById(R.id.et_jobTitle);
         et_jobDescription = findViewById(R.id.et_jobDescription);
-        //btn_createJob = findViewById(R.id.btn_newJob);
-        //fStoreList = findViewById(R.id.firestoreListJobs);
-
         iv_addImg = findViewById(R.id.iv_addJobImg);
         iv_deleteImg = findViewById(R.id.iv_deleteJobImg);
         sliderView = findViewById(R.id.imageSliderJobAdd);

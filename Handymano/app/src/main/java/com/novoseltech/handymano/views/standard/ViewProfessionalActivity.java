@@ -4,9 +4,12 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
 import android.media.Image;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -32,7 +35,9 @@ import com.novoseltech.handymano.views.message.ChatActivity;
 import com.novoseltech.handymano.views.standard.project.ProjectList;
 import com.novoseltech.handymano.views.standard.project.ViewProject;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
 
 public class ViewProfessionalActivity extends AppCompatActivity{
 
@@ -42,6 +47,8 @@ public class ViewProfessionalActivity extends AppCompatActivity{
     TextView tv_tradeLastProject;
     TextView tv_viewTradeAllProjects;
     ImageView iv_messageTrade;
+
+    TextView tv_tradeAddress;
 
     //Firebase objects
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
@@ -70,6 +77,8 @@ public class ViewProfessionalActivity extends AppCompatActivity{
 
         Handler handler = new Handler();
 
+        tv_tradeAddress = findViewById(R.id.tv_tradeAddress);
+
 
 
         fStore.collection("user").document(user_id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -84,7 +93,11 @@ public class ViewProfessionalActivity extends AppCompatActivity{
                     tradeLatitude = tradeGeopoint.getLatitude();
                     tradeLongitude = tradeGeopoint.getLongitude();
 
-
+                    Log.d("LAT", String.valueOf(tradeLatitude));
+                    Log.d("LON", String.valueOf(tradeLongitude));
+                    //String address = getAddressFromLatLng(tradeLatitude, tradeLongitude);
+                    String address = getCompleteAddressString(tradeLatitude, tradeLongitude);
+                    tv_tradeAddress.setText(address);
                 }
             }
         });
@@ -125,12 +138,16 @@ public class ViewProfessionalActivity extends AppCompatActivity{
                 tv_tradeLastProject = findViewById(R.id.tv_tradeLastProject);
                 tv_viewTradeAllProjects = findViewById(R.id.tv_tradeViewAllProjects);
 
+
+
                 iv_messageTrade = findViewById(R.id.iv_messageTrade);
 
                 tv_tradeName.setText(tradeName);
                 tv_tradeCategory.setText(tradeCategory);
                 tv_tradeExperience.setText(tradeExperience);
                 tv_tradeLastProject.setText("Last project: " + lastProject);
+
+
 
                 tv_viewTradeAllProjects.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -179,6 +196,13 @@ public class ViewProfessionalActivity extends AppCompatActivity{
             }
         }, 400);
 
+        //String address = getAddressFromLatLng(tradeLatitude, tradeLongitude);
+        //Log.d("LAT", String.valueOf(tradeLatitude));
+        //Log.d("LON", String.valueOf(tradeLongitude));
+
+
+       // tv_tradeAddress.setText(address);
+
 
 
     }
@@ -204,6 +228,55 @@ public class ViewProfessionalActivity extends AppCompatActivity{
                 googleMap.addMarker(options);
             }
         });
+    }
+
+    public String getAddressFromLatLng(double lat, double lng){
+        Geocoder geocoder;
+        List<Address> addresses;
+        String address = null;
+        geocoder = new Geocoder(this, Locale.getDefault());
+
+        try {
+            addresses = geocoder.getFromLocation(lat, lng, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
+
+            address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
+            String city = addresses.get(0).getLocality();
+            String state = addresses.get(0).getAdminArea();
+            String country = addresses.get(0).getCountryName();
+            String postalCode = addresses.get(0).getPostalCode();
+            String knownName = addresses.get(0).getFeatureName();
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return address;
+
+    }
+
+    private String getCompleteAddressString(double LATITUDE, double LONGITUDE) {
+        String strAdd = "";
+        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+        try {
+            List<Address> addresses = geocoder.getFromLocation(LATITUDE, LONGITUDE, 1);
+            if (addresses != null) {
+                Address returnedAddress = addresses.get(0);
+                StringBuilder strReturnedAddress = new StringBuilder("");
+
+                for (int i = 0; i <= returnedAddress.getMaxAddressLineIndex(); i++) {
+                    strReturnedAddress.append(returnedAddress.getAddressLine(i)).append("\n");
+                }
+                strAdd = strReturnedAddress.toString();
+                Log.d("My Current", strReturnedAddress.toString());
+            } else {
+                Log.d("My Current", "No Address returned!");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.d("My Current", "Cannot get Address!");
+        }
+        return strAdd;
     }
 
 
