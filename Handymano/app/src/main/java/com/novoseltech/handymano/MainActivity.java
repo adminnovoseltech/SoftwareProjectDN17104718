@@ -22,6 +22,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.novoseltech.handymano.views.professional.HomeActivityProfessional;
 import com.novoseltech.handymano.views.standard.HomeActivityStandard;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -83,10 +84,12 @@ public class MainActivity extends AppCompatActivity {
                                 userData.put("phoneNo", documentSnapshot.get("phoneNo"));
 
                                 if(accountType.equals("Professional")){
+                                    userData.put("category", documentSnapshot.get("category"));
                                     finish();
                                     Intent intent = new Intent(MainActivity.this, HomeActivityProfessional.class);
                                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                    intent.putExtra("username", (String)userData.get("username"));
+                                    intent.putExtra("USER_MAP", (Serializable) userData);
+                                    intent.putExtra("APP_USER_USERNAME", (String)userData.get("username"));
                                     startActivity(intent);
                                 }else if(accountType.equals("Standard")){
                                     finish();

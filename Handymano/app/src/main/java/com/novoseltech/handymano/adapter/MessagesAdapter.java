@@ -2,27 +2,45 @@ package com.novoseltech.handymano.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.novoseltech.handymano.R;
 import com.novoseltech.handymano.views.message.ChatActivity;
 import com.novoseltech.handymano.views.professional.job.ViewJob;
 
+import org.ocpsoft.prettytime.PrettyTime;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.SimpleTimeZone;
 
 public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHolder> {
 
     private List<String> messagesArrayList;
+    private List<String> lastMessagesSent;
     private Context context;
+    PrettyTime p = new PrettyTime();
 
-    public MessagesAdapter(List<String> messagesArrayList, Context context) {
+    public MessagesAdapter(List<String> messagesArrayList, List<String> lastMessageSent, Context context) {
         this.messagesArrayList = messagesArrayList;
+        this.lastMessagesSent = lastMessageSent;
         this.context = context;
     }
 
@@ -44,6 +62,43 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
         String username = messageData[1];
 
         holder.messageSender.setText(username);
+
+        String messageToSplit = lastMessagesSent.get(position);
+        String[] lastMessageData = messageToSplit.split(",");
+
+        String lmTimestamp = lastMessageData[0];
+        String lmMessage = lastMessageData[1];
+        holder.lastMessageTimestamp.setText(lmTimestamp);
+        holder.lastMessage.setText(lmMessage);
+
+
+
+        StorageReference storageReference = FirebaseStorage.getInstance()
+                .getReference().child("images")
+                .child(userID)
+                .child("profile_image_" + userID + ".jpeg");
+
+        storageReference.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+            @Override
+            public void onComplete(@NonNull Task<Uri> task) {
+
+                if(task.isSuccessful()){
+                    Log.d("DOWNLOAD URL", task.getResult().toString());
+
+                    Glide.with(context)
+                            .load(task.getResult().toString())
+                            .into(holder.messageSenderImage);
+                }
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Glide.with(context)
+                        .load(R.drawable.ic_profile_512)
+                        .into(holder.messageSenderImage);
+            }
+        });
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -69,9 +124,15 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
 
     public class ViewHolder extends RecyclerView.ViewHolder{
         public TextView messageSender;
+        public TextView lastMessage;
+        public TextView lastMessageTimestamp;
+        public ImageView messageSenderImage;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             messageSender = itemView.findViewById(R.id.tv_chatSenderUsername);
+            lastMessage = itemView.findViewById(R.id.tv_lastMessageSent);
+            lastMessageTimestamp = itemView.findViewById(R.id.tv_lastMessageTimestamp);
+            messageSenderImage = itemView.findViewById(R.id.iv_chatSenderImageList);
         }
     }
 }

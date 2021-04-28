@@ -19,6 +19,7 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.text.Editable;
@@ -32,6 +33,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -48,11 +50,15 @@ import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.novoseltech.handymano.MainActivity;
 import com.novoseltech.handymano.R;
 import com.novoseltech.handymano.model.ServicesModel;
@@ -335,6 +341,38 @@ public class HomeActivityStandard extends AppCompatActivity {
                 holder.list_username.setText(model.getUsername());
                 holder.list_category.setText(model.getCategory());
                 holder.list_distance.setText(model.getDistance() + " km away");
+
+                Log.d("USER_ID", model.getUser_id());
+
+
+                StorageReference storageReference = FirebaseStorage.getInstance()
+                        .getReference().child("images")
+                        .child(model.getUser_id())
+                        .child("profile_image_" + model.getUser_id() + ".jpeg");
+
+                storageReference.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Uri> task) {
+
+                        if(task.isSuccessful()){
+                            Log.d("DOWNLOAD URL", task.getResult().toString());
+
+                            Glide.with(getApplicationContext())
+                                    .load(task.getResult().toString())
+                                    .into(holder.list_image);
+                        }
+
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Glide.with(getApplicationContext())
+                                .load(R.drawable.ic_profile_512)
+                                .into(holder.list_image);
+                    }
+                });
+
+
                 holder.list_distance.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_locationpin, 0, 0, 0);
 
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -473,6 +511,7 @@ public class HomeActivityStandard extends AppCompatActivity {
                                         pUsers.put("username", document.getString("username"));
                                         pUsers.put("category", document.getString("category"));
                                         pUsers.put("distance", round(distance, 2));
+                                        pUsers.put("user_id", document.getId());
 
                                         fStore.collection("user").document(UID)
                                                 .collection("temp")
@@ -517,6 +556,7 @@ public class HomeActivityStandard extends AppCompatActivity {
                                         pUsers.put("username", document.getString("username"));
                                         pUsers.put("category", document.getString("category"));
                                         pUsers.put("distance", round(distance, 2));
+                                        pUsers.put("user_id", document.getId());
 
                                         fStore.collection("user").document(UID)
                                                 .collection("temp")
@@ -744,12 +784,14 @@ public class HomeActivityStandard extends AppCompatActivity {
         private TextView list_username;
         private TextView list_category;
         private TextView list_distance;
+        private ImageView list_image;
 
         public ServicesViewHolder(@NonNull View itemView) {
             super(itemView);
             list_username = itemView.findViewById(R.id.tv_chatSenderUsername);
             list_category = itemView.findViewById(R.id.list_category);
             list_distance = itemView.findViewById(R.id.list_distance);
+            list_image = itemView.findViewById(R.id.iv_chatSenderImageList);
         }
     }
 

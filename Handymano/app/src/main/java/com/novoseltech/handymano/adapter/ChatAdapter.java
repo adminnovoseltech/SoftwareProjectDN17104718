@@ -56,21 +56,12 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, ChatAdapter
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view;
 
-        /*if(CURRENT_USERNAME.equals(MESSAGE_SENDER)){
-            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_right, parent, false);
-            Log.d("USERNAME", MESSAGE_SENDER);
-        }else{
-            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_left, parent, false);
-        }*/
-
         if(viewType == MSG_TYPE_RIGHT){
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_right, parent, false);
         }else{
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_left, parent, false);
 
         }
-
-
 
         return new ViewHolder(view);
     }

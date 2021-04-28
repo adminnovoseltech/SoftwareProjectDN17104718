@@ -51,10 +51,6 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyAl_3qIrLgW9ICO-rvhibynazB74LQJC-o" />
 
-        <activity
-            android:name=".HomeActivity"
-            android:label="@string/title_activity_home"
-            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
         <activity android:name=".BusinessRegistrationActivity" />
         <activity android:name=".UserRegistrationActivity" />
         <activity android:name=".RegistrationChoiceActivity" />

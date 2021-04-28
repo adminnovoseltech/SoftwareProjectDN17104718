@@ -96,6 +96,7 @@ public class ProfessionalProfileActivity extends AppCompatActivity implements Pa
     String pass = "";
 
     ShapeableImageView iv_pp_profilePhoto;
+    ShapeableImageView profileImage;
 
     //Location
     FrameLayout mapFrame;
@@ -175,6 +176,16 @@ public class ProfessionalProfileActivity extends AppCompatActivity implements Pa
             Glide.with(this)
                     .load(user.getPhotoUrl())
                     .into(iv_pp_profilePhoto);
+        }
+
+        profileImage = drawerLayout.findViewById(R.id.profilePictureProfessional);
+
+        if(mAuth.getCurrentUser().getPhotoUrl() != null){
+            Glide.with(getApplicationContext())
+                    .load(user.getPhotoUrl())
+                    .into(profileImage);
+        }else{
+            Log.d("TAG", "Profile image not found. Loading default image.");
         }
 
         fStore.collection("user").document(UID).get()

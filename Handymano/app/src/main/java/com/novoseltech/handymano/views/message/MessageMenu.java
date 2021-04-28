@@ -1,6 +1,7 @@
 package com.novoseltech.handymano.views.message;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -25,10 +26,13 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.imageview.ShapeableImageView;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -44,6 +48,8 @@ import com.novoseltech.handymano.views.professional.project.ProjectsActivity;
 import com.novoseltech.handymano.views.standard.HomeActivityStandard;
 import com.novoseltech.handymano.views.standard.StandardProfileActivity;
 import com.novoseltech.handymano.views.standard.job.JobsActivity;
+
+import org.ocpsoft.prettytime.PrettyTime;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,6 +67,7 @@ public class MessageMenu extends AppCompatActivity {
     RecyclerView.Adapter adapter;
 
     List<String> messageReceipients = new ArrayList<>();
+    List<String> lastMessageSent = new ArrayList<>();
 
     String USER_TYPE = "";
 
@@ -241,9 +248,40 @@ public class MessageMenu extends AppCompatActivity {
                 if(task.isSuccessful()){
                     DocumentSnapshot documentSnapshot = task.getResult();
                     messageReceipients = (List<String>) documentSnapshot.get("recipients");
+
+                    for(int i = 0; i < messageReceipients.size(); i++){
+
+                        String toSplit = messageReceipients.get(i);
+                        String[] messageData = toSplit.split(",");
+                        String userID = messageData[0];
+
+                        fStore.collection("chat").document(user.getUid())
+                                .collection(userID)
+                                .orderBy("timestamp", Query.Direction.DESCENDING)
+                                .limit(1)
+                                .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                                        if(value != null){
+                                            List<DocumentSnapshot> dsList = value.getDocuments();
+                                            DocumentSnapshot docSnap = dsList.get(0);
+                                            PrettyTime p = new PrettyTime();
+
+                                            Timestamp ts = docSnap.getTimestamp("timestamp");
+                                            String timestamp = p.format(ts.toDate());
+
+                                            lastMessageSent.add(timestamp + "," + docSnap.getString("message"));
+                                        }
+                                    }
+                                });
+                    }
                 }
             }
         });
+
+
+
+
 
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
@@ -254,7 +292,7 @@ public class MessageMenu extends AppCompatActivity {
                 }
 
 
-                adapter = new MessagesAdapter(messageReceipients, getApplicationContext());
+                adapter = new MessagesAdapter(messageReceipients, lastMessageSent, getApplicationContext());
 
                 rv_chatList.setHasFixedSize(true);
                 rv_chatList.setLayoutManager(new LinearLayoutManager(getApplicationContext()));

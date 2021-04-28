@@ -2,6 +2,7 @@ package com.novoseltech.handymano.model;
 
 public class MessagesModel {
     String messageReceiver;
+    String lastMessage;
 
     public MessagesModel() {
     }

@@ -28,6 +28,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.novoseltech.handymano.MainActivity;
 import com.novoseltech.handymano.R;
 import com.novoseltech.handymano.adapter.JobsAdapter;
+import com.novoseltech.handymano.views.message.MessageMenu;
 import com.novoseltech.handymano.views.professional.HomeActivityProfessional;
 import com.novoseltech.handymano.views.professional.ProfessionalProfileActivity;
 import com.novoseltech.handymano.views.professional.project.ProjectsActivity;
@@ -188,6 +189,13 @@ public class JobsList extends AppCompatActivity {
 
         finish();
         startActivity(getIntent());
+    }
+
+    public void ClickMessages(View view){
+        Intent intent = new Intent(JobsList.this, MessageMenu.class);
+        intent.putExtra("USER_TYPE", "Professional");
+        finish();
+        startActivity(intent);
     }
 
 

@@ -1,6 +1,7 @@
 package com.novoseltech.handymano.views.professional;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
@@ -10,6 +11,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -25,73 +28,58 @@ import com.novoseltech.handymano.views.message.MessageMenu;
 import com.novoseltech.handymano.views.professional.job.JobsList;
 import com.novoseltech.handymano.views.professional.project.ProjectsActivity;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class  HomeActivityProfessional extends AppCompatActivity {
 
     private static final String TAG = "LOG: ";
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
-    FirebaseFirestore fStore = FirebaseFirestore.getInstance();
-    DrawerLayout drawerLayout;
 
-    Functions functions;
-
-    TextView tv_UserName;
-    ShapeableImageView profileImage;
-
-    LinearLayout homeNavLayout;
-    LinearLayout messageNavLayout;
-    LinearLayout jobsNavLayout;
-    LinearLayout projectsNavLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_professional);
-        drawerLayout = findViewById(R.id.drawer_layout);
-
-        tv_UserName = drawerLayout.findViewById(R.id.text_UserName_Professional);
-        //tv_UserName.setText(userData.get("username").toString());
-
-        //Profile image listener on navigation drawer
-        profileImage = drawerLayout.findViewById(R.id.profilePictureProfessional);
 
         FirebaseUser user = mAuth.getCurrentUser();
 
-        if(mAuth.getCurrentUser().getPhotoUrl() != null){
+
+        Map<String, Object> userHash;
+
+        if(getIntent().hasExtra("USER_MAP")){
+            userHash = (HashMap<String, Object>) getIntent().getSerializableExtra("USER_MAP");
+        }else{
+            userHash = new HashMap<>();
+        }
+
+        TextView tv_tradeHomeName = findViewById(R.id.tv_tradeHomeName);
+        tv_tradeHomeName.setText((String)userHash.get("username"));
+
+        TextView tv_tradeHomeCategory = findViewById(R.id.tv_tradeHomeCategory);
+        tv_tradeHomeCategory.setText((String)userHash.get("category"));
+
+        ImageView iv_tradeHomeProfileImage = findViewById(R.id.iv_tradeHomeProfileImage);
+        if(user.getPhotoUrl() != null){
             Glide.with(getApplicationContext())
                     .load(user.getPhotoUrl())
-                    .into(profileImage);
+                    .into(iv_tradeHomeProfileImage);
         }else{
             Log.d(TAG, "Profile image not found. Loading default image.");
         }
 
-        /***********************************************
-         * Navigation drawer listeners
-         *************************************************/
-
-        //Profile image click lister
-        profileImage.setOnClickListener(new View.OnClickListener() {
+        CardView cv_tradeHomeProject = findViewById(R.id.cv_tradeHomeProject);
+        cv_tradeHomeProject.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(HomeActivityProfessional.this, ProfessionalProfileActivity.class);
-                finish();
-                startActivity(intent);
-
-            }
-        });
-
-        //Linear layout listener for projects page fragment
-        projectsNavLayout = drawerLayout.findViewById(R.id.projectsNavigation);
-        projectsNavLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+            public void onClick(View v) {
                 Intent intent = new Intent(HomeActivityProfessional.this, ProjectsActivity.class);
                 finish();
                 startActivity(intent);
             }
         });
 
-        jobsNavLayout = drawerLayout.findViewById(R.id.jobsNavigation);
-        jobsNavLayout.setOnClickListener(new View.OnClickListener() {
+        CardView cv_tradeHomeJob = findViewById(R.id.cv_tradeHomeJob);
+        cv_tradeHomeJob.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(HomeActivityProfessional.this, JobsList.class);
@@ -100,8 +88,8 @@ public class  HomeActivityProfessional extends AppCompatActivity {
             }
         });
 
-        messageNavLayout = drawerLayout.findViewById(R.id.messageNavigation);
-        messageNavLayout.setOnClickListener(new View.OnClickListener() {
+        CardView cv_tradeHomeMessage = findViewById(R.id.cv_tradeHomeMessage);
+        cv_tradeHomeMessage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(HomeActivityProfessional.this, MessageMenu.class);
@@ -111,31 +99,21 @@ public class  HomeActivityProfessional extends AppCompatActivity {
             }
         });
 
+        CardView cv_tradeHomeFeedback = findViewById(R.id.cv_tradeHomeFeedback);
 
-        /*************************************************************
-         * end of navigation drawer listeners
-         *************************************************************/
+        Button btn_tradeHomeProfile = findViewById(R.id.btn_tradeHomeProfile);
+        btn_tradeHomeProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(HomeActivityProfessional.this, ProfessionalProfileActivity.class);
+                finish();
+                startActivity(intent);
+            }
+        });
+
+
     }
 
-    public void ClickMenu(View view) {
-        openDrawer(drawerLayout);
-    }
-
-    public static void openDrawer(DrawerLayout drawerLayout) {
-        //Open drawer layout
-        drawerLayout.openDrawer(GravityCompat.START);
-    }
-
-    public void ClickHome(View view){
-        //recreate the activity
-
-        finish();
-        startActivity(getIntent());
-    }
-
-    public void ClickLogOut(View view) {
-        logout();
-    }
 
     public void logout(){
         //Close app
