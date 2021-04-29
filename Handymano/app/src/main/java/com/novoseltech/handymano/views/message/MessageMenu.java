@@ -291,7 +291,6 @@ public class MessageMenu extends AppCompatActivity {
                     Log.d("MessageReceipient " + i, messageReceipients.get(i));
                 }
 
-
                 adapter = new MessagesAdapter(messageReceipients, lastMessageSent, getApplicationContext());
 
                 rv_chatList.setHasFixedSize(true);
