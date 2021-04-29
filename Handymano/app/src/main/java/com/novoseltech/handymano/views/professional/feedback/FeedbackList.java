@@ -11,6 +11,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,11 +22,15 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.novoseltech.handymano.MainActivity;
 import com.novoseltech.handymano.R;
 import com.novoseltech.handymano.model.FeedbackModel;
@@ -37,6 +42,9 @@ import com.novoseltech.handymano.views.professional.job.JobsList;
 import com.novoseltech.handymano.views.professional.project.ProfessionalProjectViewActivity;
 import com.novoseltech.handymano.views.professional.project.ProjectsActivity;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 public class FeedbackList extends AppCompatActivity {
     DrawerLayout drawerLayout;
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
@@ -46,6 +54,13 @@ public class FeedbackList extends AppCompatActivity {
     ShapeableImageView profileImage;
 
     //Feedback banner
+    int oneStarCount = 2;
+    int twoStarCount = 7;
+    int threeStarCount = 32;
+    int fourStarCount = 78;
+    int fiveStarCount = 67;
+
+    double totalRating = 0.0;
 
 
     //Feedback list
@@ -74,7 +89,53 @@ public class FeedbackList extends AppCompatActivity {
 
 
         //Feedback banner
+        TextView tv_tradeRatingCountOne = findViewById(R.id.tv_tradeRatingCountOne);
+        TextView tv_tradeRatingCountTwo = findViewById(R.id.tv_tradeRatingCountTwo);
+        TextView tv_tradeRatingCountThree = findViewById(R.id.tv_tradeRatingCountThree);
+        TextView tv_tradeRatingCountFour = findViewById(R.id.tv_tradeRatingCountFour);
+        TextView tv_tradeRatingCountFive = findViewById(R.id.tv_tradeRatingCountFive);
+        TextView tv_tradeTotalRating = findViewById(R.id.tv_tradeTotalRating);
 
+        fStore.collection("rating")
+                .document(user.getUid())
+                .collection("feedback")
+                .whereEqualTo("stars", 5)
+                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful()){
+                    for(DocumentSnapshot documentSnapshot : task.getResult()){
+                        fiveStarCount++;
+                    }
+                    Log.d("DOCUMENT COUNT", String.valueOf(fiveStarCount));
+                }else{
+                    Log.d("LOG", "Error getting documents");
+                }
+            }
+        });
+
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+
+                //Feedback banner -- CONTINUED
+                int totalRates = oneStarCount + twoStarCount + threeStarCount + fourStarCount + fiveStarCount;
+                double totalScore = oneStarCount + (twoStarCount * 2) + (threeStarCount * 3) + (fourStarCount * 4) + (fiveStarCount * 5);
+                totalRating = totalScore / totalRates;
+
+
+                tv_tradeRatingCountOne.setText(String.valueOf(oneStarCount));
+                tv_tradeRatingCountTwo.setText(String.valueOf(twoStarCount));
+                tv_tradeRatingCountThree.setText(String.valueOf(threeStarCount));
+                tv_tradeRatingCountFour.setText(String.valueOf(fourStarCount));
+                tv_tradeRatingCountFive.setText(String.valueOf(fiveStarCount));
+                tv_tradeTotalRating.setText(String.valueOf(round(totalRating, 1)));
+
+
+
+            }
+        }, 500);
 
         //Feedback list
         fStoreList = findViewById(R.id.rv_tradeRatingList);
@@ -101,7 +162,7 @@ public class FeedbackList extends AppCompatActivity {
             @Override
             protected void onBindViewHolder(@NonNull FeedbackList.FeedbackViewHolder holder, int position, @NonNull FeedbackModel model) {
 
-                holder.feedbackAuthor.setText(model.getUsername());
+                holder.feedbackAuthor.setText(model.getUsername() + " says:");
                 holder.feedbackComment.setText(model.getFeedback_text());
 
 
@@ -109,8 +170,12 @@ public class FeedbackList extends AppCompatActivity {
         };
 
         fStoreList.setHasFixedSize(true);
-        fStoreList.setLayoutManager(new LinearLayoutManager(this));
+        fStoreList.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         fStoreList.setAdapter(adapter);
+
+
+
+
 
     }
 
@@ -139,6 +204,15 @@ public class FeedbackList extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         adapter.startListening();
+    }
+
+    public static double round(double value, int places) {
+        //https://stackoverflow.com/questions/2808535/round-a-double-to-2-decimal-places
+        if (places < 0) throw new IllegalArgumentException();
+
+        BigDecimal bd = BigDecimal.valueOf(value);
+        bd = bd.setScale(places, RoundingMode.HALF_UP);
+        return bd.doubleValue();
     }
 
     public void ClickMenu(View view) {

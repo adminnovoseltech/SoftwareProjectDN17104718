@@ -80,7 +80,7 @@
                 android:id="@+id/tv_tradeTotalRating"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="50dp"
+                android:layout_marginEnd="40dp"
                 android:text="0.0"
                 android:textColor="@color/white"
                 android:textSize="36sp"
@@ -158,6 +158,18 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/view_tradeFeedbackSummary" />
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="18dp"
+                android:text="TOTAL RATING"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_tradeTotalRating" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

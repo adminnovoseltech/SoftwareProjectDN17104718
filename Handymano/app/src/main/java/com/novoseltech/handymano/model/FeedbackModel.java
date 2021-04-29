@@ -4,14 +4,16 @@ public class FeedbackModel {
     String username;
     String feedback_text;
     String creation_date;
+    long stars;
 
     public FeedbackModel() {
     }
 
-    public FeedbackModel(String username, String feedback_text, String creation_date) {
+    public FeedbackModel(String username, String feedback_text, String creation_date, long stars) {
         this.username = username;
         this.feedback_text = feedback_text;
         this.creation_date = creation_date;
+        this.stars = stars;
     }
 
     public String getUsername() {
@@ -24,5 +26,9 @@ public class FeedbackModel {
 
     public String getCreation_date() {
         return creation_date;
+    }
+
+    public long getStars() {
+        return stars;
     }
 }
