@@ -1,16 +1,12 @@
-package com.novoseltech.handymano.views.professional.feedback;
+package com.novoseltech.handymano.views.standard.feedback;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -21,7 +17,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
@@ -38,23 +33,20 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.novoseltech.handymano.MainActivity;
 import com.novoseltech.handymano.R;
 import com.novoseltech.handymano.model.FeedbackModel;
-import com.novoseltech.handymano.views.message.MessageMenu;
-import com.novoseltech.handymano.views.professional.HomeActivityProfessional;
-import com.novoseltech.handymano.views.professional.ProfessionalProfileActivity;
-import com.novoseltech.handymano.views.professional.job.JobsList;
-import com.novoseltech.handymano.views.professional.project.ProjectsActivity;
+import com.novoseltech.handymano.views.professional.feedback.FeedbackList;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-public class FeedbackList extends AppCompatActivity {
+public class FeedbackActivity extends AppCompatActivity {
     DrawerLayout drawerLayout;
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
     FirebaseFirestore fStore = FirebaseFirestore.getInstance();
     String UID = mAuth.getCurrentUser().getUid();
+
+    String TRADE_UID = "";
 
     ShapeableImageView profileImage;
 
@@ -72,18 +64,19 @@ public class FeedbackList extends AppCompatActivity {
     private RecyclerView fStoreList;
     private FirestoreRecyclerAdapter adapter;
 
-    ConstraintLayout cl_tradeFeedbackList;
+    ConstraintLayout cl_feedbackList;
     LayoutInflater layoutInflater;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_feedback_list);
-        drawerLayout = findViewById(R.id.drawer_layout_professional);
+        setContentView(R.layout.activity_feedback);
+        drawerLayout = findViewById(R.id.drawer_layout_standard);
+
+        TRADE_UID = getIntent().getStringExtra("USER_ID");
 
         FirebaseUser user = mAuth.getCurrentUser();
-
-        profileImage = drawerLayout.findViewById(R.id.profilePictureProfessional);
+        profileImage = drawerLayout.findViewById(R.id.profilePicture);
 
         if(mAuth.getCurrentUser().getPhotoUrl() != null){
             Glide.with(getApplicationContext())
@@ -94,19 +87,26 @@ public class FeedbackList extends AppCompatActivity {
         }
 
         //Feedback banner
-        TextView tv_tradeRatingCountOne = findViewById(R.id.tv_tradeRatingCountOne);
-        TextView tv_tradeRatingCountTwo = findViewById(R.id.tv_tradeRatingCountTwo);
-        TextView tv_tradeRatingCountThree = findViewById(R.id.tv_tradeRatingCountThree);
-        TextView tv_tradeRatingCountFour = findViewById(R.id.tv_tradeRatingCountFour);
-        TextView tv_tradeRatingCountFive = findViewById(R.id.tv_tradeRatingCountFive);
-        TextView tv_tradeTotalRating = findViewById(R.id.tv_tradeTotalRating);
+        TextView tv_ratingCountOne = findViewById(R.id.tv_ratingCountOne);
+        TextView tv_ratingCountTwo = findViewById(R.id.tv_ratingCountTwo);
+        TextView tv_ratingCountThree = findViewById(R.id.tv_ratingCountThree);
+        TextView tv_ratingCountFour = findViewById(R.id.tv_ratingCountFour);
+        TextView tv_ratingCountFive = findViewById(R.id.tv_ratingCountFive);
+        TextView tv_totalRating = findViewById(R.id.tv_totalRating);
 
         //Feedback list
-        cl_tradeFeedbackList = findViewById(R.id.cl_tradeFeedbackList);
+        cl_feedbackList = findViewById(R.id.cl_fList);
         layoutInflater = LayoutInflater.from(getApplicationContext());
 
+
+        /**
+         *
+         * RATING STATISTICS RETRIEVAL
+         *
+         * **/
+
         fStore.collection("rating")
-                .document(user.getUid())
+                .document(TRADE_UID)
                 .collection("feedback")
                 .whereEqualTo("stars", 5)
                 .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -116,7 +116,6 @@ public class FeedbackList extends AppCompatActivity {
                     for(DocumentSnapshot documentSnapshot : task.getResult()){
                         fiveStarCount++;
                     }
-                    Log.d("DOCUMENT COUNT", String.valueOf(fiveStarCount));
                 }else{
                     Log.d("LOG", "Error getting documents");
                 }
@@ -124,7 +123,7 @@ public class FeedbackList extends AppCompatActivity {
         });
 
         fStore.collection("rating")
-                .document(user.getUid())
+                .document(TRADE_UID)
                 .collection("feedback")
                 .whereEqualTo("stars", 4)
                 .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -141,7 +140,7 @@ public class FeedbackList extends AppCompatActivity {
         });
 
         fStore.collection("rating")
-                .document(user.getUid())
+                .document(TRADE_UID)
                 .collection("feedback")
                 .whereEqualTo("stars", 3)
                 .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -158,7 +157,7 @@ public class FeedbackList extends AppCompatActivity {
         });
 
         fStore.collection("rating")
-                .document(user.getUid())
+                .document(TRADE_UID)
                 .collection("feedback")
                 .whereEqualTo("stars", 2)
                 .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -175,7 +174,7 @@ public class FeedbackList extends AppCompatActivity {
         });
 
         fStore.collection("rating")
-                .document(user.getUid())
+                .document(TRADE_UID)
                 .collection("feedback")
                 .whereEqualTo("stars", 1)
                 .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -191,6 +190,8 @@ public class FeedbackList extends AppCompatActivity {
             }
         });
 
+
+
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
@@ -202,23 +203,23 @@ public class FeedbackList extends AppCompatActivity {
                 totalRating = totalScore / totalRates;
 
 
-                tv_tradeRatingCountOne.setText(String.valueOf(oneStarCount));
-                tv_tradeRatingCountTwo.setText(String.valueOf(twoStarCount));
-                tv_tradeRatingCountThree.setText(String.valueOf(threeStarCount));
-                tv_tradeRatingCountFour.setText(String.valueOf(fourStarCount));
-                tv_tradeRatingCountFive.setText(String.valueOf(fiveStarCount));
-                tv_tradeTotalRating.setText(String.valueOf(round(totalRating, 1)));
+                tv_ratingCountOne.setText(String.valueOf(oneStarCount));
+                tv_ratingCountTwo.setText(String.valueOf(twoStarCount));
+                tv_ratingCountThree.setText(String.valueOf(threeStarCount));
+                tv_ratingCountFour.setText(String.valueOf(fourStarCount));
+                tv_ratingCountFive.setText(String.valueOf(fiveStarCount));
+                tv_totalRating.setText(String.valueOf(round(totalRating, 1)));
 
 
             }
         }, 500);
 
         //Feedback list
-        fStoreList = findViewById(R.id.rv_tradeRatingList);
+        fStoreList = findViewById(R.id.rv_ratingList);
 
         //Query
         Query query = fStore.collection("rating")
-                .document(user.getUid())
+                .document(TRADE_UID)
                 .collection("feedback")
                 .orderBy("creation_date", Query.Direction.DESCENDING);
 
@@ -226,17 +227,17 @@ public class FeedbackList extends AppCompatActivity {
                 .setQuery(query, FeedbackModel.class)
                 .build();
 
-        adapter = new FirestoreRecyclerAdapter<FeedbackModel, FeedbackList.FeedbackViewHolder>(options) {
+        adapter = new FirestoreRecyclerAdapter<FeedbackModel, FeedbackActivity.FeedbackViewHolder>(options) {
 
             @NonNull
             @Override
-            public FeedbackList.FeedbackViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            public FeedbackActivity.FeedbackViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
                 View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.trade_feedback_list_item, parent, false);
-                return new FeedbackList.FeedbackViewHolder(view);
+                return new FeedbackActivity.FeedbackViewHolder(view);
             }
 
             @Override
-            protected void onBindViewHolder(@NonNull FeedbackList.FeedbackViewHolder holder, int position, @NonNull FeedbackModel model) {
+            protected void onBindViewHolder(@NonNull FeedbackActivity.FeedbackViewHolder holder, int position, @NonNull FeedbackModel model) {
 
                 holder.feedbackAuthor.setText(model.getUsername() + " on " + model.getCreation_date() + " :");
                 holder.feedbackComment.setText(model.getFeedback_text());
@@ -292,7 +293,6 @@ public class FeedbackList extends AppCompatActivity {
         fStoreList.setHasFixedSize(true);
         fStoreList.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         fStoreList.setAdapter(adapter);
-
     }
 
     private class FeedbackViewHolder  extends RecyclerView.ViewHolder{
@@ -334,90 +334,5 @@ public class FeedbackList extends AppCompatActivity {
         BigDecimal bd = BigDecimal.valueOf(value);
         bd = bd.setScale(places, RoundingMode.HALF_UP);
         return bd.doubleValue();
-    }
-
-    public void ClickMenu(View view) {
-        openDrawer(drawerLayout);
-    }
-
-    public void ClickProfile(View view) {
-        finish();
-        Intent intent = new Intent(FeedbackList.this, ProfessionalProfileActivity.class);
-        startActivity(intent);
-    }
-
-    public void ClickProjects(View view){
-        finish();
-        Intent intent = new Intent(FeedbackList.this, ProjectsActivity.class);
-        startActivity(intent);
-    }
-
-    public void ClickJobs(View view){
-        finish();
-        Intent intent = new Intent(FeedbackList.this, JobsList.class);
-        startActivity(intent);
-    }
-
-    public static void openDrawer(DrawerLayout drawerLayout) {
-        //Open drawer layout
-        drawerLayout.openDrawer(GravityCompat.START);
-    }
-
-    public void ClickLogOut(View view) {
-        logout();
-    }
-
-    public void ClickHome(View view){
-        finish();
-        Intent intent = new Intent(FeedbackList.this, HomeActivityProfessional.class);
-
-        startActivity(intent);
-    }
-
-    public void ClickMessages(View view){
-        finish();
-        Intent intent = new Intent(FeedbackList.this, MessageMenu.class);
-        intent.putExtra("USER_TYPE", "Professional");
-        startActivity(intent);
-    }
-
-    public void logout(){
-        //Close app
-        //Initialize alert dialog
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        //Set title
-        builder.setTitle("Log out");
-        //Set message
-        builder.setMessage("Are you sure you want to log out ?");
-        //Yes button
-        builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-
-                FirebaseAuth.getInstance().signOut();
-                finish();
-                Intent intent = new Intent(FeedbackList.this, MainActivity.class);
-                startActivity(intent);
-                //functions.redirectActivity(HomeActivityProfessional.this, MainActivity.class);
-
-            }
-        });
-
-        //No button
-        builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                //Dismiss dialog
-                dialogInterface.dismiss();
-            }
-        });
-        //Show dialog
-        builder.show();
-    }
-
-    @Override
-    public void onBackPressed() {
-        //super.onBackPressed();
-        Toast.makeText(getApplicationContext(), "Works", Toast.LENGTH_SHORT).show();
     }
 }

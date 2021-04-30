@@ -10,11 +10,14 @@ import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.media.Image;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,6 +29,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -35,10 +39,13 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.novoseltech.handymano.MainActivity;
 import com.novoseltech.handymano.R;
 import com.novoseltech.handymano.views.message.ChatActivity;
 import com.novoseltech.handymano.views.message.MessageMenu;
+import com.novoseltech.handymano.views.standard.feedback.FeedbackActivity;
 import com.novoseltech.handymano.views.standard.job.JobsActivity;
 import com.novoseltech.handymano.views.standard.job.StandardJobViewActivity;
 import com.novoseltech.handymano.views.standard.project.ProjectList;
@@ -59,6 +66,7 @@ public class ViewProfessionalActivity extends AppCompatActivity{
     TextView tv_tradeLastProject;
     TextView tv_viewTradeAllProjects;
     ImageView iv_messageTrade;
+    ShapeableImageView iv_tradeProfileImageView;
 
     TextView tv_tradeAddress;
 
@@ -79,30 +87,169 @@ public class ViewProfessionalActivity extends AppCompatActivity{
 
     SupportMapFragment mapFragment;
 
+    //Rating
+    Button btn_viewTradeFeedback;
+    RatingBar rb_tradeRating;
+    int oneStarCount = 2;
+    int twoStarCount = 7;
+    int threeStarCount = 32;
+    int fourStarCount = 78;
+    int fiveStarCount = 67;
+
+    double totalRating = 0.0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_professional);
         drawerLayout = findViewById(R.id.drawer_layout_standard);
 
+        String TRADE_UID = getIntent().getStringExtra("USER_ID");
+
         TextView tv_UserName = drawerLayout.findViewById(R.id.text_UserName_Standard);
         ShapeableImageView profileImage = drawerLayout.findViewById(R.id.profilePicture);
+        iv_tradeProfileImageView = findViewById(R.id.iv_tradeProfileImageView);
+
         if(user.getPhotoUrl() != null){
             Glide.with(getApplicationContext())
                     .load(user.getPhotoUrl())
                     .into(profileImage);
         }
 
-        String user_id = getIntent().getStringExtra("USER_ID");
+        StorageReference storageReference = FirebaseStorage.getInstance()
+                .getReference().child("images")
+                .child(TRADE_UID)
+                .child("profile_image_" + TRADE_UID + ".jpeg");
+
+        storageReference.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+            @Override
+            public void onComplete(@NonNull Task<Uri> task) {
+
+                if(task.isSuccessful()){
+                    Log.d("DOWNLOAD URL", task.getResult().toString());
+
+                    Glide.with(getApplicationContext())
+                            .load(task.getResult().toString())
+                            .into(iv_tradeProfileImageView);
+                }
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Glide.with(getApplicationContext())
+                        .load(R.drawable.ic_profile_512)
+                        .into(iv_tradeProfileImageView);
+            }
+        });
+
+
 
 
         Handler handler = new Handler();
 
         tv_tradeAddress = findViewById(R.id.tv_tradeAddress);
+        rb_tradeRating = findViewById(R.id.rb_tradeRating);
+
+
+        /**
+         *
+         * RATING STATISTICS RETRIEVAL
+         *
+         * **/
+
+        fStore.collection("rating")
+                .document(user.getUid())
+                .collection("feedback")
+                .whereEqualTo("stars", 5)
+                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful()){
+                    for(DocumentSnapshot documentSnapshot : task.getResult()){
+                        fiveStarCount++;
+                    }
+                }else{
+                    Log.d("LOG", "Error getting documents");
+                }
+            }
+        });
+
+        fStore.collection("rating")
+                .document(user.getUid())
+                .collection("feedback")
+                .whereEqualTo("stars", 4)
+                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful()){
+                    for(DocumentSnapshot documentSnapshot : task.getResult()){
+                        fourStarCount++;
+                    }
+                }else{
+                    Log.d("LOG", "Error getting documents");
+                }
+            }
+        });
+
+        fStore.collection("rating")
+                .document(user.getUid())
+                .collection("feedback")
+                .whereEqualTo("stars", 3)
+                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful()){
+                    for(DocumentSnapshot documentSnapshot : task.getResult()){
+                        threeStarCount++;
+                    }
+                }else{
+                    Log.d("LOG", "Error getting documents");
+                }
+            }
+        });
+
+        fStore.collection("rating")
+                .document(user.getUid())
+                .collection("feedback")
+                .whereEqualTo("stars", 2)
+                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful()){
+                    for(DocumentSnapshot documentSnapshot : task.getResult()){
+                        twoStarCount++;
+                    }
+                }else{
+                    Log.d("LOG", "Error getting documents");
+                }
+            }
+        });
+
+        fStore.collection("rating")
+                .document(user.getUid())
+                .collection("feedback")
+                .whereEqualTo("stars", 1)
+                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful()){
+                    for(DocumentSnapshot documentSnapshot : task.getResult()){
+                        oneStarCount++;
+                    }
+                }else{
+                    Log.d("LOG", "Error getting documents");
+                }
+            }
+        });
 
 
 
-        fStore.collection("user").document(user_id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+
+
+
+
+        fStore.collection("user").document(TRADE_UID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if(task.isSuccessful()){
@@ -123,7 +270,7 @@ public class ViewProfessionalActivity extends AppCompatActivity{
             }
         });
 
-        Query query = fStore.collection("user").document(user_id).
+        Query query = fStore.collection("user").document(TRADE_UID).
                 collection("projects").orderBy("creation_date", Query.Direction.DESCENDING)
                 .limit(1);
 
@@ -159,6 +306,14 @@ public class ViewProfessionalActivity extends AppCompatActivity{
                 tv_tradeLastProject = findViewById(R.id.tv_tradeLastProject);
                 tv_viewTradeAllProjects = findViewById(R.id.tv_tradeViewAllProjects);
 
+                //Rating
+                btn_viewTradeFeedback = findViewById(R.id.btn_viewTradeFeedback);
+                //rating calculation
+                int totalRates = oneStarCount + twoStarCount + threeStarCount + fourStarCount + fiveStarCount;
+                double totalScore = oneStarCount + (twoStarCount * 2) + (threeStarCount * 3) + (fourStarCount * 4) + (fiveStarCount * 5);
+                totalRating = totalScore / totalRates;
+
+                rb_tradeRating.setRating((float) totalRating);
 
 
                 iv_messageTrade = findViewById(R.id.iv_messageTrade);
@@ -169,12 +324,20 @@ public class ViewProfessionalActivity extends AppCompatActivity{
                 tv_tradeLastProject.setText("Last project: " + lastProject);
 
 
+                btn_viewTradeFeedback.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(ViewProfessionalActivity.this, FeedbackActivity.class);
+                        intent.putExtra("USER_ID", TRADE_UID);
+                        startActivity(intent);
+                    }
+                });
 
                 tv_viewTradeAllProjects.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         Intent intent  = new Intent(getApplicationContext(), ProjectList.class);
-                        intent.putExtra("USER_ID", user_id);
+                        intent.putExtra("USER_ID", TRADE_UID);
                         startActivity(intent);
                     }
                 });
@@ -183,7 +346,7 @@ public class ViewProfessionalActivity extends AppCompatActivity{
                     @Override
                     public void onClick(View v) {
                         Intent intent  = new Intent(getApplicationContext(), ViewProject.class);
-                        intent.putExtra("USER_ID", user_id);
+                        intent.putExtra("USER_ID", TRADE_UID);
                         intent.putExtra("PROJECT_ID", lastProject);
                         startActivity(intent);
                     }
@@ -195,7 +358,7 @@ public class ViewProfessionalActivity extends AppCompatActivity{
                         Intent intent = new Intent(ViewProfessionalActivity.this, ChatActivity.class);
                         intent.putExtra("MODE", "PROFILE_VISIT");
                         intent.putExtra("TRADE_NAME", tradeName);
-                        intent.putExtra("TRADE_ID", user_id);
+                        intent.putExtra("TRADE_ID", TRADE_UID);
                         startActivity(intent);
                     }
                 });

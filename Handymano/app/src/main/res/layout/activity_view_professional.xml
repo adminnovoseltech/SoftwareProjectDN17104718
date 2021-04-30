@@ -51,7 +51,7 @@
                         android:textStyle="bold"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/imageView3" />
+                        app:layout_constraintTop_toBottomOf="@+id/iv_tradeProfileImageView" />
 
                     <TextView
                         android:id="@+id/tv_tradeExperience"
@@ -65,14 +65,15 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/tv_tradeCategory" />
 
-                    <ImageView
-                        android:id="@+id/imageView3"
+                    <com.google.android.material.imageview.ShapeableImageView
+                        android:id="@+id/iv_tradeProfileImageView"
                         android:layout_width="100dp"
                         android:layout_height="100dp"
                         android:layout_marginTop="20dp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/tv_tradeName"
+                        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize10Percent"
                         app:srcCompat="@drawable/ic_profile_512" />
 
                     <View
@@ -127,14 +128,15 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/tv_tradeProjectsTitle" />
 
-                    <TextView
-                        android:id="@+id/tv_tradeRatingTitle"
+
+
+                    <Button
+                        android:id="@+id/btn_viewTradeFeedback"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="20dp"
-                        android:text="Rating"
-                        android:textSize="24sp"
-                        android:textStyle="bold"
+                        android:text="FEEDBACK"
+                        style="?attr/materialButtonOutlinedStyle"
                         app:layout_constraintBottom_toTopOf="@+id/view_tradeHome"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/view2" />
@@ -182,6 +184,16 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/trade_map_frag" />
+
+                    <RatingBar
+                        android:id="@+id/rb_tradeRating"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="10dp"
+                        android:isIndicator="true"
+                        android:stepSize="0.1"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/view2" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </ScrollView>
 
