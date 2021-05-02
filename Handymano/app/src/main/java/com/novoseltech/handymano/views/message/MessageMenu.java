@@ -107,6 +107,18 @@ public class MessageMenu extends AppCompatActivity {
                 Log.d("TAG", "Profile image not found. Loading default image.");
             }
 
+            fStore.collection("user")
+                    .document(user.getUid())
+                    .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if(task.isSuccessful()){
+                        DocumentSnapshot documentSnapshot = task.getResult();
+                        tv_UserName.setText(documentSnapshot.getString("username"));
+                    }
+                }
+            });
+
             /***********************************************
              * Navigation drawer listeners
              *************************************************/
@@ -195,6 +207,18 @@ public class MessageMenu extends AppCompatActivity {
                 Log.d("TAG", "Profile image not found. Loading default image.");
             }
 
+            fStore.collection("user")
+                    .document(user.getUid())
+                    .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if(task.isSuccessful()){
+                        DocumentSnapshot documentSnapshot = task.getResult();
+                        tv_UserName.setText(documentSnapshot.getString("username"));
+                    }
+                }
+            });
+
             /***********************************************
              * Navigation drawer listeners
              *************************************************/
@@ -241,6 +265,14 @@ public class MessageMenu extends AppCompatActivity {
                     Intent intent = getIntent();
                     intent.putExtra("USER_TYPE", "Standard");
                     startActivity(intent);
+                }
+            });
+
+            appLogoutLayout = drawerLayout.findViewById(R.id.logoutNavigation);
+            appLogoutLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    logout();
                 }
             });
 
@@ -365,7 +397,6 @@ public class MessageMenu extends AppCompatActivity {
                 finish();
                 Intent intent = new Intent(MessageMenu.this, MainActivity.class);
                 startActivity(intent);
-                //functions.redirectActivity(HomeActivityProfessional.this, MainActivity.class);
 
             }
         });

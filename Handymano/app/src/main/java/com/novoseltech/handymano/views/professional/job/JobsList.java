@@ -14,10 +14,13 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.imageview.ShapeableImageView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -67,10 +70,21 @@ public class JobsList extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_jobs_list);
         drawerLayout = findViewById(R.id.drawer_layout_professional);
+        TextView tv_drawerUsername = drawerLayout.findViewById(R.id.text_UserName_Professional);
+        ShapeableImageView profileImage = drawerLayout.findViewById(R.id.profilePictureProfessional);
+
 
         mAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();
         user = mAuth.getCurrentUser();
+
+        if(mAuth.getCurrentUser().getPhotoUrl() != null){
+            Glide.with(getApplicationContext())
+                    .load(user.getPhotoUrl())
+                    .into(profileImage);
+        }else{
+            Log.d("TAG", "Profile image not found. Loading default image.");
+        }
 
         rv_regularJobList = findViewById(R.id.rv_regularJobList);
 
@@ -85,7 +99,7 @@ public class JobsList extends AppCompatActivity {
                     tradeGP = documentSnapshot.getGeoPoint("location");
                     tradeRadius = documentSnapshot.getString("radius");
                     tradeCategory = documentSnapshot.getString("category");
-
+                    tv_drawerUsername.setText(documentSnapshot.getString("username"));
                 }
             }
         });

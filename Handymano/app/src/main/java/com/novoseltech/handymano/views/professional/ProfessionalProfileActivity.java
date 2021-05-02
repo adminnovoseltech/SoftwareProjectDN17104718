@@ -132,7 +132,6 @@ public class ProfessionalProfileActivity extends AppCompatActivity implements Pa
         TextView tv_pp_email = findViewById(R.id.tv_pp_email);
         tv_pp_email.setText(email);
         TextView tv_pp_phoneNo = findViewById(R.id.tv_pp_phoneNo);
-        TextView experience = findViewById(R.id.textView_experience);
 
         TextView tv_currentAddress = findViewById(R.id.textView_currentAddress);
         tv_currentAddress.setVisibility(View.VISIBLE);
@@ -180,6 +179,8 @@ public class ProfessionalProfileActivity extends AppCompatActivity implements Pa
         }
 
         profileImage = drawerLayout.findViewById(R.id.profilePictureProfessional);
+        TextView tv_drawerUsername = drawerLayout.findViewById(R.id.text_UserName_Professional);
+
 
         if(mAuth.getCurrentUser().getPhotoUrl() != null){
             Glide.with(getApplicationContext())
@@ -206,10 +207,11 @@ public class ProfessionalProfileActivity extends AppCompatActivity implements Pa
                             String address = getAddressFromLatLng(tmpLat, tmpLon);
                             tv_currentAddress.setText(address);
 
+                            tv_drawerUsername.setText(username);
+
                             trade = documentSnapshot.getString("category");
                             yearsOfExp = documentSnapshot.getString("experience");
 
-                            experience.setText(trade + " | " + yearsOfExp);
 
                             tv_pp_username.setText(documentSnapshot.getString("username"));
                             tv_pp_phoneNo.setText(documentSnapshot.getString("phoneNo"));
@@ -262,13 +264,7 @@ public class ProfessionalProfileActivity extends AppCompatActivity implements Pa
                 tv_pp_email.setVisibility(View.VISIBLE);
                 tv_currentAddress.setVisibility(View.VISIBLE);
 
-                /*Log.d("tmplat", String.valueOf(latitude));
-                Log.d("tmplat", String.valueOf(longitude));
-                Log.d("tmprad", String.valueOf(radius));
 
-                Log.d("tmpAddress",tmpAddress);
-                Log.d("addressfromcoordinates", getAddressFromLatLng(latitude, longitude));
-*/
                 //If nothing was changed
                 if(et_pp_username.getText().toString().equals(username) &&
                         et_pp_phoneNo.getText().toString().equals(phoneNo) &&

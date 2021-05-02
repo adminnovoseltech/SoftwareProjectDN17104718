@@ -84,6 +84,7 @@ public class FeedbackList extends AppCompatActivity {
         FirebaseUser user = mAuth.getCurrentUser();
 
         profileImage = drawerLayout.findViewById(R.id.profilePictureProfessional);
+        TextView tv_drawerUsername = drawerLayout.findViewById(R.id.text_UserName_Professional);
 
         if(mAuth.getCurrentUser().getPhotoUrl() != null){
             Glide.with(getApplicationContext())
@@ -187,6 +188,18 @@ public class FeedbackList extends AppCompatActivity {
                     }
                 }else{
                     Log.d("LOG", "Error getting documents");
+                }
+            }
+        });
+
+        fStore.collection("user")
+                .document(user.getUid())
+                .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful()){
+                    DocumentSnapshot documentSnapshot = task.getResult();
+                    tv_drawerUsername.setText(documentSnapshot.getString("username"));
                 }
             }
         });

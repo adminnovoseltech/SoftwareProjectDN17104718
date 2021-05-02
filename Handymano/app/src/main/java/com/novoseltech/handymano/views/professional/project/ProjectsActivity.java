@@ -23,9 +23,12 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.novoseltech.handymano.MainActivity;
@@ -61,6 +64,7 @@ public class ProjectsActivity extends AppCompatActivity {
         user = mAuth.getCurrentUser();
 
         profileImage = drawerLayout.findViewById(R.id.profilePictureProfessional);
+        TextView tv_drawerUsername = drawerLayout.findViewById(R.id.text_UserName_Professional);
 
         FirebaseUser user = mAuth.getCurrentUser();
 
@@ -71,6 +75,18 @@ public class ProjectsActivity extends AppCompatActivity {
         }else{
             Log.d("TAG", "Profile image not found. Loading default image.");
         }
+
+        fStore.collection("user")
+                .document(user.getUid())
+                .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful()){
+                    DocumentSnapshot documentSnapshot = task.getResult();
+                    tv_drawerUsername.setText(documentSnapshot.getString("username"));
+                }
+            }
+        });
 
         fStoreList = findViewById(R.id.firestoreListProjects);
 
