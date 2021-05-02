@@ -30,30 +30,28 @@
 
             </FrameLayout>
 
-            <com.google.android.material.imageview.ShapeableImageView
-                android:id="@+id/iv_pp_profilePhoto"
-                android:layout_width="150dp"
-                android:layout_height="150dp"
-                android:layout_marginTop="40dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_profile_512"
-                app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize10Percent" />
-
             <ScrollView
                 android:id="@+id/scrollView2"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_marginTop="40dp"
                 app:layout_constraintBottom_toTopOf="@+id/btn_save_pp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/iv_pp_profilePhoto">
+                app:layout_constraintTop_toTopOf="parent">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
+
+                    <com.google.android.material.imageview.ShapeableImageView
+                        android:id="@+id/iv_pp_profilePhoto"
+                        android:layout_width="150dp"
+                        android:layout_height="150dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize10Percent"
+                        app:srcCompat="@drawable/ic_profile_512" />
 
                     <TextView
                         android:id="@+id/textView_AddressTitle"
@@ -94,13 +92,14 @@
                         android:id="@+id/textViewpp1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
                         android:text="Username"
                         android:textAllCaps="true"
                         android:textSize="28sp"
                         android:textStyle="bold"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toBottomOf="@+id/iv_pp_profilePhoto" />
 
                     <TextView
                         android:id="@+id/tv_pp_username"

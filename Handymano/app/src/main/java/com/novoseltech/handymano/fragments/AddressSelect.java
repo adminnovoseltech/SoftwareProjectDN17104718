@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment;
 
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -173,23 +174,9 @@ public class AddressSelect extends Fragment implements OnMapReadyCallback{
                     LatLng point = new LatLng(53.2734, -7.77832031);
                     googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(point, 7));
                 }
-                /*LatLng point = new LatLng(53.2734, -7.77832031);
-                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(point, 7));*/
-                //addMarkerToTheMap(point);
+
             }
         });
-
-
-
-        /*
-        mapFragment = (SupportMapFragment)getActivity().getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-
-
-         */
-
-
-
 
         return view;
     }
@@ -242,13 +229,17 @@ public class AddressSelect extends Fragment implements OnMapReadyCallback{
                     if(ActivityCompat.checkSelfPermission(getContext(),
                             Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
                         //If permission is granted
-                        addMarkerToTheMap(point);
-                        coordinates[0] = String.valueOf(point.latitude);
-                        coordinates[1] = String.valueOf(point.longitude);
 
+                        //Check if it is Ireland
+                        String countryName = getCountryFromCoordinates(point.latitude, point.longitude);
 
-
-                        //Toast.makeText(getContext(), radius, Toast.LENGTH_SHORT).show();
+                        if(countryName.equals("Ireland")){
+                            addMarkerToTheMap(point);
+                            coordinates[0] = String.valueOf(point.latitude);
+                            coordinates[1] = String.valueOf(point.longitude);
+                        }else{
+                            Toast.makeText(getContext(), "Location must be set in Ireland", Toast.LENGTH_SHORT).show();
+                        }
 
                     }else{
                         //When permission is denied
@@ -309,6 +300,7 @@ public class AddressSelect extends Fragment implements OnMapReadyCallback{
             }
 
             Address location = address.get(0);
+
             p1 = new LatLng(location.getLatitude(), location.getLongitude() );
 
         } catch (IOException ex) {
@@ -355,5 +347,24 @@ public class AddressSelect extends Fragment implements OnMapReadyCallback{
 
     public String getLocationData(int i){
         return coordinates[i];
+    }
+
+    private String getCountryFromCoordinates(double LATITUDE, double LONGITUDE) {
+        String strAdd = "";
+        Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
+        try {
+            List<Address> addresses = geocoder.getFromLocation(LATITUDE, LONGITUDE, 1);
+            if (addresses != null) {
+                Address returnedAddress = addresses.get(0);
+
+                strAdd = returnedAddress.getCountryName();
+            } else {
+                Log.d("My Current", "No Address returned!");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.d("My Current", "Cannot get Address!");
+        }
+        return strAdd;
     }
 }

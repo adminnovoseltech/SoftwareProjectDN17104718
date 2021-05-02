@@ -63,11 +63,6 @@ public class ProfessionalProjectViewActivity extends AppCompatActivity implement
     CardView cv_carousel_project;
     ImageView iv_projectMore;
 
-    String currentFragment;
-    EditProject editProjectFragment = new EditProject();
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

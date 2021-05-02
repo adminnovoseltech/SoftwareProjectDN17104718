@@ -85,7 +85,6 @@ public class MessageMenu extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //setContentView(R.layout.activity_message_menu);
 
         USER_TYPE = getIntent().getStringExtra("USER_TYPE");
         mAuth = FirebaseAuth.getInstance();
@@ -184,6 +183,14 @@ public class MessageMenu extends AppCompatActivity {
                     finish();
                     Intent intent = new Intent(MessageMenu.this, FeedbackList.class);
                     startActivity(intent);
+                }
+            });
+
+            appLogoutLayout = drawerLayout.findViewById(R.id.logoutNavigation);
+            appLogoutLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    logout();
                 }
             });
 
