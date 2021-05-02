@@ -34,6 +34,7 @@ import com.novoseltech.handymano.model.ProjectsModel;
 import com.novoseltech.handymano.views.message.MessageMenu;
 import com.novoseltech.handymano.views.professional.HomeActivityProfessional;
 import com.novoseltech.handymano.views.professional.ProfessionalProfileActivity;
+import com.novoseltech.handymano.views.professional.feedback.FeedbackList;
 import com.novoseltech.handymano.views.professional.job.JobsList;
 
 public class ProjectsActivity extends AppCompatActivity {
@@ -120,14 +121,6 @@ public class ProjectsActivity extends AppCompatActivity {
         btn_createProject.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                /*AddProject addProject_fragment = new AddProject();
-                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.frame_project_add, addProject_fragment);
-                transaction.addToBackStack(null);
-                transaction.commit();
-
-                btn_createProject.setVisibility(View.GONE);
-                fStoreList.setVisibility(View.GONE);*/
 
                 Intent intent = new Intent(ProjectsActivity.this, CreateProject.class);
                 startActivity(intent);
@@ -205,6 +198,12 @@ public class ProjectsActivity extends AppCompatActivity {
         finish();
         Intent intent = new Intent(ProjectsActivity.this, HomeActivityProfessional.class);
 
+        startActivity(intent);
+    }
+
+    public void ClickFeedback(View view){
+        Intent intent = new Intent(ProjectsActivity.this, FeedbackList.class);
+        finish();
         startActivity(intent);
     }
 

@@ -52,6 +52,7 @@ import com.novoseltech.handymano.R;
 import com.novoseltech.handymano.fragments.AddressSelect;
 import com.novoseltech.handymano.fragments.PasswordConfirmationDialog;
 import com.novoseltech.handymano.views.message.MessageMenu;
+import com.novoseltech.handymano.views.professional.feedback.FeedbackList;
 import com.novoseltech.handymano.views.professional.job.JobsList;
 import com.novoseltech.handymano.views.professional.project.ProfessionalProjectViewActivity;
 import com.novoseltech.handymano.views.professional.project.ProjectsActivity;
@@ -605,6 +606,12 @@ public class ProfessionalProfileActivity extends AppCompatActivity implements Pa
         finish();
         Intent intent = new Intent(ProfessionalProfileActivity.this, MessageMenu.class);
         intent.putExtra("USER_TYPE", "Professional");
+        startActivity(intent);
+    }
+
+    public void ClickFeedback(View view){
+        Intent intent = new Intent(ProfessionalProfileActivity.this, FeedbackList.class);
+        finish();
         startActivity(intent);
     }
 

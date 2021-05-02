@@ -43,6 +43,7 @@ import com.novoseltech.handymano.adapter.MessagesAdapter;
 import com.novoseltech.handymano.model.MessagesModel;
 import com.novoseltech.handymano.views.professional.HomeActivityProfessional;
 import com.novoseltech.handymano.views.professional.ProfessionalProfileActivity;
+import com.novoseltech.handymano.views.professional.feedback.FeedbackList;
 import com.novoseltech.handymano.views.professional.job.JobsList;
 import com.novoseltech.handymano.views.professional.project.ProjectsActivity;
 import com.novoseltech.handymano.views.standard.HomeActivityStandard;
@@ -78,7 +79,8 @@ public class MessageMenu extends AppCompatActivity {
     LinearLayout messageNavLayout;
     LinearLayout jobsNavLayout;
     LinearLayout projectsNavLayout;
-    LinearLayout appLogout;
+    LinearLayout feedbackNavLayout;
+    LinearLayout appLogoutLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -163,6 +165,17 @@ public class MessageMenu extends AppCompatActivity {
                 }
             });
 
+            feedbackNavLayout = drawerLayout.findViewById(R.id.feedbackNavigation);
+            feedbackNavLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    finish();
+                    Intent intent = new Intent(MessageMenu.this, FeedbackList.class);
+                    startActivity(intent);
+                }
+            });
+
+
 
             /*************************************************************
              * end of navigation drawer listeners
@@ -230,6 +243,7 @@ public class MessageMenu extends AppCompatActivity {
                     startActivity(intent);
                 }
             });
+
 
 
             /*************************************************************

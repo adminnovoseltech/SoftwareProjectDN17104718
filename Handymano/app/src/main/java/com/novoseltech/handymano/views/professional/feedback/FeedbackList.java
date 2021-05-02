@@ -220,7 +220,8 @@ public class FeedbackList extends AppCompatActivity {
         Query query = fStore.collection("rating")
                 .document(user.getUid())
                 .collection("feedback")
-                .orderBy("creation_date", Query.Direction.DESCENDING);
+                .whereNotEqualTo("feedback_text", "");
+                //.orderBy("creation_date", Query.Direction.DESCENDING);
 
         FirestoreRecyclerOptions<FeedbackModel> options = new FirestoreRecyclerOptions.Builder<FeedbackModel>()
                 .setQuery(query, FeedbackModel.class)
@@ -379,6 +380,11 @@ public class FeedbackList extends AppCompatActivity {
         Intent intent = new Intent(FeedbackList.this, MessageMenu.class);
         intent.putExtra("USER_TYPE", "Professional");
         startActivity(intent);
+    }
+
+    public void ClickFeedback(View view){
+        finish();
+        startActivity(getIntent());
     }
 
     public void logout(){

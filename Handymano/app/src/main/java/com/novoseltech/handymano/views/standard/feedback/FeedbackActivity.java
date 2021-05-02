@@ -315,11 +315,12 @@ public class FeedbackActivity extends AppCompatActivity {
             @Override
             protected void onBindViewHolder(@NonNull FeedbackActivity.FeedbackViewHolder holder, int position, @NonNull FeedbackModel model) {
 
-                if(model.getUsername().equals(MY_USERNAME)){
+                /*if(model.getUsername().equals(MY_USERNAME)){
                     holder.feedbackAuthor.setText("Your feedback on " + model.getCreation_date() + " :");
                 }else{
-                    holder.feedbackAuthor.setText(model.getUsername() + " on " + model.getCreation_date() + " :");
-                }
+
+                }*/
+                holder.feedbackAuthor.setText(model.getUsername() + " on " + model.getCreation_date() + " :");
                 holder.feedbackComment.setText(model.getFeedback_text());
 
                 if(model.getStars() == 5){
@@ -369,8 +370,53 @@ public class FeedbackActivity extends AppCompatActivity {
                 holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
                     public boolean onLongClick(View v) {
-                        Toast.makeText(getApplicationContext(), "IT WORKS", Toast.LENGTH_SHORT).show();
-                        return true;
+
+
+                        if(holder.feedbackAuthor.getText().equals(MY_USERNAME + " on " + model.getCreation_date() + " :")){
+
+                            holder.feedbackAuthor.setVisibility(View.INVISIBLE);
+                            holder.feedbackComment.setVisibility(View.INVISIBLE);
+                            holder.ll_starContainer.setVisibility(View.INVISIBLE);
+                            holder.cl_deleteFeedback.setVisibility(View.VISIBLE);
+
+                            return true;
+                        }else{
+                            return false;
+                        }
+
+                    }
+                });
+
+                holder.btn_deleteFeedbackYes.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        fStore.collection("rating")
+                                .document(TRADE_UID)
+                                .collection("feedback")
+                                .document(MY_UID)
+                                .delete()
+                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        Log.d("DELETE", "Feedback deleted");
+                                    }
+                                });
+
+                        holder.cl_deleteFeedback.setVisibility(View.GONE);
+                        holder.feedbackAuthor.setVisibility(View.VISIBLE);
+                        holder.feedbackComment.setVisibility(View.VISIBLE);
+                        holder.ll_starContainer.setVisibility(View.VISIBLE);
+                    }
+                });
+
+                holder.btn_deleteFeedbackNo.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        holder.cl_deleteFeedback.setVisibility(View.GONE);
+                        holder.feedbackAuthor.setVisibility(View.VISIBLE);
+                        holder.feedbackComment.setVisibility(View.VISIBLE);
+                        holder.ll_starContainer.setVisibility(View.VISIBLE);
+
                     }
                 });
 
@@ -387,21 +433,28 @@ public class FeedbackActivity extends AppCompatActivity {
 
     private class FeedbackViewHolder  extends RecyclerView.ViewHolder{
 
-        //private TextView feedbackCreationDate;
         private TextView feedbackAuthor;
         private TextView feedbackComment;
         private ImageView feedbackImage;
-
         LinearLayout ll_starContainer;
+
+        private ConstraintLayout cl_deleteFeedback;
+        private Button btn_deleteFeedbackYes;
+        private Button btn_deleteFeedbackNo;
 
         public FeedbackViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            //feedbackCreationDate = itemView.findViewById(R.id.tv_tradeFeedbackAuthor);
+
             feedbackAuthor = itemView.findViewById(R.id.tv_tradeFeedbackAuthor);
             feedbackComment = itemView.findViewById(R.id.tv_tradeFeedbackComment);
             feedbackImage = itemView.findViewById(R.id.iv_tradeFeedbackProfileImage);
             ll_starContainer = itemView.findViewById(R.id.ll_starContainer);
+
+            //Feedback delete
+            cl_deleteFeedback = itemView.findViewById(R.id.cl_feedbackDelete);
+            btn_deleteFeedbackYes = itemView.findViewById(R.id.btn_deleteFeedbackYes);
+            btn_deleteFeedbackNo = itemView.findViewById(R.id.btn_deleteFeedbackNo);
         }
     }
 
@@ -507,4 +560,6 @@ public class FeedbackActivity extends AppCompatActivity {
         finish();
         startActivity(intent);
     }
+
+
 }

@@ -31,6 +31,7 @@ import com.novoseltech.handymano.adapter.JobsAdapter;
 import com.novoseltech.handymano.views.message.MessageMenu;
 import com.novoseltech.handymano.views.professional.HomeActivityProfessional;
 import com.novoseltech.handymano.views.professional.ProfessionalProfileActivity;
+import com.novoseltech.handymano.views.professional.feedback.FeedbackList;
 import com.novoseltech.handymano.views.professional.project.ProjectsActivity;
 
 import java.util.ArrayList;
@@ -210,6 +211,12 @@ public class JobsList extends AppCompatActivity {
 
     public void ClickHome(View view){
         Intent intent = new Intent(JobsList.this, HomeActivityProfessional.class);
+        finish();
+        startActivity(intent);
+    }
+
+    public void ClickFeedback(View view){
+        Intent intent = new Intent(JobsList.this, FeedbackList.class);
         finish();
         startActivity(intent);
     }

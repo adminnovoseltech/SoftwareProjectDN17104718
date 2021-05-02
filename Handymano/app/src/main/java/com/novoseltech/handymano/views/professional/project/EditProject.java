@@ -9,8 +9,10 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.content.ClipData;
 import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -50,6 +52,8 @@ import com.google.firebase.storage.UploadTask;
 import com.novoseltech.handymano.R;
 import com.novoseltech.handymano.adapter.SliderAdapter;
 import com.novoseltech.handymano.model.SliderItem;
+import com.novoseltech.handymano.views.standard.job.EditJob;
+import com.novoseltech.handymano.views.standard.job.StandardJobViewActivity;
 import com.smarteist.autoimageslider.IndicatorView.animation.type.IndicatorAnimationType;
 import com.smarteist.autoimageslider.IndicatorView.draw.controller.DrawController;
 import com.smarteist.autoimageslider.SliderAnimations;
@@ -687,5 +691,36 @@ public class EditProject extends AppCompatActivity {
                 }
                 break;
         }
+    }
+
+    public void discardChanges(){
+        //Close app
+        //Initialize alert dialog
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        //Set title
+        builder.setTitle("Discard");
+        //Set message
+        builder.setMessage("Your changes are not saved. Continue ?");
+        //Yes button
+        builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                finish();
+                Intent intent = new Intent(EditProject.this, ProfessionalProjectViewActivity.class);
+                intent.putExtra("PROJECT_ID", PROJECT_ID);
+                startActivity(intent);
+            }
+        });
+
+        //No button
+        builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                //Dismiss dialog
+                dialogInterface.dismiss();
+            }
+        });
+        //Show dialog
+        builder.show();
     }
 }

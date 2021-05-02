@@ -895,6 +895,7 @@ public class EditJob extends AppCompatActivity {
             public void onClick(DialogInterface dialogInterface, int i) {
                 finish();
                 Intent intent = new Intent(EditJob.this, StandardJobViewActivity.class);
+                intent.putExtra("JOB_ID", JOB_ID);
                 startActivity(intent);
             }
         });

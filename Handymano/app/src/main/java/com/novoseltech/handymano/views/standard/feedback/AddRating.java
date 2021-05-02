@@ -3,6 +3,8 @@ package com.novoseltech.handymano.views.standard.feedback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -18,6 +20,8 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.novoseltech.handymano.R;
 import com.novoseltech.handymano.views.standard.ViewProfessionalActivity;
+import com.novoseltech.handymano.views.standard.job.CreateJob;
+import com.novoseltech.handymano.views.standard.job.JobsActivity;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -123,7 +127,42 @@ public class AddRating extends AppCompatActivity {
             }
         });
 
+    }
 
+    public void discardChanges(){
+        //Close app
+        //Initialize alert dialog
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        //Set title
+        builder.setTitle("Discard");
+        //Set message
+        builder.setMessage("Your changes are not saved. Continue ?");
+        //Yes button
+        builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                finish();
+                Intent intent = new Intent(AddRating.this, FeedbackActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        //No button
+        builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                //Dismiss dialog
+                dialogInterface.dismiss();
+            }
+        });
+        //Show dialog
+        builder.show();
+    }
+
+    @Override
+    public void onBackPressed() {
+        //super.onBackPressed();
+        discardChanges();
 
     }
 }
