@@ -66,5 +66,6 @@
     <string name="job_category">Job category</string>
     <string name="job_status">Job status</string>
     <string name="message_advertiser">Message advertiser</string>
+    <string name="add_feedback">Add feedback</string>
 
 </resources>

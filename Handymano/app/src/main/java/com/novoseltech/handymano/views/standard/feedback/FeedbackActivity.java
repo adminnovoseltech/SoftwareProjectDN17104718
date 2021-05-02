@@ -3,10 +3,13 @@ package com.novoseltech.handymano.views.standard.feedback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -14,15 +17,18 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -33,47 +39,61 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.novoseltech.handymano.MainActivity;
 import com.novoseltech.handymano.R;
 import com.novoseltech.handymano.model.FeedbackModel;
+import com.novoseltech.handymano.views.message.MessageMenu;
 import com.novoseltech.handymano.views.professional.feedback.FeedbackList;
+import com.novoseltech.handymano.views.standard.HomeActivityStandard;
+import com.novoseltech.handymano.views.standard.StandardProfileActivity;
+import com.novoseltech.handymano.views.standard.job.JobsActivity;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 public class FeedbackActivity extends AppCompatActivity {
-    DrawerLayout drawerLayout;
+
+    //FIREBASE
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
     FirebaseFirestore fStore = FirebaseFirestore.getInstance();
-    String UID = mAuth.getCurrentUser().getUid();
 
-    String TRADE_UID = "";
-
+    //NAVIGATION DRAWERS
+    DrawerLayout drawerLayout;
     ShapeableImageView profileImage;
+    TextView tv_myUsername;
 
-    //Feedback banner
+    //MY DETAILS
+    String MY_USERNAME = "";
+    String MY_UID = mAuth.getCurrentUser().getUid();
+
+    //TRADE DETAILS
+    String TRADE_UID = "";
+    String TRADE_USERNAME = "";
+
+    //FEEDBACK BANNER
     int oneStarCount = 2;
     int twoStarCount = 7;
     int threeStarCount = 32;
     int fourStarCount = 78;
     int fiveStarCount = 67;
-
     double totalRating = 0.0;
 
-
-    //Feedback list
+    //FEEDBACK LIST
     private RecyclerView fStoreList;
     private FirestoreRecyclerAdapter adapter;
-
     ConstraintLayout cl_feedbackList;
     LayoutInflater layoutInflater;
+    String FEEDBACK_MODE = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_feedback);
         drawerLayout = findViewById(R.id.drawer_layout_standard);
+        tv_myUsername = findViewById(R.id.text_UserName_Standard);
 
         TRADE_UID = getIntent().getStringExtra("USER_ID");
+        TRADE_USERNAME = getIntent().getStringExtra("TRADE_USERNAME");
 
         FirebaseUser user = mAuth.getCurrentUser();
         profileImage = drawerLayout.findViewById(R.id.profilePicture);
@@ -97,6 +117,8 @@ public class FeedbackActivity extends AppCompatActivity {
         //Feedback list
         cl_feedbackList = findViewById(R.id.cl_fList);
         layoutInflater = LayoutInflater.from(getApplicationContext());
+
+
 
 
         /**
@@ -190,6 +212,54 @@ public class FeedbackActivity extends AppCompatActivity {
             }
         });
 
+        fStore.collection("user")
+                .document(MY_UID)
+                .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful()){
+                    DocumentSnapshot documentSnapshot = task.getResult();
+                    MY_USERNAME = documentSnapshot.getString("username");
+                    tv_myUsername.setText(MY_USERNAME);
+
+                }
+
+            }
+        });
+
+        fStore.collection("rating")
+                .document(TRADE_UID)
+                .collection("feedback")
+                .document(MY_UID)
+                .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                if(documentSnapshot.exists()){
+                    Toast.makeText(getApplicationContext(), "Exists", Toast.LENGTH_SHORT).show();
+                    FEEDBACK_MODE = "EDIT";
+                }else{
+                    Toast.makeText(getApplicationContext(), "Does not exist", Toast.LENGTH_SHORT).show();
+                    FEEDBACK_MODE = "NEW";
+                }
+
+            }
+        });
+
+        //New feedback
+        Button btn_addTradeFeedback = findViewById(R.id.btn_addTradeFeedback);
+        btn_addTradeFeedback.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(FeedbackActivity.this, AddRating.class);
+                intent.putExtra("TRADE_UID", TRADE_UID);
+                intent.putExtra("TRADE_USERNAME", TRADE_USERNAME);
+                intent.putExtra("MY_UID", MY_UID);
+                intent.putExtra("MY_USERNAME", MY_USERNAME);
+                intent.putExtra("FEEDBACK_MODE", FEEDBACK_MODE);
+                startActivity(intent);
+            }
+        });
+
 
 
         Handler handler = new Handler();
@@ -209,6 +279,11 @@ public class FeedbackActivity extends AppCompatActivity {
                 tv_ratingCountFour.setText(String.valueOf(fourStarCount));
                 tv_ratingCountFive.setText(String.valueOf(fiveStarCount));
                 tv_totalRating.setText(String.valueOf(round(totalRating, 1)));
+                if(FEEDBACK_MODE.equals("NEW")){
+                    btn_addTradeFeedback.setText("ADD FEEDBACK");
+                }else if(FEEDBACK_MODE.equals("EDIT")){
+                    btn_addTradeFeedback.setText("EDIT FEEDBACK");
+                }
 
 
             }
@@ -221,7 +296,8 @@ public class FeedbackActivity extends AppCompatActivity {
         Query query = fStore.collection("rating")
                 .document(TRADE_UID)
                 .collection("feedback")
-                .orderBy("creation_date", Query.Direction.DESCENDING);
+                //.orderBy("creation_date", Query.Direction.DESCENDING)
+                .whereNotEqualTo("feedback_text", "");
 
         FirestoreRecyclerOptions<FeedbackModel> options = new FirestoreRecyclerOptions.Builder<FeedbackModel>()
                 .setQuery(query, FeedbackModel.class)
@@ -239,7 +315,11 @@ public class FeedbackActivity extends AppCompatActivity {
             @Override
             protected void onBindViewHolder(@NonNull FeedbackActivity.FeedbackViewHolder holder, int position, @NonNull FeedbackModel model) {
 
-                holder.feedbackAuthor.setText(model.getUsername() + " on " + model.getCreation_date() + " :");
+                if(model.getUsername().equals(MY_USERNAME)){
+                    holder.feedbackAuthor.setText("Your feedback on " + model.getCreation_date() + " :");
+                }else{
+                    holder.feedbackAuthor.setText(model.getUsername() + " on " + model.getCreation_date() + " :");
+                }
                 holder.feedbackComment.setText(model.getFeedback_text());
 
                 if(model.getStars() == 5){
@@ -285,6 +365,16 @@ public class FeedbackActivity extends AppCompatActivity {
                                 .into(holder.feedbackImage);
                     }
                 });
+
+                holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        Toast.makeText(getApplicationContext(), "IT WORKS", Toast.LENGTH_SHORT).show();
+                        return true;
+                    }
+                });
+
+
 
 
             }
@@ -334,5 +424,87 @@ public class FeedbackActivity extends AppCompatActivity {
         BigDecimal bd = BigDecimal.valueOf(value);
         bd = bd.setScale(places, RoundingMode.HALF_UP);
         return bd.doubleValue();
+    }
+
+    public void logout(){
+        //Close app
+        //Initialize alert dialog
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
+        //Set title
+        builder.setTitle("Log out");
+        //Set message
+        builder.setMessage("Are you sure you want to log out ?");
+        //Yes button
+        builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                FirebaseAuth.getInstance().signOut();
+                finish();
+                Intent intent = new Intent(FeedbackActivity.this, MainActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        //No button
+        builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                //Dismiss dialog
+                dialogInterface.dismiss();
+            }
+        });
+        //Show dialog
+        builder.show();
+    }
+
+    public void ClickMenu(View view) {
+        openDrawer(drawerLayout);
+    }
+
+    public static void openDrawer(DrawerLayout drawerLayout) {
+        //Open drawer layout
+        drawerLayout.openDrawer(GravityCompat.START);
+    }
+
+    public static void closeDrawer(DrawerLayout drawerLayout) {
+        //Close drawer layout
+        //Check condition
+        if(drawerLayout.isDrawerOpen(GravityCompat.START)){
+            //When drawer is open
+            //Close drawer
+            drawerLayout.closeDrawer(GravityCompat.START);
+        }
+    }
+
+    public void ClickJobs(View view){
+        //recreate the activity
+
+        Intent intent = new Intent(FeedbackActivity.this, JobsActivity.class);
+        finish();
+        startActivity(intent);
+    }
+
+    public void ClickLogOut(View view) {
+        finish();
+        logout();
+    }
+
+    public void ClickHome(View view) {
+        Intent intent = new Intent(FeedbackActivity.this, HomeActivityStandard.class);
+        finish();
+        startActivity(intent);
+    }
+
+    public void ClickProfile(View view) {
+        Intent intent = new Intent(FeedbackActivity.this, StandardProfileActivity.class);
+        finish();
+        startActivity(intent);
+    }
+
+    public void ClickMessages(View view) {
+        Intent intent = new Intent(FeedbackActivity.this, MessageMenu.class);
+        intent.putExtra("USER_TYPE", "Standard");
+        finish();
+        startActivity(intent);
     }
 }

@@ -11,4 +11,6 @@
     <color name="baby_blue_variant">#1b89f5</color>
     <color name="chat_left">#c7d1d1</color>
     <color name="chat_right">#6bb5fe</color>
+    <color name="lightGrey">#d3d3d3</color>
+    <color name="gold">#FFD700</color>
 </resources>

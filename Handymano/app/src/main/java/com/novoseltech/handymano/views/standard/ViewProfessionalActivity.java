@@ -329,6 +329,7 @@ public class ViewProfessionalActivity extends AppCompatActivity{
                     public void onClick(View v) {
                         Intent intent = new Intent(ViewProfessionalActivity.this, FeedbackActivity.class);
                         intent.putExtra("USER_ID", TRADE_UID);
+                        intent.putExtra("TRADE_USERNAME", tradeName);
                         startActivity(intent);
                     }
                 });
