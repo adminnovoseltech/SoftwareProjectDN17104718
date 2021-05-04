@@ -61,8 +61,6 @@ public class CreateProject extends AppCompatActivity {
     String imageEncoded;
     List<String> imagesEncodedList;
     Button btn_saveProject;
-    Button btn_createProject;
-    RecyclerView fStoreList;
 
     EditText et_projectTitle;
     EditText et_projectDescription;
@@ -95,8 +93,6 @@ public class CreateProject extends AppCompatActivity {
         btn_saveProject = findViewById(R.id.btn_saveProject);
         et_projectTitle = findViewById(R.id.et_projectTitle);
         et_projectDescription = findViewById(R.id.et_projectDescription);
-        //btn_createProject = getActivity().findViewById(R.id.btn_createProject);
-        //fStoreList = getActivity().findViewById(R.id.firestoreListProjects);
 
         iv_addImg = findViewById(R.id.iv_addProjectImg);
         iv_deleteImg = findViewById(R.id.iv_deleteProjectImg);
@@ -118,7 +114,7 @@ public class CreateProject extends AppCompatActivity {
                 sliderView.setOnIndicatorClickListener(new DrawController.ClickListener() {
                     @Override
                     public void onIndicatorClicked(int position) {
-                        Log.i("GGG", "onIndicatorClicked: " + sliderView.getCurrentPagePosition());
+                        //Log.i("GGG", "onIndicatorClicked: " + sliderView.getCurrentPagePosition());
                     }
                 });
 
@@ -191,9 +187,6 @@ public class CreateProject extends AppCompatActivity {
                                 }
                             });
 
-                    /*btn_createProject.setVisibility(View.VISIBLE);
-                    fStoreList.setVisibility(View.VISIBLE);
-                    getActivity().getSupportFragmentManager().beginTransaction().remove(CreateProject.this).commit();*/
                     Intent intent = new Intent(CreateProject.this, ProjectsActivity.class);
                     startActivity(intent);
 
@@ -302,8 +295,6 @@ public class CreateProject extends AppCompatActivity {
         }
     }
 
-
-
     private void uploadImageToFirebaseStorage(Bitmap bitmap, int imgCount) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
@@ -317,12 +308,12 @@ public class CreateProject extends AppCompatActivity {
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        Log.d("TAG", "Upload of image " + imgCount + " successful");
+                        //Log.d("TAG", "Upload of image " + imgCount + " successful");
                     }
                 }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Log.e("TAG", "onFailure: ", e.getCause());
+                //Log.e("TAG", "onFailure: ", e.getCause());
             }
         });
     }

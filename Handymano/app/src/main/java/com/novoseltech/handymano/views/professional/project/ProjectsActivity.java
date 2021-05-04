@@ -129,10 +129,6 @@ public class ProjectsActivity extends AppCompatActivity {
         fStoreList.setLayoutManager(new LinearLayoutManager(this));
         fStoreList.setAdapter(adapter);
 
-
-
-
-
         Button btn_createProject = findViewById(R.id.btn_createProject);
         btn_createProject.setOnClickListener(new View.OnClickListener() {
             @Override

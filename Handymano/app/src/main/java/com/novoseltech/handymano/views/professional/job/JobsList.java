@@ -47,7 +47,6 @@ public class JobsList extends AppCompatActivity {
 
     private static final String TAG = "";
 
-
     FirebaseFirestore fStore;
     FirebaseAuth mAuth;
     FirebaseUser user;
@@ -89,7 +88,6 @@ public class JobsList extends AppCompatActivity {
         rv_regularJobList = findViewById(R.id.rv_regularJobList);
 
         //Query
-
         fStore.collection("user").document(user.getUid())
                 .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -103,7 +101,6 @@ public class JobsList extends AppCompatActivity {
                 }
             }
         });
-
 
         fStore.collection("user").get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -141,7 +138,6 @@ public class JobsList extends AppCompatActivity {
                         }
                     }
 
-
                 });
 
 
@@ -152,10 +148,6 @@ public class JobsList extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                for(int i = 0; i < jobsAL.size(); i++){
-                    Log.d("ArrayList jobs " + i, jobsAL.get(i));
-                }
-
 
                 adapter = new JobsAdapter(jobsAL, getApplicationContext());
 
@@ -172,13 +164,11 @@ public class JobsList extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        //adapter.stopListening();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        //adapter.
     }
 
     public void ClickMenu(View view) {
@@ -201,9 +191,9 @@ public class JobsList extends AppCompatActivity {
 
     public void ClickJobs(View view){
 
-
         finish();
         startActivity(getIntent());
+
     }
 
     public void ClickMessages(View view){
@@ -252,7 +242,6 @@ public class JobsList extends AppCompatActivity {
                 finish();
                 Intent intent = new Intent(JobsList.this, MainActivity.class);
                 startActivity(intent);
-                //functions.redirectActivity(HomeActivityProfessional.this, MainActivity.class);
 
             }
         });

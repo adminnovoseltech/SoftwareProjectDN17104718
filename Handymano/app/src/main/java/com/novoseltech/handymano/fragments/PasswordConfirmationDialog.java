@@ -51,7 +51,7 @@ public class PasswordConfirmationDialog extends DialogFragment {
 
 
                 if(password1.equals(password2)){
-                    //listener.confirmPassword(password1, password2);
+
                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                     AuthCredential credential = EmailAuthProvider.getCredential(user.getEmail(), password1);
                     user.reauthenticate(credential).addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -72,12 +72,9 @@ public class PasswordConfirmationDialog extends DialogFragment {
                     et_password1.setError("Passwords do not match!");
                     et_password2.setError("Passwords do not match!");
 
-                    //Toast.makeText(getActivity().getApplicationContext(), "Works!", Toast.LENGTH_SHORT).show();
                 }
             }
         });
-
-
 
         et_password1 = view.findViewById(R.id.editTextTextPassword);
         et_password2 = view.findViewById(R.id.editTextTextPassword3);
@@ -98,8 +95,6 @@ public class PasswordConfirmationDialog extends DialogFragment {
     }
 
     public interface PasswordConfirmationDialogListener {
-        //void confirmPassword(String password1, String password2);
-        //Boolean passwordMatch(boolean match);
         Boolean passwordMatch();
         void applyPass(String pass);
     }

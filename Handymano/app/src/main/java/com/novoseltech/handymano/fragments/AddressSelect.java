@@ -51,24 +51,18 @@ public class AddressSelect extends Fragment implements OnMapReadyCallback{
     private String mParam1;
     private String mParam2;
 
-    Button btn_searchLocation;
+    private Button btn_searchLocation;
 
 
-    EditText et_address;
-    EditText et_radius;
-    TextInputLayout til_radius;
-
-
-    //SupportMapFragment mapFragment;
-
-    SupportMapFragment mapFragment;
-
-    String[] coordinates;
-
-    String mode;
-    String tmpRad;
-    Double tmpLat;
-    Double tmpLon;
+    private EditText et_address;
+    private EditText et_radius;
+    private TextInputLayout til_radius;
+    private SupportMapFragment mapFragment;
+    private String[] coordinates;
+    private String mode;
+    private String tmpRad;
+    private Double tmpLat;
+    private Double tmpLon;
 
 
 
@@ -103,8 +97,6 @@ public class AddressSelect extends Fragment implements OnMapReadyCallback{
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
-
-
     }
 
     @Override
@@ -120,9 +112,7 @@ public class AddressSelect extends Fragment implements OnMapReadyCallback{
 
         //Setting default radius
         et_radius.setText("0");
-
         coordinates = new String[3];
-
 
         mode = getArguments().getString("mode");
         tmpRad = getArguments().getString("radius");
@@ -148,22 +138,25 @@ public class AddressSelect extends Fragment implements OnMapReadyCallback{
 
 
                 }else if(mode.equals("New")){
+
                     LatLng point = new LatLng(53.2734, -7.77832031);
                     googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(point, 7));
-
                     et_radius.setFocusable(false);
+
                 }else if(mode.equals("JobEdit")){
+
                     LatLng point = new LatLng(tmpLat, tmpLon);
                     googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(point, 7));
                     addMarkerToTheMap(point);
-
                     coordinates[0] = String.valueOf(tmpLat);
                     coordinates[1] = String.valueOf(tmpLon);
-
                     til_radius.setVisibility(View.GONE);
+
                 }else{
+
                     LatLng point = new LatLng(53.2734, -7.77832031);
                     googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(point, 7));
+
                 }
 
             }
@@ -177,21 +170,20 @@ public class AddressSelect extends Fragment implements OnMapReadyCallback{
         super.onViewCreated(view, savedInstanceState);
 
         if(mode.equals("Edit")){
-            et_radius.setText(tmpRad);
 
+            et_radius.setText(tmpRad);
             Geocoder geocoder;
             List<Address> addresses;
             geocoder = new Geocoder(getContext(), Locale.getDefault());
 
             try {
                 addresses = geocoder.getFromLocation(tmpLat, tmpLon, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
-
                 String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
-                String city = addresses.get(0).getLocality();
-                String state = addresses.get(0).getAdminArea();
-                String country = addresses.get(0).getCountryName();
-                String postalCode = addresses.get(0).getPostalCode();
-                String knownName = addresses.get(0).getFeatureName();
+                //String city = addresses.get(0).getLocality();
+                //String state = addresses.get(0).getAdminArea();
+                //String country = addresses.get(0).getCountryName();
+                //String postalCode = addresses.get(0).getPostalCode();
+                //String knownName = addresses.get(0).getFeatureName();
 
                 et_address.setText(address);
             } catch (IOException e) {
@@ -279,8 +271,6 @@ public class AddressSelect extends Fragment implements OnMapReadyCallback{
         List<Address> address;
         LatLng p1 = null;
 
-
-
         try {
             // May throw an IOException
             address = coder.getFromLocationName(strAddress, 5);
@@ -309,15 +299,11 @@ public class AddressSelect extends Fragment implements OnMapReadyCallback{
             public void onMapReady(GoogleMap googleMap) {
                 googleMap.clear();
 
-
-
                 //Create marker
                 MarkerOptions options = new MarkerOptions().position(point)
                         .title("Your location");
                 //Zoom to location
                 googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(point, 10));
-
-
 
                 //Add marker
                 googleMap.addMarker(options);
@@ -325,15 +311,12 @@ public class AddressSelect extends Fragment implements OnMapReadyCallback{
         });
     }
 
-
-
-
     @Override
     public void onMapReady(GoogleMap googleMap) {
 
-
         LatLng point = new LatLng(53.2734, -7.77832031);
         googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(point, 10));
+
     }
 
     public String getLocationData(int i){

@@ -340,16 +340,11 @@ public class MessageMenu extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                for(int i = 0; i < messageReceipients.size(); i++){
-                    Log.d("MessageReceipient " + i, messageReceipients.get(i));
-                }
 
                 adapter = new MessagesAdapter(messageReceipients, lastMessageSent, getApplicationContext());
-
                 rv_chatList.setHasFixedSize(true);
                 rv_chatList.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
                 rv_chatList.setAdapter(adapter);
-
 
             }
         }, 1000);

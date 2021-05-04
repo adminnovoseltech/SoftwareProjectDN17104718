@@ -91,9 +91,6 @@ public class ProfessionalProfileActivity extends AppCompatActivity implements Pa
     String trade;
     String yearsOfExp;
 
-
-
-
     String pass = "";
 
     ShapeableImageView iv_pp_profilePhoto;
@@ -135,7 +132,6 @@ public class ProfessionalProfileActivity extends AppCompatActivity implements Pa
 
         TextView tv_currentAddress = findViewById(R.id.textView_currentAddress);
         tv_currentAddress.setVisibility(View.VISIBLE);
-        TextView tv_currentAddressTitle = findViewById(R.id.textView_AddressTitle);
         tv_currentAddress.setVisibility(View.VISIBLE);
 
         iv_pp_profilePhoto = findViewById(R.id.iv_pp_profilePhoto);
@@ -180,7 +176,6 @@ public class ProfessionalProfileActivity extends AppCompatActivity implements Pa
 
         profileImage = drawerLayout.findViewById(R.id.profilePictureProfessional);
         TextView tv_drawerUsername = drawerLayout.findViewById(R.id.text_UserName_Professional);
-
 
         if(mAuth.getCurrentUser().getPhotoUrl() != null){
             Glide.with(getApplicationContext())
@@ -278,10 +273,6 @@ public class ProfessionalProfileActivity extends AppCompatActivity implements Pa
                     //If something was changed
                     openDialog();
                 }
-
-
-
-                //mAuth.getCurrentUser().updateEmail(et_sp_email.getText().toString());
 
 
                 btn_edit_pp.setVisibility(View.VISIBLE);
@@ -391,9 +382,6 @@ public class ProfessionalProfileActivity extends AppCompatActivity implements Pa
 
                     Bitmap bitmap = BitmapFactory.decodeFile(picturePath);
 
-
-
-                    //Bitmap bitmap = (Bitmap) data.getExtras().get("data");
                     iv_pp_profilePhoto.setImageBitmap(bitmap);
                     uploadImageToFirebaseStorage(bitmap);
             }
@@ -443,13 +431,12 @@ public class ProfessionalProfileActivity extends AppCompatActivity implements Pa
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        Toast.makeText(getApplicationContext(), "Profile image updated", Toast.LENGTH_SHORT).show();
 
                     }
                 }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText(getApplicationContext(), "Profile image failed", Toast.LENGTH_SHORT).show();
+
             }
         });
     }

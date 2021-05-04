@@ -111,12 +111,6 @@ public class EditProject extends AppCompatActivity {
 
     List<SliderItem> initialImages = new ArrayList<>();
 
-    //Activity elements
-    TextView tv_pr;
-    ScrollView sv_pr;
-    CardView cv_pr;
-    ImageView iv_pr;
-
     ImageView iv_temp;
 
     @Override
@@ -137,13 +131,6 @@ public class EditProject extends AppCompatActivity {
         btn_saveChanges = findViewById(R.id.btn_saveProjectChanges);
 
         sliderView = findViewById(R.id.imageSliderProjectEdit);
-
-        //Activity elements
-        //tv_pr = getActivity().findViewById(R.id.tv_projectTitle);
-        //sv_pr = getActivity().findViewById(R.id.svProject);
-        //cv_pr = getActivity().findViewById(R.id.cv_carousel_project);
-        //iv_pr = getActivity().findViewById(R.id.iv_proProjectMore);
-
 
         iv_temp = findViewById(R.id.iv_temp1);
 
@@ -189,7 +176,7 @@ public class EditProject extends AppCompatActivity {
                 sliderView.setOnIndicatorClickListener(new DrawController.ClickListener() {
                     @Override
                     public void onIndicatorClicked(int position) {
-                        Log.i("GGG", "onIndicatorClicked: " + sliderView.getCurrentPagePosition());
+                        //Log.i("GGG", "onIndicatorClicked: " + sliderView.getCurrentPagePosition());
                     }
                 });
 
@@ -219,7 +206,6 @@ public class EditProject extends AppCompatActivity {
                 intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
                 intent.setAction(Intent.ACTION_GET_CONTENT);
                 startActivityForResult(Intent.createChooser(intent, "Select pictures"), PICK_IMAGE_MULTIPLE);
-
 
             }
         });
@@ -268,7 +254,7 @@ public class EditProject extends AppCompatActivity {
                                 //If image is existing on Firebase Storage
                                 if(uri.toString().contains("firebasestorage.googleapis")){
 
-                                    Log.d("NEW tempImgUri", tempImgUri.toString());
+                                    //Log.d("NEW tempImgUri", tempImgUri.toString());
                                     OutputStream imageOutStream;
                                     try {
                                         imageOutStream = getContentResolver().openOutputStream(tempImgUri);
@@ -298,9 +284,6 @@ public class EditProject extends AppCompatActivity {
                                         e.printStackTrace();
                                     }
 
-
-
-
                                 }else{
                                     //If the image is not existing project image from Firebase Storage then get the bitmap of the image, get the uri and add it to the URI array list "images"
                                     OutputStream imageOutStream;
@@ -316,7 +299,7 @@ public class EditProject extends AppCompatActivity {
                                         e.printStackTrace();
                                     }
 
-                                    Log.d("Local tempImgUri", tempImgUri.toString());
+                                    //Log.d("Local tempImgUri", tempImgUri.toString());
                                     images.add(tempImgUri);
                                 }
 
@@ -332,7 +315,7 @@ public class EditProject extends AppCompatActivity {
                                                 @Override
                                                 public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
                                                     String path = MediaStore.Images.Media.insertImage(getContentResolver(), resource, "Title", null);
-                                                    Log.d("URI", path);
+                                                    //Log.d("URI", path);
                                                     Uri tmpUri = Uri.parse(path);
                                                     images.add(tmpUri);
                                                 }
@@ -402,9 +385,9 @@ public class EditProject extends AppCompatActivity {
                                                                     @Override
                                                                     public void onComplete(@NonNull Task<Void> task) {
                                                                         if(task.isSuccessful()){
-                                                                            Log.d("DELETE LOG: ", "Deleted image " + (j+1));
+                                                                            //Log.d("DELETE LOG: ", "Deleted image " + (j+1));
                                                                         }else{
-                                                                            Log.e("DELETE LOG: ", task.getException().getLocalizedMessage());
+                                                                            //Log.e("DELETE LOG: ", task.getException().getLocalizedMessage());
                                                                         }
                                                                     }
                                                                 });
@@ -424,7 +407,7 @@ public class EditProject extends AppCompatActivity {
 
 
                                                         }else{
-                                                            Log.d("TASK LOG: ", task.getException().getLocalizedMessage());
+                                                            //Log.d("TASK LOG: ", task.getException().getLocalizedMessage());
                                                         }
                                                     }
                                                 }).addOnFailureListener(new OnFailureListener() {
@@ -443,9 +426,9 @@ public class EditProject extends AppCompatActivity {
                                             @Override
                                             public void onComplete(@NonNull Task<Void> task) {
                                                 if(task.isSuccessful()){
-                                                    Log.d("TAG: ", "Document deleted");
+                                                    //Log.d("TAG: ", "Document deleted");
                                                 }else{
-                                                    Log.e("EXCEPTION", task.getException().getLocalizedMessage());
+                                                    //Log.e("EXCEPTION", task.getException().getLocalizedMessage());
                                                 }
                                             }
                                         });
@@ -474,9 +457,9 @@ public class EditProject extends AppCompatActivity {
                                                                     @Override
                                                                     public void onComplete(@NonNull Task<Void> task) {
                                                                         if(task.isSuccessful()){
-                                                                            Log.d("DELETE LOG: ", "Deleted image " + (j+1));
+                                                                            //Log.d("DELETE LOG: ", "Deleted image " + (j+1));
                                                                         }else{
-                                                                            Log.e("DELETE LOG: ", task.getException().getLocalizedMessage());
+                                                                            //Log.e("DELETE LOG: ", task.getException().getLocalizedMessage());
                                                                         }
                                                                     }
                                                                 });
@@ -494,13 +477,13 @@ public class EditProject extends AppCompatActivity {
                                                             }
 
                                                         }else{
-                                                            Log.d("TASK LOG: ", task.getException().getLocalizedMessage());
+                                                            //Log.d("TASK LOG: ", task.getException().getLocalizedMessage());
                                                         }
                                                     }
                                                 }).addOnFailureListener(new OnFailureListener() {
                                             @Override
                                             public void onFailure(@NonNull Exception e) {
-                                                Log.e("EXCEPTION: ", e.getLocalizedMessage());
+                                                //Log.e("EXCEPTION: ", e.getLocalizedMessage());
                                             }
                                         });
                                     }
@@ -557,12 +540,12 @@ public class EditProject extends AppCompatActivity {
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        Log.d("TAG", "Upload of image " + imgCount + " successful");
+                        //Log.d("TAG", "Upload of image " + imgCount + " successful");
                     }
                 }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Log.e("TAG", "onFailure: ", e.getCause());
+                //Log.e("TAG", "onFailure: ", e.getCause());
             }
         });
     }
@@ -622,14 +605,14 @@ public class EditProject extends AppCompatActivity {
 
                         }
 
-                        Log.d("MULTIPLE IMAGE PICKER: ", "Selected Images" + mArrayUri.size());
+                       //Log.d("MULTIPLE IMAGE PICKER: ", "Selected Images" + mArrayUri.size());
                     }
                 }
 
 
             }else {
-                Toast.makeText(getApplicationContext(), "Request code: " + requestCode + " and result code: " + resultCode,
-                        Toast.LENGTH_LONG).show();
+                //Toast.makeText(getApplicationContext(), "Request code: " + requestCode + " and result code: " + resultCode,
+                       // Toast.LENGTH_LONG).show();
             }
         }
     }
@@ -649,13 +632,13 @@ public class EditProject extends AppCompatActivity {
                 @Override
                 public void onComplete(@NonNull Task<Uri> task) {
                     if(task.isSuccessful()){
-                        Log.d("URL: ", task.getResult().toString());
+                        //Log.d("URL: ", task.getResult().toString());
 
                         sliderItem.setImageUrl(task.getResult().toString());
                         initialImages.add(sliderItem);
                         adapter.addItem(sliderItem);
                     }else{
-                        Log.e("Error loading images", task.getException().getLocalizedMessage());
+                       //Log.e("Error loading images", task.getException().getLocalizedMessage());
                     }
                 }
             });
@@ -685,9 +668,9 @@ public class EditProject extends AppCompatActivity {
         switch (requestCode) {
             case WRITE_REQUEST:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Log.e("value", "Permission Granted");
+                    //Log.e("value", "Permission Granted");
                 } else {
-                    Log.e("value", "Permission Denied");
+                    //Log.e("value", "Permission Denied");
                 }
                 break;
         }

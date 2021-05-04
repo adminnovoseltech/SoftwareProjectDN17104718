@@ -114,7 +114,6 @@ public class ViewJob extends AppCompatActivity {
             @Override
             public void run() {
                 addImagesToSlider(sliderView);
-
             }
         }, 300);
 
@@ -133,7 +132,7 @@ public class ViewJob extends AppCompatActivity {
                 sliderView.setOnIndicatorClickListener(new DrawController.ClickListener() {
                     @Override
                     public void onIndicatorClicked(int position) {
-                        Log.i("GGG", "onIndicatorClicked: " + sliderView.getCurrentPagePosition());
+                        //Log.i("GGG", "onIndicatorClicked: " + sliderView.getCurrentPagePosition());
                     }
                 });
 
@@ -184,12 +183,8 @@ public class ViewJob extends AppCompatActivity {
                         }
                     }
                 });
-
-
-
             }
         }
-
     }
 
     private String getCompleteAddressString(double LATITUDE, double LONGITUDE) {

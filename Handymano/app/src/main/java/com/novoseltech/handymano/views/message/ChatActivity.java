@@ -33,18 +33,14 @@ public class ChatActivity extends AppCompatActivity {
 
     RecyclerView rv_chatContent;
     LinearLayoutManager linearLayoutManager;
-
     EditText et_chatMessage;
     ChatAdapter chatAdapter;
-
     String SENDER_NAME = "";
     String RECIPIENT_ID = "";
     String RECIPIENT_NAME = "";
     String MODE = "";
-
     List<String> messageRecipientsSender = new ArrayList<>();
     List<String> messageRecipientsReceiver = new ArrayList<>();
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,17 +65,15 @@ public class ChatActivity extends AppCompatActivity {
 
             String JOB_ID = getIntent().getStringExtra("JOB_ID");
             String JOB_DATE = getIntent().getStringExtra("JOB_DATE");
-            et_chatMessage.setText("Hello, I would like to offer my services on job ad " + "'" + JOB_ID + "'" +" that you posted on " + JOB_DATE + ".");
+            et_chatMessage.setText("Hello, I would like to offer my services on job ad " + "'" + JOB_ID +
+                    "'" +" that you posted on " + JOB_DATE + ".");
         }
         else{
             RECIPIENT_ID = getIntent().getStringExtra("USER_ID");
         }
 
-
         CollectionReference chatReference = fStore.collection("chat").document(UID).collection(RECIPIENT_ID);
         CollectionReference receiverReference = fStore.collection("chat").document(RECIPIENT_ID).collection(UID);
-
-
 
         //CHECK IF RECIPIENTS CHAT DOCUMENT CONTAINS LIST OF CHATS
         fStore.collection("chat").document(RECIPIENT_ID)
@@ -135,19 +129,13 @@ public class ChatActivity extends AppCompatActivity {
         findViewById(R.id.ic_sendMessage).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 ChatModel chat = new ChatModel(user.getUid(),SENDER_NAME, et_chatMessage.getText().toString(), new Date());
-
-
-
                 receiverReference.add(chat);
                 chatReference.add(chat);
                 et_chatMessage.setText("");
 
-
-
                 if(!messageRecipientsReceiver.contains(UID + "," + SENDER_NAME)){
-
-
 
                     if(messageRecipientsReceiver.isEmpty()){
                         //messageRecipientsReceiver.clear();
@@ -163,8 +151,6 @@ public class ChatActivity extends AppCompatActivity {
                                     Log.d("LOG: ", "Updated recipients");
                                 }
                             });
-
-
 
                 }
 
@@ -206,9 +192,8 @@ public class ChatActivity extends AppCompatActivity {
                 rv_chatContent.scrollToPosition(chatAdapter.getItemCount() - 1);
             }
         });
+
         rv_chatContent.setAdapter(chatAdapter);
-
-
 
     }
 

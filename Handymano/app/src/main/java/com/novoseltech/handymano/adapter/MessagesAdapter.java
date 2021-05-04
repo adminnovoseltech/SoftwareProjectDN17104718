@@ -55,9 +55,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
     public void onBindViewHolder(@NonNull MessagesAdapter.ViewHolder holder, int position) {
 
         String toSplit = messagesArrayList.get(position);
-
         String[] messageData = toSplit.split(",");
-
         String userID = messageData[0];
         String username = messageData[1];
 
@@ -65,13 +63,11 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
 
         String messageToSplit = lastMessagesSent.get(position);
         String[] lastMessageData = messageToSplit.split(",");
-
         String lmTimestamp = lastMessageData[0];
         String lmMessage = lastMessageData[1];
+
         holder.lastMessageTimestamp.setText(lmTimestamp);
         holder.lastMessage.setText(lmMessage);
-
-
 
         StorageReference storageReference = FirebaseStorage.getInstance()
                 .getReference().child("images")
@@ -83,7 +79,6 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
             public void onComplete(@NonNull Task<Uri> task) {
 
                 if(task.isSuccessful()){
-                    Log.d("DOWNLOAD URL", task.getResult().toString());
 
                     Glide.with(context)
                             .load(task.getResult().toString())
@@ -104,7 +99,6 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
             @Override
             public void onClick(View view) {
 
-
                 Intent intent = new Intent(context, ChatActivity.class);
                 intent.putExtra("USER_ID", userID);
                 intent.putExtra("USERNAME", username);
@@ -112,7 +106,6 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(intent);
 
-                //Toast.makeText(context, holder.jobTitle.getText(), Toast.LENGTH_SHORT).show();
             }
         });
     }

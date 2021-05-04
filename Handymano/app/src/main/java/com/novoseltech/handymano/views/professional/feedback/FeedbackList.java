@@ -54,7 +54,6 @@ public class FeedbackList extends AppCompatActivity {
     DrawerLayout drawerLayout;
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
     FirebaseFirestore fStore = FirebaseFirestore.getInstance();
-    String UID = mAuth.getCurrentUser().getUid();
 
     ShapeableImageView profileImage;
 
@@ -214,14 +213,12 @@ public class FeedbackList extends AppCompatActivity {
                 double totalScore = oneStarCount + (twoStarCount * 2) + (threeStarCount * 3) + (fourStarCount * 4) + (fiveStarCount * 5);
                 totalRating = totalScore / totalRates;
 
-
                 tv_tradeRatingCountOne.setText(String.valueOf(oneStarCount));
                 tv_tradeRatingCountTwo.setText(String.valueOf(twoStarCount));
                 tv_tradeRatingCountThree.setText(String.valueOf(threeStarCount));
                 tv_tradeRatingCountFour.setText(String.valueOf(fourStarCount));
                 tv_tradeRatingCountFive.setText(String.valueOf(fiveStarCount));
                 tv_tradeTotalRating.setText(String.valueOf(round(totalRating, 1)));
-
 
             }
         }, 500);
@@ -282,7 +279,6 @@ public class FeedbackList extends AppCompatActivity {
                     public void onComplete(@NonNull Task<Uri> task) {
 
                         if(task.isSuccessful()){
-                            Log.d("DOWNLOAD URL", task.getResult().toString());
 
                             Glide.with(getApplicationContext())
                                     .load(task.getResult().toString())
@@ -311,7 +307,6 @@ public class FeedbackList extends AppCompatActivity {
 
     private class FeedbackViewHolder  extends RecyclerView.ViewHolder{
 
-        //private TextView feedbackCreationDate;
         private TextView feedbackAuthor;
         private TextView feedbackComment;
         private ImageView feedbackImage;
@@ -321,7 +316,6 @@ public class FeedbackList extends AppCompatActivity {
         public FeedbackViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            //feedbackCreationDate = itemView.findViewById(R.id.tv_tradeFeedbackAuthor);
             feedbackAuthor = itemView.findViewById(R.id.tv_tradeFeedbackAuthor);
             feedbackComment = itemView.findViewById(R.id.tv_tradeFeedbackComment);
             feedbackImage = itemView.findViewById(R.id.iv_tradeFeedbackProfileImage);

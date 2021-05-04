@@ -39,25 +39,20 @@ public class JobsAdapter extends RecyclerView.Adapter<JobsAdapter.ViewHolder> {
     public void onBindViewHolder(@NonNull JobsAdapter.ViewHolder holder, int position) {
 
         String toSplit = jobsArrayList.get(position);
-
         String[] jobData = toSplit.split(",");
-
         String user = jobData[0];
         String title = jobData[1];
 
         holder.jobTitle.setText(title);
-
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
 
                 Intent intent = new Intent(context, ViewJob.class);
                 intent.putExtra("USER_ID", user);
                 intent.putExtra("JOB_ID", title);
                 context.startActivity(intent);
 
-                //Toast.makeText(context, holder.jobTitle.getText(), Toast.LENGTH_SHORT).show();
             }
         });
     }

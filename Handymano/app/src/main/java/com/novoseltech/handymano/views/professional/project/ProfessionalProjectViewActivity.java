@@ -165,22 +165,10 @@ public class ProfessionalProjectViewActivity extends AppCompatActivity implement
     public boolean onMenuItemClick(MenuItem menuItem) {
         switch (menuItem.getItemId()) {
             case R.id.option_edit:
-                //Toast.makeText(getApplicationContext(), "Will start work with this", Toast.LENGTH_SHORT).show();
+
                 Intent intent = new Intent(ProfessionalProjectViewActivity.this, EditProject.class);
                 intent.putExtra("PROJECT_ID", PROJECT_ID);
                 startActivity(intent);
-/*
-                editProjectFragment.setArguments(bundle);
-                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.frame_edit_project, editProjectFragment);
-                transaction.addToBackStack(null);
-                transaction.commit();
-
-                tv_projectTitle.setVisibility(View.GONE);
-                svProject.setVisibility(View.GONE);
-                cv_carousel_project.setVisibility(View.GONE);
-                iv_projectMore.setVisibility(View.GONE);*/
-
 
                 return true;
             case R.id.option_delete:

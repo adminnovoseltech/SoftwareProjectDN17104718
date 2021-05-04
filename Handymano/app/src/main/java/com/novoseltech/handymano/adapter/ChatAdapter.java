@@ -1,6 +1,5 @@
 package com.novoseltech.handymano.adapter;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,28 +10,19 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.novoseltech.handymano.R;
 import com.novoseltech.handymano.model.ChatModel;
 
 import org.ocpsoft.prettytime.PrettyTime;
 
-import java.util.logging.Handler;
-import java.util.logging.LogRecord;
-
 public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, ChatAdapter.ViewHolder> {
     public static final int MSG_TYPE_LEFT = 0;
     public static final int MSG_TYPE_RIGHT = 1;
 
-    PrettyTime p = new PrettyTime();
+    PrettyTime prettyTime = new PrettyTime();
     FirebaseUser user  = FirebaseAuth.getInstance().getCurrentUser();
-    FirebaseFirestore fStore = FirebaseFirestore.getInstance();
-
-    String UID = user.getUid();
 
     String CURRENT_USERNAME;
     String MESSAGE_SENDER = "";
@@ -47,7 +37,7 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, ChatAdapter
         MESSAGE_SENDER = model.getSender();
         holder.message.setText(model.getMessage());
         holder.sender.setText(model.getSender());
-        holder.timestamp.setText(p.format(model.getTimestamp()));
+        holder.timestamp.setText(prettyTime.format(model.getTimestamp()));
 
     }
 
@@ -82,7 +72,6 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, ChatAdapter
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-
             sender = itemView.findViewById(R.id.sendername);
             message = itemView.findViewById(R.id.textmessage);
             timestamp = itemView.findViewById(R.id.timestamp);
