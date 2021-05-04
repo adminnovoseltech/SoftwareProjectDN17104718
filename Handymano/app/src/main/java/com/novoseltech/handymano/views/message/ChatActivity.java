@@ -2,9 +2,11 @@ package com.novoseltech.handymano.views.message;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Notification;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -135,6 +137,8 @@ public class ChatActivity extends AppCompatActivity {
             public void onClick(View v) {
                 ChatModel chat = new ChatModel(user.getUid(),SENDER_NAME, et_chatMessage.getText().toString(), new Date());
 
+
+
                 receiverReference.add(chat);
                 chatReference.add(chat);
                 et_chatMessage.setText("");
@@ -145,8 +149,8 @@ public class ChatActivity extends AppCompatActivity {
 
 
 
-                    if(messageRecipientsReceiver.get(0).equals("")){
-                        messageRecipientsReceiver.clear();
+                    if(messageRecipientsReceiver.isEmpty()){
+                        //messageRecipientsReceiver.clear();
                         messageRecipientsReceiver.add(UID + "," + SENDER_NAME);
                     }else{
                         messageRecipientsReceiver.add(UID + "," + SENDER_NAME);
@@ -165,9 +169,9 @@ public class ChatActivity extends AppCompatActivity {
                 }
 
                 if(!messageRecipientsSender.contains(RECIPIENT_ID + "," + RECIPIENT_NAME)){
-                    if(messageRecipientsSender.get(0).equals("")){
+                    if(messageRecipientsSender.isEmpty()){
                         messageRecipientsSender.add(RECIPIENT_ID+','+ RECIPIENT_NAME);
-                        messageRecipientsSender.clear();
+                        //messageRecipientsSender.clear();
                     }else{
                         messageRecipientsSender.add(RECIPIENT_ID+','+ RECIPIENT_NAME);
                     }

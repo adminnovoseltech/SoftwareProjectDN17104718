@@ -124,15 +124,6 @@ public class AddressSelect extends Fragment implements OnMapReadyCallback{
         coordinates = new String[3];
 
 
-        //SupportMapFragment mapFragment;
-        /*mapFragment = (SupportMapFragment) getChildFragmentManager()
-                .findFragmentById(R.id.map);*/
-
-        /*String mode = getArguments().getString("mode");
-        String tmpRad = getArguments().getString("radius");
-        Double tmpLat = getArguments().getDouble("lat");
-        Double tmpLon = getArguments().getDouble("lon");*/
-
         mode = getArguments().getString("mode");
         tmpRad = getArguments().getString("radius");
         tmpLat = getArguments().getDouble("lat");

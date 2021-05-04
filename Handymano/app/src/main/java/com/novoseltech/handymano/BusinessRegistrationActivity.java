@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -337,6 +338,9 @@ public class BusinessRegistrationActivity extends AppCompatActivity {
                     UID = mAuth.getCurrentUser().getUid();
                     DocumentReference docReference = fStore.collection("user").document(UID);
                     DocumentReference docReferenceChat = fStore.collection("chat").document(UID);
+                    DocumentReference docReferenceRating = fStore.collection("rating").document(UID);
+                    DocumentReference docReferenceFeedback = fStore.collection("rating")
+                            .document(UID).collection("feedback").document(UID);
                     Map<String, Object> user = new HashMap<>();
                     Map<String, Object> chatMap = new HashMap<>();
 
@@ -368,10 +372,44 @@ public class BusinessRegistrationActivity extends AppCompatActivity {
                         }
                     });
 
+                    docReferenceRating.set(new HashMap<String, Object>())
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    docReferenceFeedback.set(new HashMap<String, Object>())
+                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+
+                                                }
+                                            });
+
+                                }
+                            });
+
+                    /*docReferenceRating.collection("feedback").document(UID).set(new HashMap<String, Object>())
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    *//*docReferenceRating.collection("feedback").document(UID).delete()
+                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Void> task) {
+                                                    if(task.isSuccessful()){
+                                                        Log.d("TAG", "Document successfully deleted");
+                                                    }
+                                                }
+                                            });*//*
+                                }
+                            });*/
+
+
+
                     Intent intent = new Intent(BusinessRegistrationActivity.this, HomeActivityProfessional.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     finish();
                     startActivity(intent);
+
                 }else{
                     if(task.getException() instanceof FirebaseAuthUserCollisionException){
                         Toast.makeText(getApplicationContext(), "Email already registered", Toast.LENGTH_SHORT).show();
