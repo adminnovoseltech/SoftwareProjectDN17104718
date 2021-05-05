@@ -6,16 +6,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.novoseltech.handymano.R;
 import com.novoseltech.handymano.views.professional.job.ViewJob;
-import com.novoseltech.handymano.views.professional.project.ProfessionalProjectViewActivity;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class JobsAdapter extends RecyclerView.Adapter<JobsAdapter.ViewHolder> {

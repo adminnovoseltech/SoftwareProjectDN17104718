@@ -5,7 +5,7 @@
     android:id="@+id/cl_ProjectViewProfessional"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".views.professional.project.ProfessionalProjectViewActivity">
+    tools:context=".views.professional.project.ViewProjectActivity">
 
     <TextView
         android:id="@+id/tv_projectTitle"

@@ -27,13 +27,9 @@ import com.novoseltech.handymano.MainActivity;
 import com.novoseltech.handymano.R;
 import com.novoseltech.handymano.model.ProjectsModel;
 import com.novoseltech.handymano.views.message.MessageMenu;
-import com.novoseltech.handymano.views.professional.project.ProfessionalProjectViewActivity;
-import com.novoseltech.handymano.views.professional.project.ProjectsActivity;
 import com.novoseltech.handymano.views.standard.HomeActivityStandard;
 import com.novoseltech.handymano.views.standard.StandardProfileActivity;
-import com.novoseltech.handymano.views.standard.ViewProfessionalActivity;
 import com.novoseltech.handymano.views.standard.job.JobsActivity;
-import com.novoseltech.handymano.views.standard.job.StandardJobViewActivity;
 
 
 public class ProjectList extends AppCompatActivity {

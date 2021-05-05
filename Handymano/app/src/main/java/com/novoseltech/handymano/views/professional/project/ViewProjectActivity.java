@@ -5,7 +5,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.fragment.app.FragmentTransaction;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -39,7 +38,7 @@ import com.smarteist.autoimageslider.IndicatorView.draw.controller.DrawControlle
 import com.smarteist.autoimageslider.SliderAnimations;
 import com.smarteist.autoimageslider.SliderView;
 
-public class ProfessionalProjectViewActivity extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener {
+public class ViewProjectActivity extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener {
 
     private static final String TAG = "TAG: ";
     String PROJECT_ID;
@@ -166,13 +165,13 @@ public class ProfessionalProjectViewActivity extends AppCompatActivity implement
         switch (menuItem.getItemId()) {
             case R.id.option_edit:
 
-                Intent intent = new Intent(ProfessionalProjectViewActivity.this, EditProject.class);
+                Intent intent = new Intent(ViewProjectActivity.this, EditProject.class);
                 intent.putExtra("PROJECT_ID", PROJECT_ID);
                 startActivity(intent);
 
                 return true;
             case R.id.option_delete:
-                AlertDialog.Builder deleteJobDialog = new AlertDialog.Builder(ProfessionalProjectViewActivity.this);
+                AlertDialog.Builder deleteJobDialog = new AlertDialog.Builder(ViewProjectActivity.this);
                 deleteJobDialog.setTitle("Delete project")
                         .setMessage("You are about to delete the project. Continue?")
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
@@ -207,7 +206,7 @@ public class ProfessionalProjectViewActivity extends AppCompatActivity implement
                                         .document(PROJECT_ID)
                                         .delete();
 
-                                Intent intent = new Intent(ProfessionalProjectViewActivity.this, ProjectsActivity.class);
+                                Intent intent = new Intent(ViewProjectActivity.this, ProjectsActivity.class);
                                 startActivity(intent);
                             }
                         })

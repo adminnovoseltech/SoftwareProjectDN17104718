@@ -148,6 +148,14 @@ public class  HomeActivityProfessional extends AppCompatActivity {
                         startActivity(intent);
                     }
                 });
+
+                Button btn_tradeHomeLogout = findViewById(R.id.btn_tradeHomeLogout);
+                btn_tradeHomeLogout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        logout();
+                    }
+                });
             }
         }, 500);
 

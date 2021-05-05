@@ -3,7 +3,6 @@ package com.novoseltech.handymano.views.professional.project;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -30,8 +29,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ScrollView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -52,8 +49,6 @@ import com.google.firebase.storage.UploadTask;
 import com.novoseltech.handymano.R;
 import com.novoseltech.handymano.adapter.SliderAdapter;
 import com.novoseltech.handymano.model.SliderItem;
-import com.novoseltech.handymano.views.standard.job.EditJob;
-import com.novoseltech.handymano.views.standard.job.StandardJobViewActivity;
 import com.smarteist.autoimageslider.IndicatorView.animation.type.IndicatorAnimationType;
 import com.smarteist.autoimageslider.IndicatorView.draw.controller.DrawController;
 import com.smarteist.autoimageslider.SliderAnimations;
@@ -689,7 +684,7 @@ public class EditProject extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 finish();
-                Intent intent = new Intent(EditProject.this, ProfessionalProjectViewActivity.class);
+                Intent intent = new Intent(EditProject.this, ViewProjectActivity.class);
                 intent.putExtra("PROJECT_ID", PROJECT_ID);
                 startActivity(intent);
             }

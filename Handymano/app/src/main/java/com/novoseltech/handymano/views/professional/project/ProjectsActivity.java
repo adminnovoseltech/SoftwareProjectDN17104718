@@ -4,7 +4,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -117,7 +116,7 @@ public class ProjectsActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {
 
-                        Intent intent  = new Intent(getApplicationContext(), ProfessionalProjectViewActivity.class);
+                        Intent intent  = new Intent(getApplicationContext(), ViewProjectActivity.class);
                         intent.putExtra("PROJECT_ID", holder.projectTitle.getText());
                         startActivity(intent);
                     }

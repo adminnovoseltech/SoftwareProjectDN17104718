@@ -54,9 +54,7 @@ import com.novoseltech.handymano.fragments.PasswordConfirmationDialog;
 import com.novoseltech.handymano.views.message.MessageMenu;
 import com.novoseltech.handymano.views.professional.feedback.FeedbackList;
 import com.novoseltech.handymano.views.professional.job.JobsList;
-import com.novoseltech.handymano.views.professional.project.ProfessionalProjectViewActivity;
 import com.novoseltech.handymano.views.professional.project.ProjectsActivity;
-import com.novoseltech.handymano.views.standard.StandardProfileActivity;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

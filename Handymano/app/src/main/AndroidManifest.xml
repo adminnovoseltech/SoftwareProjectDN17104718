@@ -34,7 +34,7 @@
         <activity android:name=".views.standard.project.ViewProject" />
         <activity android:name=".views.standard.job.StandardJobViewActivity" />
         <activity android:name=".views.standard.job.JobsActivity" />
-        <activity android:name=".views.professional.project.ProfessionalProjectViewActivity" />
+        <activity android:name=".views.professional.project.ViewProjectActivity" />
         <activity android:name=".views.professional.HomeActivityProfessional" />
         <activity android:name=".views.standard.HomeActivityStandard" />
         <activity android:name=".views.professional.project.ProjectsActivity" />
