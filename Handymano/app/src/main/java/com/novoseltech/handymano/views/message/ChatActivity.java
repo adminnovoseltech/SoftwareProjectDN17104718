@@ -70,6 +70,7 @@ public class ChatActivity extends AppCompatActivity {
         }
         else{
             RECIPIENT_ID = getIntent().getStringExtra("USER_ID");
+            RECIPIENT_NAME = getIntent().getStringExtra("USERNAME");
         }
 
         CollectionReference chatReference = fStore.collection("chat").document(UID).collection(RECIPIENT_ID);
@@ -85,6 +86,7 @@ public class ChatActivity extends AppCompatActivity {
                     if(task.getResult().contains("recipients")){
                         DocumentSnapshot documentSnapshot = task.getResult();
                         messageRecipientsReceiver = (List<String>) documentSnapshot.get("recipients");
+
                     }else{
                         messageRecipientsReceiver.add("");
                     }
@@ -103,6 +105,7 @@ public class ChatActivity extends AppCompatActivity {
                     if(task.getResult().contains("recipients")){
                         DocumentSnapshot documentSnapshot = task.getResult();
                         messageRecipientsSender = (List<String>) documentSnapshot.get("recipients");
+
                     }else{
                         messageRecipientsSender.add("");
                     }
@@ -120,6 +123,7 @@ public class ChatActivity extends AppCompatActivity {
                 if(task.isSuccessful()){
                     DocumentSnapshot documentSnapshot = task.getResult();
                     SENDER_NAME = documentSnapshot.getString("username");
+
                 }
             }
         });
@@ -137,37 +141,30 @@ public class ChatActivity extends AppCompatActivity {
 
                 if(!messageRecipientsReceiver.contains(UID + "," + SENDER_NAME)){
 
-                    if(messageRecipientsReceiver.isEmpty()){
-                        //messageRecipientsReceiver.clear();
-                        messageRecipientsReceiver.add(UID + "," + SENDER_NAME);
-                    }else{
-                        messageRecipientsReceiver.add(UID + "," + SENDER_NAME);
-                    }
+
+
+                    messageRecipientsReceiver.add(UID + "," + SENDER_NAME);
                     fStore.collection("chat").document(RECIPIENT_ID)
                             .update("recipients", messageRecipientsReceiver)
                             .addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
-                                    Log.d("LOG: ", "Updated recipients");
+
                                 }
                             });
 
                 }
 
                 if(!messageRecipientsSender.contains(RECIPIENT_ID + "," + RECIPIENT_NAME)){
-                    if(messageRecipientsSender.isEmpty()){
-                        messageRecipientsSender.add(RECIPIENT_ID+','+ RECIPIENT_NAME);
-                        //messageRecipientsSender.clear();
-                    }else{
-                        messageRecipientsSender.add(RECIPIENT_ID+','+ RECIPIENT_NAME);
-                    }
+                    messageRecipientsSender.add(RECIPIENT_ID + "," + RECIPIENT_NAME);
+
 
                     fStore.collection("chat").document(UID)
                             .update("recipients", messageRecipientsSender)
                             .addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
-                                    Log.d("LOG: ", "Updated recipients");
+
                                 }
                             });
                 }
