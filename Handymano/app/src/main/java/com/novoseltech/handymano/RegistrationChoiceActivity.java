@@ -2,6 +2,7 @@ package com.novoseltech.handymano;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
@@ -16,14 +17,19 @@ public class RegistrationChoiceActivity extends AppCompatActivity {
     }
 
     public void ClickLooking(View view){
-        func.redirectActivity(this, UserRegistrationActivity.class);
+
+        Intent intent = new Intent(this, UserRegistrationActivity.class);
+        startActivity(intent);
     }
 
     public void ClickOffer(View view){
-        func.redirectActivity(this, BusinessRegistrationActivity.class);
+        Intent intent = new Intent(this, BusinessRegistrationActivity.class);
+        startActivity(intent);
     }
 
     public void ClickCancel(View view){
-        func.redirectActivity(this, MainActivity.class);
+        finish();
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
     }
 }

@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.EditText;
@@ -18,10 +20,16 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.novoseltech.handymano.views.standard.HomeActivityStandard;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class UserRegistrationActivity extends AppCompatActivity {
 
@@ -37,6 +45,9 @@ public class UserRegistrationActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseFirestore fStore;
     private String UID;
+
+    private boolean usernameMatches = false;
+    private boolean phoneNoMatches = false;
 
 
     @Override
@@ -56,7 +67,36 @@ public class UserRegistrationActivity extends AppCompatActivity {
     }
 
     public void ClickRegisterUser(View view) {
-        registerUser();
+        fStore.collection("user")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if(task.isSuccessful()){
+                            for(QueryDocumentSnapshot documentSnapshot : task.getResult()){
+
+                                if(documentSnapshot.getString("username").equals(etUsername.getText().toString().trim())){
+                                    usernameMatches = true;
+                                    Log.d("DEBUG", "Username matches");
+                                }
+
+                                if(documentSnapshot.getString("phoneNo").equals(etPhoneNo.getText().toString().trim())){
+                                    phoneNoMatches = true;
+                                    Log.d("DEBUG", "Phone number matches");
+                                }
+                            }
+                        }
+                    }
+                });
+
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                registerUser();
+            }
+        }, 2000);
+
 
     }
 
@@ -74,6 +114,10 @@ public class UserRegistrationActivity extends AppCompatActivity {
             etUsername.setError("Username is required");
             etUsername.requestFocus();
             return;
+        }else if(usernameMatches){
+            etUsername.setError("Username already exists. Please specify unique username");
+            etUsername.requestFocus();
+            return;
         }else if(email.isEmpty()){
             etEmail.setError("Email address is required");
             etEmail.requestFocus();
@@ -86,12 +130,16 @@ public class UserRegistrationActivity extends AppCompatActivity {
             etPhoneNo.setError("Phone number is required");
             etPhoneNo.requestFocus();
             return;
+        }else if(phoneNoMatches){
+            etPhoneNo.setError("This phone number is already used by another user. Please specify another phone number.");
+            etPhoneNo.requestFocus();
+            return;
         }else if(password.isEmpty()){
             etPassword.setError("Password is required");
             etPassword.requestFocus();
             return;
-        }else if(password.length() < 6){
-            etPassword.setError("Minimum password length is 6 characters");
+        }else if(!isValidPassword(password)){
+            etPassword.setError("Password must at least contain 1 digit, 1 uppercase, 1 lowercase and at least 8 characters in length");
             etPassword.requestFocus();
             return;
         }
@@ -103,11 +151,16 @@ public class UserRegistrationActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "User registered successfully", Toast.LENGTH_SHORT).show();
                     UID = mAuth.getCurrentUser().getUid();
                     DocumentReference docReference = fStore.collection("user").document(UID);
+                    DocumentReference docReferenceChat = fStore.collection("chat").document(UID);
                     Map<String, Object> user = new HashMap<>();
+                    Map<String, Object> chatMap = new HashMap<>();
                     user.put("username", username);
                     user.put("email", email);
                     user.put("phoneNo", phoneNo);
                     user.put("accountType", "Standard");
+
+                    List<String> chatList = new ArrayList<>();
+                    chatMap.put("recipients", chatList);
 
                     docReference.set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
@@ -115,6 +168,14 @@ public class UserRegistrationActivity extends AppCompatActivity {
                             System.out.println("onSuccess: user profile " + UID + "created!");
                         }
                     });
+
+                    docReferenceChat.set(chatMap).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            System.out.println("Chat list created");
+                        }
+                    });
+
                     Intent intent = new Intent(UserRegistrationActivity.this, HomeActivityStandard.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     finish();
@@ -128,5 +189,18 @@ public class UserRegistrationActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    public boolean isValidPassword(final String password){
+        //https://androidfreetutorial.wordpress.com/2018/01/04/regular-expression-for-password-field-in-android/
+        Pattern pattern;
+        Matcher matcher;
+
+        final String PASSWORD_PATTERN = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=\\S+$).{8,}$";
+
+        pattern = Pattern.compile(PASSWORD_PATTERN);
+        matcher = pattern.matcher(password);
+
+        return matcher.matches();
     }
 }

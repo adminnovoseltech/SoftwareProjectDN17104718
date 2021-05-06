@@ -6,6 +6,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -26,8 +27,11 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.novoseltech.handymano.fragments.AddressSelect;
 import com.novoseltech.handymano.views.professional.HomeActivityProfessional;
 
@@ -35,6 +39,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class BusinessRegistrationActivity extends AppCompatActivity {
 
@@ -58,28 +64,19 @@ public class BusinessRegistrationActivity extends AppCompatActivity {
     private String UID;
     private String businessCategory="N/A";
     private String businessExperience="N/A";
+    private boolean usernameMatches = false;
+    private boolean phoneNoMatches = false;
 
     //Location
     FrameLayout mapFrame;
 
     //Location data
-    //String latitude;
-    //String longitude;
     double latitude;
     double longitude;
     String radius;
 
-
     //Layout
     ConstraintLayout.LayoutParams btc;
-
-
-
-
-
-
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,7 +110,7 @@ public class BusinessRegistrationActivity extends AppCompatActivity {
         AddressSelect af = new AddressSelect();
 
         //Layout params
-         btc = (ConstraintLayout.LayoutParams) btn_cancel.getLayoutParams();
+        btc = (ConstraintLayout.LayoutParams) btn_cancel.getLayoutParams();
 
 
         btn_chooseLocation.setOnClickListener(new View.OnClickListener() {
@@ -141,8 +138,37 @@ public class BusinessRegistrationActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
+
+
+                fStore.collection("user")
+                        .get()
+                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                if(task.isSuccessful()){
+                                    for(QueryDocumentSnapshot documentSnapshot : task.getResult()){
+
+                                        if(documentSnapshot.getString("username").equals(etBusinessUsername.getText().toString().trim())){
+                                            usernameMatches = true;
+                                        }
+
+                                        if(documentSnapshot.getString("phoneNo").equals(etBusinessPhoneNo.getText().toString().trim())){
+                                            phoneNoMatches = true;
+                                        }
+                                    }
+                                }
+                            }
+                        });
+
                 //Invoke registration method
-                registerBusinessUser();
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        registerBusinessUser();
+                    }
+                }, 2000);
+
             }
         });
 
@@ -164,8 +190,6 @@ public class BusinessRegistrationActivity extends AppCompatActivity {
                     }
                 }else{
 
-                    //lp.setMargins(lp.leftMargin, 180, lp.rightMargin, lp.bottomMargin);
-
                     btc.setMargins(btc.leftMargin, 2500, btc.rightMargin, btc.bottomMargin);
                     btn_register.setVisibility(View.VISIBLE);
 
@@ -178,14 +202,11 @@ public class BusinessRegistrationActivity extends AppCompatActivity {
                     btn_saveLocation.setVisibility(View.GONE);
                     mapFrame.setVisibility(View.GONE);
 
-                    //Toast.makeText(getApplicationContext(), radius, Toast.LENGTH_SHORT).show();
                 }
 
 
             }
         });
-
-
 
         //Services category - creating the dropdown
         final String[] SERVICES_CATEGORY = new String[] {
@@ -301,11 +322,17 @@ public class BusinessRegistrationActivity extends AppCompatActivity {
         String phoneNo = etBusinessPhoneNo.getText().toString().trim();
         String password = etBusinessPassword.getText().toString().trim();
 
+
         if(username.isEmpty()){
             etBusinessUsername.setError("Username is required");
             etBusinessUsername.requestFocus();
             return;
-        }else if(email.isEmpty()){
+        }else if(usernameMatches){
+            etBusinessUsername.setError("Username already exists. Please specify unique username");
+            etBusinessUsername.requestFocus();
+            return;
+        }
+        else if(email.isEmpty()){
             etBusinessEmail.setError("Email address is required");
             etBusinessEmail.requestFocus();
             return;
@@ -317,12 +344,17 @@ public class BusinessRegistrationActivity extends AppCompatActivity {
             etBusinessPhoneNo.setError("Phone number is required");
             etBusinessPhoneNo.requestFocus();
             return;
-        }else if(password.isEmpty()){
-            etBusinessPassword.setError("Password is required");
+        }else if(phoneNoMatches){
+            etBusinessPhoneNo.setError("This phone number is already used by another user. Please specify another phone number.");
+            etBusinessPhoneNo.requestFocus();
+            return;
+        }
+        else if(password.isEmpty()){
+            etBusinessPassword.setError("Password field cannot be empty.");
             etBusinessPassword.requestFocus();
             return;
-        }else if(password.length() < 6){
-            etBusinessPassword.setError("Minimum password length is 6 characters");
+        }else if(!isValidPassword(password)){
+            etBusinessPassword.setError("Password must at least contain 1 digit, 1 uppercase, 1 lowercase and at least 8 characters in length");
             etBusinessPassword.requestFocus();
             return;
         }else if(businessExperience.equals("N/A")){
@@ -334,7 +366,7 @@ public class BusinessRegistrationActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()){
-                    Toast.makeText(getApplicationContext(), "User registered successfully", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Successfully registered", Toast.LENGTH_SHORT).show();
                     UID = mAuth.getCurrentUser().getUid();
                     DocumentReference docReference = fStore.collection("user").document(UID);
                     DocumentReference docReferenceChat = fStore.collection("chat").document(UID);
@@ -380,30 +412,17 @@ public class BusinessRegistrationActivity extends AppCompatActivity {
                                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                 @Override
                                                 public void onSuccess(Void aVoid) {
-
+                                                    docReferenceFeedback.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                        @Override
+                                                        public void onSuccess(Void aVoid) {
+                                                            Log.d("DOC DELETED", "");
+                                                        }
+                                                    });
                                                 }
                                             });
 
                                 }
                             });
-
-                    /*docReferenceRating.collection("feedback").document(UID).set(new HashMap<String, Object>())
-                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
-                                    *//*docReferenceRating.collection("feedback").document(UID).delete()
-                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                @Override
-                                                public void onComplete(@NonNull Task<Void> task) {
-                                                    if(task.isSuccessful()){
-                                                        Log.d("TAG", "Document successfully deleted");
-                                                    }
-                                                }
-                                            });*//*
-                                }
-                            });*/
-
-
 
                     Intent intent = new Intent(BusinessRegistrationActivity.this, HomeActivityProfessional.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -419,8 +438,22 @@ public class BusinessRegistrationActivity extends AppCompatActivity {
                 }
             }
         });
+
+
     }
 
+    public boolean isValidPassword(final String password){
+        //https://androidfreetutorial.wordpress.com/2018/01/04/regular-expression-for-password-field-in-android/
+        Pattern pattern;
+        Matcher matcher;
+
+        final String PASSWORD_PATTERN = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=\\S+$).{8,}$";
+
+        pattern = Pattern.compile(PASSWORD_PATTERN);
+        matcher = pattern.matcher(password);
+
+        return matcher.matches();
+    }
 
 
 }

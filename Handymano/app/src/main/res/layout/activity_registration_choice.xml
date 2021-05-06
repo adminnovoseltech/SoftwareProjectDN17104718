@@ -20,60 +20,60 @@
         android:id="@+id/btn_serviceLooking"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="100dp"
+        android:layout_marginBottom="15dp"
+        android:onClick="ClickLooking"
         android:text="@string/choice_button_looking"
         android:textStyle="bold"
-        android:onClick="ClickLooking"
+        app:layout_constraintBottom_toTopOf="@+id/textView_or"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView_ChoiceLogo" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/textView_or"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
+        android:layout_marginBottom="15dp"
         android:text="@string/or"
         android:textSize="20sp"
         android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/btn_serviceOffering"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_serviceLooking" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_serviceOffering"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
+        android:layout_marginBottom="15dp"
+        android:onClick="ClickOffer"
         android:text="@string/choice_button_offer"
         android:textStyle="bold"
-        android:onClick="ClickOffer"
+        app:layout_constraintBottom_toTopOf="@+id/textView_or2"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView_or" />|
+        app:layout_constraintStart_toStartOf="parent" />|
 
     <TextView
         android:id="@+id/textView_or2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
+        android:layout_marginBottom="15dp"
         android:text="@string/or"
         android:textSize="20sp"
         android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/btn_registerCancel"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_serviceOffering" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_registerCancel"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
+        android:layout_marginBottom="50dp"
+        android:onClick="ClickCancel"
         android:text="@string/cancel"
         android:textStyle="bold"
-        android:onClick="ClickCancel"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView_or2" />|
+        app:layout_constraintStart_toStartOf="parent" />|
 
 </androidx.constraintlayout.widget.ConstraintLayout>
