@@ -3,6 +3,7 @@ package com.novoseltech.handymano.views.professional;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -112,8 +113,11 @@ public class ProfessionalProfileActivity extends AppCompatActivity implements Pa
     Button btn_saveLoc;
 
     ScrollView sv_pro;
+    ConstraintLayout cl_editProfile;
 
     Boolean editMode = false;
+
+    TextView tv_currentAddress;
 
 
 
@@ -123,12 +127,14 @@ public class ProfessionalProfileActivity extends AppCompatActivity implements Pa
         setContentView(R.layout.activity_professional_profile);
         drawerLayout = findViewById(R.id.drawer_layout_professional);
 
+        cl_editProfile = findViewById(R.id.cl_editProfileForm);
+
         TextView tv_pp_username = findViewById(R.id.tv_pp_username);
         TextView tv_pp_email = findViewById(R.id.tv_pp_email);
         tv_pp_email.setText(email);
         TextView tv_pp_phoneNo = findViewById(R.id.tv_pp_phoneNo);
 
-        TextView tv_currentAddress = findViewById(R.id.textView_currentAddress);
+        tv_currentAddress = findViewById(R.id.textView_currentAddress);
         tv_currentAddress.setVisibility(View.VISIBLE);
         tv_currentAddress.setVisibility(View.VISIBLE);
 
@@ -160,8 +166,6 @@ public class ProfessionalProfileActivity extends AppCompatActivity implements Pa
 
         btn_chooseLocation = findViewById(R.id.btn_chooseLoc);
         btn_chooseLocation.setVisibility(View.GONE);
-        btn_saveLoc = findViewById(R.id.btn_pp_saveLoc);
-        btn_saveLoc.setVisibility(View.GONE);
         AddressSelect af = new AddressSelect();
 
         FirebaseUser user = mAuth.getCurrentUser();
@@ -194,14 +198,18 @@ public class ProfessionalProfileActivity extends AppCompatActivity implements Pa
                             phoneNo = documentSnapshot.getString("phoneNo");
 
                             GeoPoint gp = documentSnapshot.getGeoPoint("location");
+                            latitude = gp.getLatitude();
+                            longitude = gp.getLongitude();
+                            radius = documentSnapshot.getString("radius");
+
                             tmpLat = gp.getLatitude();
                             tmpLon = gp.getLongitude();
                             tmpRad = documentSnapshot.getString("radius");
+
                             String address = getAddressFromLatLng(tmpLat, tmpLon);
+
                             tv_currentAddress.setText(address);
-
                             tv_drawerUsername.setText(username);
-
                             trade = documentSnapshot.getString("category");
                             yearsOfExp = documentSnapshot.getString("experience");
 
@@ -242,6 +250,8 @@ public class ProfessionalProfileActivity extends AppCompatActivity implements Pa
             }
         });
 
+
+
         btn_save_pp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -262,14 +272,26 @@ public class ProfessionalProfileActivity extends AppCompatActivity implements Pa
                 if(et_pp_username.getText().toString().equals(username) &&
                         et_pp_phoneNo.getText().toString().equals(phoneNo) &&
                         et_pp_email.getText().toString().equals(email) &&
-                        tmpAddress.equals(getAddressFromLatLng(latitude, longitude)) &&
-                        tmpRad.equals(radius)){
+                        (tmpLat == latitude) &&
+                        (tmpLon == longitude) &&
+                        (tmpRad == radius)
+
+
+
+                        //((tmpAddress.equals(getAddressFromLatLng(tmpLat, tmpLon)) || tv_currentAddress.getText().toString().equals(getAddressFromLatLng(tmpLat, tmpLon)) )) &&
+                        /*tmpRad.equals(radius)*/){
 
                     Log.d(TAG, "Nothing to update!");
 
                 }else{
                     //If something was changed
                     openDialog();
+
+                    Log.d(et_pp_username.getText().toString(), username);
+                    Log.d(et_pp_email.getText().toString(), phoneNo);
+                    Log.d(et_pp_email.getText().toString(), email);
+                    //Log.d(tmpRad, radius);
+
                 }
 
 
@@ -279,6 +301,8 @@ public class ProfessionalProfileActivity extends AppCompatActivity implements Pa
 
             }
         });
+
+
 
 
         //Location choice
@@ -294,46 +318,12 @@ public class ProfessionalProfileActivity extends AppCompatActivity implements Pa
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.frame_loc_pro, af)
                         .commit();
-                sv_pro.setVisibility(View.GONE);
-                btn_edit_pp.setVisibility(View.GONE);
-                btn_save_pp.setVisibility(View.GONE);
-                iv_pp_profilePhoto.setVisibility(View.GONE);
-                btn_saveLoc.setVisibility(View.VISIBLE);
+
+                cl_editProfile.setVisibility(View.GONE);
                 mapFrame.setVisibility(View.VISIBLE);
             }
         });
 
-        btn_saveLoc.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                latitude = Double.parseDouble(af.getLocationData(0));
-                longitude = Double.parseDouble(af.getLocationData(1));
-                radius = af.getLocationData(2);
-
-                mapFrame.setVisibility(View.GONE);
-                btn_saveLoc.setVisibility(View.GONE);
-                btn_chooseLocation.setVisibility(View.VISIBLE);
-
-                sv_pro.setVisibility(View.VISIBLE);
-
-                btn_save_pp.setVisibility(View.VISIBLE);
-                iv_pp_profilePhoto.setVisibility(View.VISIBLE);
-
-                String address = getAddressFromLatLng(latitude, longitude);
-                tmpAddress = address;
-                tv_currentAddress.setText(address);
-
-
-                if(editMode){
-                    btn_save_pp.setVisibility(View.VISIBLE);
-                    btn_edit_pp.setVisibility(View.GONE);
-                }else{
-                    btn_save_pp.setVisibility(View.GONE);
-                    btn_edit_pp.setVisibility(View.VISIBLE);
-                }
-
-            }
-        });
 
         iv_pp_profilePhoto.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -470,14 +460,14 @@ public class ProfessionalProfileActivity extends AppCompatActivity implements Pa
 
         //Update username and phone number (Updating user's Firestore document)
 
-        GeoPoint gp = new GeoPoint(latitude, longitude);
+        GeoPoint gp = new GeoPoint(tmpLat, tmpLon);
 
         Map<String, Object> userHmap = new HashMap<>();
         userHmap.put("username", et_pp_username.getText().toString());
         userHmap.put("phoneNo", et_pp_phoneNo.getText().toString());
         userHmap.put("email", et_pp_email.getText().toString());
         userHmap.put("location", gp);
-        userHmap.put("radius", radius);
+        userHmap.put("radius", tmpRad);
         fStore.collection("user").document(UID).update(userHmap);
 
         //Update account's email
@@ -613,7 +603,6 @@ public class ProfessionalProfileActivity extends AppCompatActivity implements Pa
                 finish();
                 Intent intent = new Intent(ProfessionalProfileActivity.this, MainActivity.class);
                 startActivity(intent);
-                //functions.redirectActivity(HomeActivityProfessional.this, MainActivity.class);
 
             }
         });
@@ -633,7 +622,25 @@ public class ProfessionalProfileActivity extends AppCompatActivity implements Pa
     @Override
     public void onBackPressed() {
         //super.onBackPressed();
-        Toast.makeText(getApplicationContext(), "Works", Toast.LENGTH_SHORT).show();
+    }
+
+    public void setLocationData(String lat, String lon, String rad){
+        tmpLat = Double.parseDouble(lat);
+        tmpLon = Double.parseDouble(lon);
+        tmpRad = rad;
+
+        String address = getAddressFromLatLng(tmpLat, tmpLon);
+        tmpAddress = address;
+        tv_currentAddress.setText(address);
+
+
+        if(editMode){
+            btn_save_pp.setVisibility(View.VISIBLE);
+            btn_edit_pp.setVisibility(View.GONE);
+        }else{
+            btn_save_pp.setVisibility(View.GONE);
+            btn_edit_pp.setVisibility(View.VISIBLE);
+        }
     }
 
 

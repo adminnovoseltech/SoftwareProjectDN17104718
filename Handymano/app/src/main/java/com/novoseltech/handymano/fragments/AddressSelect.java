@@ -33,6 +33,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.textfield.TextInputLayout;
 import com.novoseltech.handymano.BusinessRegistrationActivity;
 import com.novoseltech.handymano.R;
+import com.novoseltech.handymano.views.professional.ProfessionalProfileActivity;
 
 import java.io.IOException;
 import java.util.List;
@@ -67,8 +68,11 @@ public class AddressSelect extends Fragment implements OnMapReadyCallback{
     private Double tmpLat;
     private Double tmpLon;
 
-    FrameLayout frameLayout;
-    ConstraintLayout clForm;
+    FrameLayout fl_bra;
+    ConstraintLayout cl_bra;
+
+    FrameLayout fl_ppa;
+    ConstraintLayout cl_ppa;
 
     public AddressSelect() {
         // Required empty public constructor
@@ -108,8 +112,12 @@ public class AddressSelect extends Fragment implements OnMapReadyCallback{
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_address_select, container, false);
 
-        frameLayout = getActivity().findViewById(R.id.frame_location);
-        clForm = getActivity().findViewById(R.id.cl_regFormBusiness);
+        fl_bra = getActivity().findViewById(R.id.frame_location);
+        cl_bra = getActivity().findViewById(R.id.cl_regFormBusiness);
+
+        fl_ppa = getActivity().findViewById(R.id.frame_loc_pro);
+        cl_ppa = getActivity().findViewById(R.id.cl_editProfileForm);
+
         btn_searchLocation = view.findViewById(R.id.btn_selectLocation);
         btn_saveLocation = view.findViewById(R.id.btn_afSaveLocation);
         btn_saveLocation.setVisibility(View.GONE);
@@ -147,6 +155,8 @@ public class AddressSelect extends Fragment implements OnMapReadyCallback{
                     coordinates[1] = String.valueOf(tmpLon);
                     coordinates[2] = tmpRad;
 
+                    btn_saveLocation.setVisibility(View.VISIBLE);
+                    btn_cancelLocation.setVisibility(View.VISIBLE);
 
                 }else if(mode.equals("New")){
 
@@ -239,6 +249,8 @@ public class AddressSelect extends Fragment implements OnMapReadyCallback{
 
                             if(mode.equals("NewReg")){
                                 btn_saveLocation.setVisibility(View.VISIBLE);
+                            }else if(mode.equals("Edit")){
+
                             }
 
 
@@ -260,21 +272,32 @@ public class AddressSelect extends Fragment implements OnMapReadyCallback{
         btn_saveLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-
-                BusinessRegistrationActivity bra = (BusinessRegistrationActivity) getActivity();
-
-                //bra.setLocationData();
-
                 String radius = et_radius.getText().toString();
+                if(mode.equals("NewReg")){
+                    BusinessRegistrationActivity bra = (BusinessRegistrationActivity) getActivity();
+                    if(radius == null){
+                        Toast.makeText(getContext(), "Radius cannot be empty", Toast.LENGTH_SHORT).show();
+                    }else{
+                        fl_bra.setVisibility(View.GONE);
+                        cl_bra.setVisibility(View.VISIBLE);
+                        bra.setLocationData(coordinates[0], coordinates[1], radius);
+                    }
+                }else if(mode.equals("Edit")){
+                    ProfessionalProfileActivity ppa = (ProfessionalProfileActivity) getActivity();
 
-                if(radius == null){
-                    Toast.makeText(getContext(), "Radius cannot be empty", Toast.LENGTH_SHORT).show();
-                }else{
-                    frameLayout.setVisibility(View.GONE);
-                    clForm.setVisibility(View.VISIBLE);
-                    bra.setLocationData(coordinates[0], coordinates[1], radius);
+                    fl_ppa.setVisibility(View.GONE);
+                    cl_ppa.setVisibility(View.VISIBLE);
+
+                    ppa.setLocationData(coordinates[0], coordinates[1], radius);
+
                 }
+
+
+
+
+
+
+
 
 
             }
@@ -283,8 +306,15 @@ public class AddressSelect extends Fragment implements OnMapReadyCallback{
         btn_cancelLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                frameLayout.setVisibility(View.GONE);
-                clForm.setVisibility(View.VISIBLE);
+
+                if(mode.equals("NewReg")){
+                    fl_bra.setVisibility(View.GONE);
+                    cl_bra.setVisibility(View.VISIBLE);
+                }else if(mode.equals("Edit")){
+                    fl_ppa.setVisibility(View.GONE);
+                    cl_ppa.setVisibility(View.VISIBLE);
+                }
+
             }
         });
 
