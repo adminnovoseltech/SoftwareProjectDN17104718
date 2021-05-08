@@ -11,11 +11,11 @@
         android:id="@+id/address_layout"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
         android:hint="@string/currentLocation"
+        app:layout_constraintBottom_toTopOf="@+id/radius_layout"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/map_frag">
+        app:layout_constraintStart_toStartOf="parent">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/address_textInput"
@@ -30,11 +30,11 @@
         android:id="@+id/radius_layout"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
         android:hint="@string/travelingRadius"
+        app:layout_constraintBottom_toTopOf="@+id/btn_selectLocation"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/address_layout">
+        app:layout_constraintStart_toStartOf="parent">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/radius_textInput"
@@ -49,20 +49,47 @@
         android:id="@+id/btn_selectLocation"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="100dp"
+        android:layout_marginBottom="10dp"
         android:text="@string/searchByLocation"
         android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/btn_afSaveLocation"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/address_layout" />
+        app:layout_constraintStart_toStartOf="parent" />
 
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_afSaveLocation"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:text="@string/saveLocation"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/btn_afCancel"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_afCancel"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:text="@string/cancel"
+        android:textStyle="bold"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <fragment
         android:id="@+id/map_frag"
         android:name="com.google.android.gms.maps.SupportMapFragment"
 
         android:layout_width="match_parent"
-        android:layout_height="350dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="20dp"
+        app:layout_constraintBottom_toTopOf="@+id/address_layout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

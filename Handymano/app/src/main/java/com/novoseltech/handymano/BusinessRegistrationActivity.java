@@ -54,7 +54,7 @@ public class BusinessRegistrationActivity extends AppCompatActivity {
 
     Button btn_register;
     Button btn_cancel;
-    Button btn_saveLocation;
+    //Button btn_saveLocation;
     Button btn_chooseLocation;
 
     //Firebase objects
@@ -68,6 +68,7 @@ public class BusinessRegistrationActivity extends AppCompatActivity {
 
     //Location
     FrameLayout mapFrame;
+    ConstraintLayout cl_regFormBusiness;
 
     //Location data
     double latitude;
@@ -87,11 +88,11 @@ public class BusinessRegistrationActivity extends AppCompatActivity {
         etBusinessPhoneNo = findViewById(R.id.registerBusinessPhoneNo_input);
         etBusinessPassword = findViewById(R.id.registerBusinessPassword_input);
         or4 = findViewById(R.id.textView_or4);
-        or5 = findViewById(R.id.textView_or5);
+        //or5 = findViewById(R.id.textView_or5);
 
         btn_register = findViewById(R.id.btn_businessRegister);
         btn_cancel = findViewById(R.id.btn_businessRegisterCancel);
-        btn_saveLocation = findViewById(R.id.btn_saveLocation);
+        //btn_saveLocation = findViewById(R.id.btn_saveLocation);
         btn_chooseLocation = findViewById(R.id.btn_chooseLocation);
 
         mAuth = FirebaseAuth.getInstance();
@@ -100,11 +101,13 @@ public class BusinessRegistrationActivity extends AppCompatActivity {
         mapFrame = findViewById(R.id.frame_location);
         mapFrame.setVisibility(View.GONE);
 
+        cl_regFormBusiness = findViewById(R.id.cl_regFormBusiness);
+
         btn_register.setVisibility(View.GONE);
-        btn_saveLocation.setVisibility(View.GONE);
+        //btn_saveLocation.setVisibility(View.GONE);
         btn_chooseLocation.setVisibility(View.VISIBLE);
 
-        or5.setVisibility(View.GONE);
+        //or5.setVisibility(View.GONE);
 
         AddressSelect af = new AddressSelect();
 
@@ -122,13 +125,15 @@ public class BusinessRegistrationActivity extends AppCompatActivity {
                         .replace(R.id.frame_location, af)
                         .commit();
 
-                btn_register.setVisibility(View.GONE);
-                btn_cancel.setVisibility(View.GONE);
-                or4.setVisibility(View.GONE);
-                or5.setVisibility(View.GONE);
-                btn_chooseLocation.setVisibility(View.GONE);
+                cl_regFormBusiness.setVisibility(View.GONE);
 
-                btn_saveLocation.setVisibility(View.VISIBLE);
+                //btn_register.setVisibility(View.GONE);
+                //btn_cancel.setVisibility(View.GONE);
+                //or4.setVisibility(View.GONE);
+                //or5.setVisibility(View.GONE);
+                //btn_chooseLocation.setVisibility(View.GONE);
+
+                //btn_saveLocation.setVisibility(View.VISIBLE);
                 mapFrame.setVisibility(View.VISIBLE);
             }
         });
@@ -170,7 +175,7 @@ public class BusinessRegistrationActivity extends AppCompatActivity {
 
             }
         });
-
+/*
         btn_saveLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -205,7 +210,7 @@ public class BusinessRegistrationActivity extends AppCompatActivity {
 
 
             }
-        });
+        });*/
 
         //Services category - creating the dropdown
         final String[] SERVICES_CATEGORY = new String[] {
@@ -311,7 +316,9 @@ public class BusinessRegistrationActivity extends AppCompatActivity {
     }
 
     public void ClickCancelBusinessRegistration(View view){
+
         mapFrame.setVisibility(View.GONE);
+        finish();
         Intent intent = new Intent(BusinessRegistrationActivity.this, RegistrationChoiceActivity.class);
         startActivity(intent);
     }
@@ -455,5 +462,18 @@ public class BusinessRegistrationActivity extends AppCompatActivity {
         return matcher.matches();
     }
 
+    @Override
+    public void onBackPressed() {
+        //super.onBackPressed();
+    }
 
+    public void setLocationData(String lat, String lon, String rad){
+        latitude = Double.parseDouble(lat);
+        longitude = Double.parseDouble(lon);
+        radius = rad;
+
+        btn_register.setVisibility(View.VISIBLE);
+
+        Toast.makeText(getApplicationContext(), latitude + ", " + longitude + ", " + radius, Toast.LENGTH_SHORT).show();
+    }
 }

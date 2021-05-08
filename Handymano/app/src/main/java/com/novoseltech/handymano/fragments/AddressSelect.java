@@ -9,6 +9,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
@@ -20,6 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -29,6 +31,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.textfield.TextInputLayout;
+import com.novoseltech.handymano.BusinessRegistrationActivity;
 import com.novoseltech.handymano.R;
 
 import java.io.IOException;
@@ -52,6 +55,8 @@ public class AddressSelect extends Fragment implements OnMapReadyCallback{
     private String mParam2;
 
     private Button btn_searchLocation;
+    private Button btn_saveLocation;
+    private Button btn_cancelLocation;
     private EditText et_address;
     private EditText et_radius;
     private TextInputLayout til_radius;
@@ -61,6 +66,9 @@ public class AddressSelect extends Fragment implements OnMapReadyCallback{
     private String tmpRad;
     private Double tmpLat;
     private Double tmpLon;
+
+    FrameLayout frameLayout;
+    ConstraintLayout clForm;
 
     public AddressSelect() {
         // Required empty public constructor
@@ -99,7 +107,15 @@ public class AddressSelect extends Fragment implements OnMapReadyCallback{
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_address_select, container, false);
+
+        frameLayout = getActivity().findViewById(R.id.frame_location);
+        clForm = getActivity().findViewById(R.id.cl_regFormBusiness);
         btn_searchLocation = view.findViewById(R.id.btn_selectLocation);
+        btn_saveLocation = view.findViewById(R.id.btn_afSaveLocation);
+        btn_saveLocation.setVisibility(View.GONE);
+
+        btn_cancelLocation = view.findViewById(R.id.btn_afCancel);
+        btn_cancelLocation.setVisibility(View.GONE);
 
         et_address = view.findViewById(R.id.address_textInput);
         et_radius = view.findViewById(R.id.radius_textInput);
@@ -137,7 +153,7 @@ public class AddressSelect extends Fragment implements OnMapReadyCallback{
                     LatLng point = new LatLng(53.2734, -7.77832031);
                     googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(point, 7));
                     et_radius.setFocusable(false);
-                    coordinates[2] = "0";
+
 
                 }else if(mode.equals("JobEdit")){
 
@@ -152,6 +168,9 @@ public class AddressSelect extends Fragment implements OnMapReadyCallback{
 
                     LatLng point = new LatLng(53.2734, -7.77832031);
                     googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(point, 7));
+                    coordinates[2] = "0";
+
+                    btn_cancelLocation.setVisibility(View.VISIBLE);
 
                 }
 
@@ -216,6 +235,13 @@ public class AddressSelect extends Fragment implements OnMapReadyCallback{
                             addMarkerToTheMap(point);
                             coordinates[0] = String.valueOf(point.latitude);
                             coordinates[1] = String.valueOf(point.longitude);
+                            //coordinates[2] = et_radius.getText().toString();
+
+                            if(mode.equals("NewReg")){
+                                btn_saveLocation.setVisibility(View.VISIBLE);
+                            }
+
+
                         }else{
                             Toast.makeText(getContext(), "Location must be set in Ireland", Toast.LENGTH_SHORT).show();
                         }
@@ -228,6 +254,37 @@ public class AddressSelect extends Fragment implements OnMapReadyCallback{
                 }
 
 
+            }
+        });
+
+        btn_saveLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+                BusinessRegistrationActivity bra = (BusinessRegistrationActivity) getActivity();
+
+                //bra.setLocationData();
+
+                String radius = et_radius.getText().toString();
+
+                if(radius == null){
+                    Toast.makeText(getContext(), "Radius cannot be empty", Toast.LENGTH_SHORT).show();
+                }else{
+                    frameLayout.setVisibility(View.GONE);
+                    clForm.setVisibility(View.VISIBLE);
+                    bra.setLocationData(coordinates[0], coordinates[1], radius);
+                }
+
+
+            }
+        });
+
+        btn_cancelLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                frameLayout.setVisibility(View.GONE);
+                clForm.setVisibility(View.VISIBLE);
             }
         });
 
