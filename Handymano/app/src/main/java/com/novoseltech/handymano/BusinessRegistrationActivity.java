@@ -44,7 +44,6 @@ import java.util.regex.Pattern;
 
 public class BusinessRegistrationActivity extends AppCompatActivity {
 
-    Functions func = new Functions();
     //Initializing objects
     EditText etBusinessUsername;
     EditText etBusinessEmail;
@@ -313,7 +312,8 @@ public class BusinessRegistrationActivity extends AppCompatActivity {
 
     public void ClickCancelBusinessRegistration(View view){
         mapFrame.setVisibility(View.GONE);
-        func.redirectActivity(this, RegistrationChoiceActivity.class);
+        Intent intent = new Intent(BusinessRegistrationActivity.this, RegistrationChoiceActivity.class);
+        startActivity(intent);
     }
 
     public void registerBusinessUser(){

@@ -52,8 +52,6 @@ public class AddressSelect extends Fragment implements OnMapReadyCallback{
     private String mParam2;
 
     private Button btn_searchLocation;
-
-
     private EditText et_address;
     private EditText et_radius;
     private TextInputLayout til_radius;
@@ -63,9 +61,6 @@ public class AddressSelect extends Fragment implements OnMapReadyCallback{
     private String tmpRad;
     private Double tmpLat;
     private Double tmpLon;
-
-
-
 
     public AddressSelect() {
         // Required empty public constructor
@@ -142,6 +137,7 @@ public class AddressSelect extends Fragment implements OnMapReadyCallback{
                     LatLng point = new LatLng(53.2734, -7.77832031);
                     googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(point, 7));
                     et_radius.setFocusable(false);
+                    coordinates[2] = "0";
 
                 }else if(mode.equals("JobEdit")){
 

@@ -76,10 +76,6 @@ public class StandardProfileActivity extends AppCompatActivity implements Passwo
 
     String pass = "";
 
-    /*TextView tv_sp_username;
-    TextView tv_sp_email;
-    TextView tv_sp_phoneNo;*/
-
     ShapeableImageView iv_sp_profilePhoto;
 
     //Editing data
@@ -100,13 +96,25 @@ public class StandardProfileActivity extends AppCompatActivity implements Passwo
         setContentView(R.layout.activity_standard_profile);
         drawerLayout = findViewById(R.id.drawer_layout_standard);
 
-        TextView tv_UserName = drawerLayout.findViewById(R.id.text_UserName_Standard);
         ShapeableImageView profileImage = drawerLayout.findViewById(R.id.profilePicture);
         if(user.getPhotoUrl() != null){
             Glide.with(getApplicationContext())
                     .load(user.getPhotoUrl())
                     .into(profileImage);
         }
+
+        TextView tv_UserName = drawerLayout.findViewById(R.id.text_UserName_Standard);
+        fStore.collection("user")
+                .document(user.getUid())
+                .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful()){
+                    DocumentSnapshot documentSnapshot = task.getResult();
+                    tv_UserName.setText(documentSnapshot.getString("username"));
+                }
+            }
+        });
 
         TextView tv_sp_username = findViewById(R.id.tv_sp_username);
         TextView tv_sp_email = findViewById(R.id.tv_sp_email);

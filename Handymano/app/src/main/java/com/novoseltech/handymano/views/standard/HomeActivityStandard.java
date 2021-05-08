@@ -89,7 +89,6 @@ public class HomeActivityStandard extends AppCompatActivity {
     DrawerLayout drawerLayout;
 
     //Layouts
-    TextView tv_UserName;
     ShapeableImageView profileImage;
 
     LinearLayout homeNavLayout;
@@ -144,7 +143,7 @@ public class HomeActivityStandard extends AppCompatActivity {
             }
         });
 
-        tv_UserName = drawerLayout.findViewById(R.id.text_UserName_Standard);
+
         profileImage = drawerLayout.findViewById(R.id.profilePicture);
 
 
@@ -162,6 +161,19 @@ public class HomeActivityStandard extends AppCompatActivity {
                 drawerLayout.closeDrawer(GravityCompat.START);
                 Intent intent = new Intent(getApplicationContext(), StandardProfileActivity.class);
                 startActivity(intent);
+            }
+        });
+
+        TextView tv_UserName = drawerLayout.findViewById(R.id.text_UserName_Standard);
+        fStore.collection("user")
+                .document(user.getUid())
+                .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful()){
+                    DocumentSnapshot documentSnapshot = task.getResult();
+                    tv_UserName.setText(documentSnapshot.getString("username"));
+                }
             }
         });
 

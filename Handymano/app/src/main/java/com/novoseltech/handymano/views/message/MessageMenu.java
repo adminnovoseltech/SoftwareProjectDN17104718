@@ -332,10 +332,6 @@ public class MessageMenu extends AppCompatActivity {
             }
         });
 
-
-
-
-
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
@@ -356,7 +352,7 @@ public class MessageMenu extends AppCompatActivity {
         openDrawer(drawerLayout);
     }
 
-    public void ClickProfile(View view) {
+   /* public void ClickProfile(View view) {
     }
 
     public void ClickProjects(View view){
@@ -367,20 +363,20 @@ public class MessageMenu extends AppCompatActivity {
 
     public void ClickJobs(View view){
     }
-
+*/
 
     public static void openDrawer(DrawerLayout drawerLayout) {
         //Open drawer layout
         drawerLayout.openDrawer(GravityCompat.START);
     }
-
+/*
     public void ClickLogOut(View view) {
         //logout();
     }
 
     public void ClickHome(View view){
 
-    }
+    }*/
 
     public void logout(){
         //Close app
@@ -414,8 +410,5 @@ public class MessageMenu extends AppCompatActivity {
         //Show dialog
         builder.show();
     }
-
-
-
 
 }

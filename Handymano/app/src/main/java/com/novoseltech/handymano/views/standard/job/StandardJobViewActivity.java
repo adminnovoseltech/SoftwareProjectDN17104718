@@ -84,13 +84,25 @@ public class StandardJobViewActivity extends AppCompatActivity implements PopupM
         setContentView(R.layout.activity_standard_job_view);
         drawerLayout = findViewById(R.id.drawer_layout_standard);
 
-        TextView tv_UserName = drawerLayout.findViewById(R.id.text_UserName_Standard);
         ShapeableImageView profileImage = drawerLayout.findViewById(R.id.profilePicture);
         if(user.getPhotoUrl() != null){
             Glide.with(getApplicationContext())
                     .load(user.getPhotoUrl())
                     .into(profileImage);
         }
+
+        TextView tv_UserName = drawerLayout.findViewById(R.id.text_UserName_Standard);
+        fStore.collection("user")
+                .document(user.getUid())
+                .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful()){
+                    DocumentSnapshot documentSnapshot = task.getResult();
+                    tv_UserName.setText(documentSnapshot.getString("username"));
+                }
+            }
+        });
 
         JOB_ID = getIntent().getStringExtra("JOB_ID");
         cl_jobView = findViewById(R.id.cl_jobViewStandard);

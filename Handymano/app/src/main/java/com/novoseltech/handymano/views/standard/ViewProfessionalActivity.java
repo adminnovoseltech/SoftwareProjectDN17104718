@@ -106,7 +106,6 @@ public class ViewProfessionalActivity extends AppCompatActivity{
 
         String TRADE_UID = getIntent().getStringExtra("USER_ID");
 
-        TextView tv_UserName = drawerLayout.findViewById(R.id.text_UserName_Standard);
         ShapeableImageView profileImage = drawerLayout.findViewById(R.id.profilePicture);
         iv_tradeProfileImageView = findViewById(R.id.iv_tradeProfileImageView);
 
@@ -115,6 +114,19 @@ public class ViewProfessionalActivity extends AppCompatActivity{
                     .load(user.getPhotoUrl())
                     .into(profileImage);
         }
+
+        TextView tv_UserName = drawerLayout.findViewById(R.id.text_UserName_Standard);
+        fStore.collection("user")
+                .document(user.getUid())
+                .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful()){
+                    DocumentSnapshot documentSnapshot = task.getResult();
+                    tv_UserName.setText(documentSnapshot.getString("username"));
+                }
+            }
+        });
 
         StorageReference storageReference = FirebaseStorage.getInstance()
                 .getReference().child("images")

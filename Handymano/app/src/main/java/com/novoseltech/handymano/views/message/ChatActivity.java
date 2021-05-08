@@ -141,8 +141,6 @@ public class ChatActivity extends AppCompatActivity {
 
                 if(!messageRecipientsReceiver.contains(UID + "," + SENDER_NAME)){
 
-
-
                     messageRecipientsReceiver.add(UID + "," + SENDER_NAME);
                     fStore.collection("chat").document(RECIPIENT_ID)
                             .update("recipients", messageRecipientsReceiver)
@@ -157,7 +155,6 @@ public class ChatActivity extends AppCompatActivity {
 
                 if(!messageRecipientsSender.contains(RECIPIENT_ID + "," + RECIPIENT_NAME)){
                     messageRecipientsSender.add(RECIPIENT_ID + "," + RECIPIENT_NAME);
-
 
                     fStore.collection("chat").document(UID)
                             .update("recipients", messageRecipientsSender)

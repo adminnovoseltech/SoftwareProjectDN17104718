@@ -8,7 +8,6 @@ import android.view.View;
 
 public class RegistrationChoiceActivity extends AppCompatActivity {
 
-    Functions func = new Functions();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

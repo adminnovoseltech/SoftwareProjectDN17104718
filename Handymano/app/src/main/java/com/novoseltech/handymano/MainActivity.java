@@ -29,7 +29,7 @@ import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
-    Functions func = new Functions();
+
 
     FirebaseAuth mAuth;
     FirebaseFirestore fStore;
@@ -117,7 +117,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void ClickRegister(View view){
-        func.redirectActivity(this, RegistrationChoiceActivity.class);
+        Intent intent = new Intent(MainActivity.this, RegistrationChoiceActivity.class);
+        startActivity(intent);
     }
 
     //Firebase login method

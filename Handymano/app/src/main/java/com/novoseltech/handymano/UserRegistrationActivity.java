@@ -33,7 +33,6 @@ import java.util.regex.Pattern;
 
 public class UserRegistrationActivity extends AppCompatActivity {
 
-    Functions func = new Functions();
 
     //Initializing objects
     EditText etUsername;
@@ -101,7 +100,8 @@ public class UserRegistrationActivity extends AppCompatActivity {
     }
 
     public void ClickCancelUserRegistration(View view){
-        func.redirectActivity(this, RegistrationChoiceActivity.class);
+        Intent intent = new Intent(UserRegistrationActivity.this, RegistrationChoiceActivity.class);
+        startActivity(intent);
     }
     
     public void registerUser(){

@@ -18,9 +18,12 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.novoseltech.handymano.MainActivity;
@@ -57,13 +60,25 @@ public class ProjectList extends AppCompatActivity {
         fStore = FirebaseFirestore.getInstance();
         user = mAuth.getCurrentUser();
 
-        TextView tv_UserName = drawerLayout.findViewById(R.id.text_UserName_Standard);
         ShapeableImageView profileImage = drawerLayout.findViewById(R.id.profilePicture);
         if(user.getPhotoUrl() != null){
             Glide.with(getApplicationContext())
                     .load(user.getPhotoUrl())
                     .into(profileImage);
         }
+
+        TextView tv_UserName = drawerLayout.findViewById(R.id.text_UserName_Standard);
+        fStore.collection("user")
+                .document(user.getUid())
+                .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful()){
+                    DocumentSnapshot documentSnapshot = task.getResult();
+                    tv_UserName.setText(documentSnapshot.getString("username"));
+                }
+            }
+        });
 
         rv_tradeProjectList = findViewById(R.id.rv_tradeProjectList);
 
