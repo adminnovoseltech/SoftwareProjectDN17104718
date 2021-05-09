@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -65,10 +66,14 @@ public class ViewProfessionalActivity extends AppCompatActivity{
     TextView tv_tradeExperience;
     TextView tv_tradeLastProject;
     TextView tv_viewTradeAllProjects;
+    TextView tv_tradeAddress;
+    TextView tv_tradePhoneNo;
+    TextView tv_tradeEmailAddress;
     ImageView iv_messageTrade;
     ShapeableImageView iv_tradeProfileImageView;
-
-    TextView tv_tradeAddress;
+    LinearLayout ll_tradePhoneNo;
+    LinearLayout ll_tradeEmailAddress;
+    SupportMapFragment mapFragment;
 
     //Firebase objects
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
@@ -85,7 +90,7 @@ public class ViewProfessionalActivity extends AppCompatActivity{
     double tradeLongitude;
     GeoPoint tradeGeopoint;
 
-    SupportMapFragment mapFragment;
+
 
     //Rating
     Button btn_viewTradeFeedback;
@@ -114,6 +119,13 @@ public class ViewProfessionalActivity extends AppCompatActivity{
                     .load(user.getPhotoUrl())
                     .into(profileImage);
         }
+
+        ll_tradePhoneNo = findViewById(R.id.ll_tradePhone);
+        ll_tradePhoneNo.setVisibility(View.GONE);
+        ll_tradeEmailAddress = findViewById(R.id.ll_tradeEmail);
+        ll_tradeEmailAddress.setVisibility(View.GONE);
+        tv_tradePhoneNo = findViewById(R.id.tv_tradePhoneNo);
+        tv_tradeEmailAddress = findViewById(R.id.tv_tradeEmail);
 
         TextView tv_UserName = drawerLayout.findViewById(R.id.text_UserName_Standard);
         fStore.collection("user")
@@ -256,11 +268,6 @@ public class ViewProfessionalActivity extends AppCompatActivity{
         });
 
 
-
-
-
-
-
         fStore.collection("user").document(TRADE_UID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -272,6 +279,16 @@ public class ViewProfessionalActivity extends AppCompatActivity{
                     tradeGeopoint = documentSnapshot.getGeoPoint("location");
                     tradeLatitude = tradeGeopoint.getLatitude();
                     tradeLongitude = tradeGeopoint.getLongitude();
+
+                    if(documentSnapshot.getBoolean("phone_visible")){
+                        ll_tradePhoneNo.setVisibility(View.VISIBLE);
+                        tv_tradePhoneNo.setText(documentSnapshot.getString("phoneNo"));
+                    }
+
+                    if(documentSnapshot.getBoolean("email_visible")){
+                        ll_tradeEmailAddress.setVisibility(View.VISIBLE);
+                        tv_tradeEmailAddress.setText(documentSnapshot.getString("email"));
+                    }
 
                     Log.d("LAT", String.valueOf(tradeLatitude));
                     Log.d("LON", String.valueOf(tradeLongitude));

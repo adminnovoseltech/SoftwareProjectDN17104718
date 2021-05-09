@@ -88,6 +88,15 @@ public class  HomeActivityProfessional extends AppCompatActivity {
                     Log.d(TAG, "Profile image not found. Loading default image.");
                 }
 
+                iv_tradeHomeProfileImage.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(HomeActivityProfessional.this, ProfessionalProfileActivity.class);
+                        finish();
+                        startActivity(intent);
+                    }
+                });
+
                 CardView cv_tradeHomeProject = findViewById(R.id.cv_tradeHomeProject);
                 cv_tradeHomeProject.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -129,12 +138,11 @@ public class  HomeActivityProfessional extends AppCompatActivity {
                     }
                 });
 
-                Button btn_tradeHomeProfile = findViewById(R.id.btn_tradeHomeProfile);
-                btn_tradeHomeProfile.setOnClickListener(new View.OnClickListener() {
+                Button btn_tradePrivacy = findViewById(R.id.btn_tradePrivacy);
+                btn_tradePrivacy.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         Intent intent = new Intent(HomeActivityProfessional.this, PrivacySettingActivity.class);
-                        //finish();
                         startActivity(intent);
                     }
                 });
