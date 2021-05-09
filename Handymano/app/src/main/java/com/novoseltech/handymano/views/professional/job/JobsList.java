@@ -28,6 +28,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.mikhaellopez.circularimageview.CircularImageView;
 import com.novoseltech.handymano.MainActivity;
 import com.novoseltech.handymano.R;
 import com.novoseltech.handymano.adapter.JobsAdapter;
@@ -70,7 +71,7 @@ public class JobsList extends AppCompatActivity {
         setContentView(R.layout.activity_jobs_list);
         drawerLayout = findViewById(R.id.drawer_layout_professional);
         TextView tv_drawerUsername = drawerLayout.findViewById(R.id.text_UserName_Professional);
-        ShapeableImageView profileImage = drawerLayout.findViewById(R.id.profilePictureProfessional);
+        CircularImageView profileImage = drawerLayout.findViewById(R.id.civ_profilePictureProfessional);
 
 
         mAuth = FirebaseAuth.getInstance();

@@ -14,15 +14,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
-import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.imageview.ShapeableImageView;
@@ -34,13 +30,11 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.mikhaellopez.circularimageview.CircularImageView;
 import com.novoseltech.handymano.MainActivity;
 import com.novoseltech.handymano.R;
-import com.novoseltech.handymano.adapter.JobsAdapter;
 import com.novoseltech.handymano.adapter.MessagesAdapter;
-import com.novoseltech.handymano.model.MessagesModel;
 import com.novoseltech.handymano.views.professional.HomeActivityProfessional;
 import com.novoseltech.handymano.views.professional.ProfessionalProfileActivity;
 import com.novoseltech.handymano.views.professional.feedback.FeedbackList;
@@ -72,8 +66,6 @@ public class MessageMenu extends AppCompatActivity {
 
     String USER_TYPE = "";
 
-
-    ShapeableImageView profileImage;
     TextView tv_UserName;
     LinearLayout homeNavLayout;
     LinearLayout messageNavLayout;
@@ -96,7 +88,7 @@ public class MessageMenu extends AppCompatActivity {
             drawerLayout = findViewById(R.id.drawer_layout_professional);
 
             tv_UserName = drawerLayout.findViewById(R.id.text_UserName_Professional);
-            profileImage = drawerLayout.findViewById(R.id.profilePictureProfessional);
+            CircularImageView profileImage = drawerLayout.findViewById(R.id.civ_profilePictureProfessional);
 
             if(mAuth.getCurrentUser().getPhotoUrl() != null){
                 Glide.with(getApplicationContext())
@@ -204,7 +196,7 @@ public class MessageMenu extends AppCompatActivity {
             drawerLayout = findViewById(R.id.drawer_layout_standard);
 
             tv_UserName = drawerLayout.findViewById(R.id.text_UserName_Standard);
-            profileImage = drawerLayout.findViewById(R.id.profilePicture);
+            ShapeableImageView profileImage = drawerLayout.findViewById(R.id.profilePicture);
 
             if(mAuth.getCurrentUser().getPhotoUrl() != null){
                 Glide.with(getApplicationContext())

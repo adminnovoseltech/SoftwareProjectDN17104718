@@ -30,6 +30,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
+import com.mikhaellopez.circularimageview.CircularImageView;
 import com.novoseltech.handymano.MainActivity;
 import com.novoseltech.handymano.R;
 import com.novoseltech.handymano.model.ProjectsModel;
@@ -43,7 +44,6 @@ public class ProjectsActivity extends AppCompatActivity {
 
     //Navigation drawer
     DrawerLayout drawerLayout;
-    ShapeableImageView profileImage;
 
     private RecyclerView fStoreList;
     private FirestoreRecyclerAdapter adapter;
@@ -62,7 +62,7 @@ public class ProjectsActivity extends AppCompatActivity {
         fStore = FirebaseFirestore.getInstance();
         user = mAuth.getCurrentUser();
 
-        profileImage = drawerLayout.findViewById(R.id.profilePictureProfessional);
+        CircularImageView profileImage = drawerLayout.findViewById(R.id.civ_profilePictureProfessional);
         TextView tv_drawerUsername = drawerLayout.findViewById(R.id.text_UserName_Professional);
 
         FirebaseUser user = mAuth.getCurrentUser();

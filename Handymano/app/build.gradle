@@ -79,6 +79,9 @@ dependencies {
     //Chat
     implementation 'org.ocpsoft.prettytime:prettytime:4.0.1.Final'
 
+    //Circular image view
+    implementation 'com.mikhaellopez:circularimageview:4.2.0'
+
 
 
 

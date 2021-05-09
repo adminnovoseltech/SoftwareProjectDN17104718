@@ -28,7 +28,6 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -48,6 +47,7 @@ import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.mikhaellopez.circularimageview.CircularImageView;
 import com.novoseltech.handymano.MainActivity;
 import com.novoseltech.handymano.R;
 import com.novoseltech.handymano.fragments.AddressSelect;
@@ -93,7 +93,6 @@ public class ProfessionalProfileActivity extends AppCompatActivity implements Pa
     String pass = "";
 
     ShapeableImageView iv_pp_profilePhoto;
-    ShapeableImageView profileImage;
 
     //Location
     FrameLayout mapFrame;
@@ -176,7 +175,7 @@ public class ProfessionalProfileActivity extends AppCompatActivity implements Pa
                     .into(iv_pp_profilePhoto);
         }
 
-        profileImage = drawerLayout.findViewById(R.id.profilePictureProfessional);
+        CircularImageView profileImage = drawerLayout.findViewById(R.id.civ_profilePictureProfessional);
         TextView tv_drawerUsername = drawerLayout.findViewById(R.id.text_UserName_Professional);
 
         if(mAuth.getCurrentUser().getPhotoUrl() != null){

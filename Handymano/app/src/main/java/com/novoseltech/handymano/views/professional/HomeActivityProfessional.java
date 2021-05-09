@@ -12,7 +12,6 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,6 +23,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.mikhaellopez.circularimageview.CircularImageView;
 import com.novoseltech.handymano.MainActivity;
 import com.novoseltech.handymano.R;
 import com.novoseltech.handymano.views.message.MessageMenu;
@@ -79,16 +79,18 @@ public class  HomeActivityProfessional extends AppCompatActivity {
                 TextView tv_tradeHomeCategory = findViewById(R.id.tv_tradeHomeCategory);
                 tv_tradeHomeCategory.setText(CATEGORY);
 
-                ImageView iv_tradeHomeProfileImage = findViewById(R.id.iv_tradeHomeProfileImage);
+                CircularImageView circularImageView = findViewById(R.id.civ_tradeHomeProfileImage);
+
+
                 if(user.getPhotoUrl() != null){
                     Glide.with(getApplicationContext())
                             .load(user.getPhotoUrl())
-                            .into(iv_tradeHomeProfileImage);
+                            .into(circularImageView);
                 }else{
                     Log.d(TAG, "Profile image not found. Loading default image.");
                 }
 
-                iv_tradeHomeProfileImage.setOnClickListener(new View.OnClickListener() {
+                circularImageView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         Intent intent = new Intent(HomeActivityProfessional.this, ProfessionalProfileActivity.class);

@@ -38,6 +38,7 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.mikhaellopez.circularimageview.CircularImageView;
 import com.novoseltech.handymano.MainActivity;
 import com.novoseltech.handymano.R;
 import com.novoseltech.handymano.model.FeedbackModel;
@@ -54,8 +55,6 @@ public class FeedbackList extends AppCompatActivity {
     DrawerLayout drawerLayout;
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
     FirebaseFirestore fStore = FirebaseFirestore.getInstance();
-
-    ShapeableImageView profileImage;
 
     //Feedback banner
     int oneStarCount = 2;
@@ -82,7 +81,7 @@ public class FeedbackList extends AppCompatActivity {
 
         FirebaseUser user = mAuth.getCurrentUser();
 
-        profileImage = drawerLayout.findViewById(R.id.profilePictureProfessional);
+        CircularImageView profileImage = drawerLayout.findViewById(R.id.civ_profilePictureProfessional);
         TextView tv_drawerUsername = drawerLayout.findViewById(R.id.text_UserName_Professional);
 
         if(mAuth.getCurrentUser().getPhotoUrl() != null){
