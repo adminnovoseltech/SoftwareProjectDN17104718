@@ -6,6 +6,31 @@
     android:layout_height="match_parent"
     tools:context=".views.message.ChatActivity">
 
+    <com.mikhaellopez.circularimageview.CircularImageView
+        android:id="@+id/civ_chatActivityProfileImage"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="5dp"
+        android:src="@drawable/ic_profile_512"
+        app:civ_border_color="#3f51b5"
+        app:civ_border_width="4dp"
+        app:civ_shadow="true"
+        app:civ_shadow_color="#3f51b5"
+        app:civ_shadow_radius="0dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:id="@+id/view10"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="5dp"
+        android:background="#636363"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/civ_chatActivityProfileImage" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_chatContent"
         android:layout_width="match_parent"
@@ -16,7 +41,7 @@
         app:layout_constraintBottom_toTopOf="@+id/rl_chatContent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/view10" />
 
     <RelativeLayout
         android:id="@+id/rl_chatContent"
@@ -48,6 +73,33 @@
         </ImageButton>
 
     </RelativeLayout>
+
+    <TextView
+        android:id="@+id/tv_chatSenderName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="5dp"
+        android:text="Sender"
+        android:textAlignment="center"
+        android:textAllCaps="true"
+        android:textColor="@color/black"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/iv_chatMoreButton"
+        app:layout_constraintStart_toEndOf="@+id/civ_chatActivityProfileImage"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/iv_chatMoreButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="5dp"
+        android:onClick="ClickMenuMessages"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_more_vert" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

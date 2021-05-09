@@ -19,6 +19,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.mikhaellopez.circularimageview.CircularImageView;
 import com.novoseltech.handymano.R;
 import com.novoseltech.handymano.views.message.ChatActivity;
 import com.novoseltech.handymano.views.professional.job.ViewJob;
@@ -119,7 +120,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
         public TextView messageSender;
         public TextView lastMessage;
         public TextView lastMessageTimestamp;
-        public ImageView messageSenderImage;
+        public CircularImageView messageSenderImage;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             messageSender = itemView.findViewById(R.id.tv_chatSenderUsername);
