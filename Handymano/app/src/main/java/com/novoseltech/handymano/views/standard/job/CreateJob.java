@@ -250,24 +250,6 @@ public class CreateJob extends AppCompatActivity {
                         .commit();
             }
         });
-/*
-        btn_saveJobLocation.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                latitude = Double.parseDouble(af.getLocationData(0));
-                longitude = Double.parseDouble(af.getLocationData(1));
-                tv_jobAddressAdd.setText(getCompleteAddressString(latitude, longitude));
-
-                fl_jobAddressLayout.setVisibility(View.GONE);
-                cl_jobCreationLayout.setVisibility(View.VISIBLE);
-
-
-
-                btn_saveJobLocation.setVisibility(View.GONE);
-            }
-        });
-*/
-
 
         btn_saveJob.setOnClickListener(new View.OnClickListener() {
             @Override

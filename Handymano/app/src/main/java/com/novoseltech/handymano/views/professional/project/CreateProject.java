@@ -4,7 +4,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
 import android.content.ClipData;
@@ -55,7 +54,7 @@ import java.util.Map;
 
 public class CreateProject extends AppCompatActivity {
 
-    int PICK_IMAGE_MULTIPLE = 2014;
+    int REQUEST_STORAGE_PERMISSION_CODE = 2014;
     long imageCount = 0;
 
     String imageEncoded;
@@ -125,11 +124,17 @@ public class CreateProject extends AppCompatActivity {
         iv_addImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent();
-                intent.setType("image/*");
-                intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-                intent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(Intent.createChooser(intent, "Select pictures"), PICK_IMAGE_MULTIPLE);
+                if(getApplicationContext().checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED || getApplicationContext().
+                        checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+                    requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_STORAGE_PERMISSION_CODE);
+                }else{
+                    Intent intent = new Intent();
+                    intent.setType("image/*");
+                    intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+                    intent.setAction(Intent.ACTION_GET_CONTENT);
+                    startActivityForResult(Intent.createChooser(intent, "Select pictures"), REQUEST_STORAGE_PERMISSION_CODE);
+                }
+
             }
         });
 
@@ -216,10 +221,10 @@ public class CreateProject extends AppCompatActivity {
         try {
             if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(getParent(), new String[]{
-                        Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, PICK_IMAGE_MULTIPLE);
+                        Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_STORAGE_PERMISSION_CODE);
             }else{
                 // When an Image is picked
-                if (requestCode == PICK_IMAGE_MULTIPLE && resultCode == RESULT_OK
+                if (requestCode == REQUEST_STORAGE_PERMISSION_CODE && resultCode == RESULT_OK
                         && null != data) {
                     String[] filePathColumn = { MediaStore.Images.Media.DATA };
                     imagesEncodedList = new ArrayList<String>();
@@ -281,16 +286,17 @@ public class CreateProject extends AppCompatActivity {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
-        if(requestCode == PICK_IMAGE_MULTIPLE) {
+        if(requestCode == REQUEST_STORAGE_PERMISSION_CODE) {
             // If request is cancelled, the result arrays are empty.
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Intent intent = new Intent();
                 intent.setType("image/*");
                 intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
                 intent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(Intent.createChooser(intent, "Select pictures"), PICK_IMAGE_MULTIPLE);
+                startActivityForResult(Intent.createChooser(intent, "Select pictures"), REQUEST_STORAGE_PERMISSION_CODE);
             } else {
                 //Show error message that prevents that informs them about permission
+                Toast.makeText(getApplicationContext(), "Storage permission is denied. Please allow it in the Settings to enable this functionality.", Toast.LENGTH_SHORT).show();
             }
         }
     }

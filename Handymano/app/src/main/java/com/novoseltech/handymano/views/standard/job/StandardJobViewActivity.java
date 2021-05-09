@@ -391,7 +391,9 @@ public class StandardJobViewActivity extends AppCompatActivity implements PopupM
         if(requestCode == REQUEST_STORAGE_PERMISSION_CODE) {
             // If request is cancelled, the result arrays are empty.
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
+                Intent intent = new Intent(StandardJobViewActivity.this, EditJob.class);
+                intent.putExtra("JOB_ID", JOB_ID);
+                startActivity(intent);
             } else {
                 //Show error message that prevents that informs them about permission
                 Toast.makeText(getApplicationContext(), "Storage permission is denied. Please allow it in the Settings to enable this functionality.", Toast.LENGTH_SHORT).show();

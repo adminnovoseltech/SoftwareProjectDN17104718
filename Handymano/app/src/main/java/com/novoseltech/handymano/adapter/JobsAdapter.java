@@ -48,6 +48,7 @@ public class JobsAdapter extends RecyclerView.Adapter<JobsAdapter.ViewHolder> {
                 Intent intent = new Intent(context, ViewJob.class);
                 intent.putExtra("USER_ID", user);
                 intent.putExtra("JOB_ID", title);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(intent);
 
             }
