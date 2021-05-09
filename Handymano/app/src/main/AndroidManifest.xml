@@ -19,7 +19,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".views.standard.feedback.AddRating"></activity>
+        <activity android:name=".views.professional.PrivacySettingActivity"></activity>
+        <activity android:name=".views.standard.feedback.AddRating" />
         <activity android:name=".views.standard.feedback.FeedbackActivity" />
         <activity android:name=".views.professional.feedback.FeedbackList" />
         <activity android:name=".views.professional.project.EditProject" />
