@@ -3,7 +3,6 @@ package com.novoseltech.handymano.views.standard.job;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -37,7 +36,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -57,7 +55,6 @@ import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.novoseltech.handymano.MainActivity;
 import com.novoseltech.handymano.R;
 import com.novoseltech.handymano.adapter.SliderAdapter;
 import com.novoseltech.handymano.fragments.AddressSelect;
@@ -95,7 +92,7 @@ public class EditJob extends AppCompatActivity {
 
 
     //Permission
-    private static final int PICK_IMAGE_MULTIPLE = 1000;
+    private static final int REQUEST_STORAGE_PERMISSION_CODE = 1000;
     private static final int WRITE_REQUEST = 1;
     private static final String[] REQUIRED_PERMISSIONS = new String[]{
             Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE
@@ -152,8 +149,6 @@ public class EditJob extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_job);
-
-        checkPermissions();
 
         //Job address
         //btn_saveAddress = findViewById(R.id.btn_saveEditJobAddress);
@@ -240,8 +235,6 @@ public class EditJob extends AppCompatActivity {
                         Log.i("GGG", "onIndicatorClicked: " + sliderView.getCurrentPagePosition());
                     }
                 });
-
-
 
 
             }
@@ -359,7 +352,7 @@ public class EditJob extends AppCompatActivity {
                 intent.setType("image/*");
                 intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
                 intent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(Intent.createChooser(intent, "Select pictures"), PICK_IMAGE_MULTIPLE);
+                startActivityForResult(Intent.createChooser(intent, "Select pictures"), REQUEST_STORAGE_PERMISSION_CODE);
 
 
             }
@@ -383,22 +376,7 @@ public class EditJob extends AppCompatActivity {
             }
         });
 
-        /*
-        btn_saveAddress.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                tmpLat = Double.parseDouble(af.getLocationData(0));
-                tmpLon = Double.parseDouble(af.getLocationData(1));
 
-                tv_jobAddress.setText(getCompleteAddressString(tmpLat, tmpLon));
-
-                btn_saveAddress.setVisibility(View.GONE);
-                cl_editJob.setVisibility(View.VISIBLE);
-                fl_editJobAddress.setVisibility(View.GONE);
-            }
-        });
-
-         */
 
         btn_saveChanges.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -414,103 +392,50 @@ public class EditJob extends AppCompatActivity {
 
                     List<Uri> images = new ArrayList<>();
 
-                    if (checkPermission())
-                    {
-                        // Code for above or equal 23 API Oriented Device
-                        // Your Permission granted already .Do next code
+                    for(int i = 0; i < initialImages.size(); i++){
 
-                        for(int i = 0; i < initialImages.size(); i++){
+                        //Get image URL from initialImages array list
+                        //if the URL is from Firebase Storage then use Picasso to get the bitmap, load it into new Target, get the uri and add it to the "images" array list
+                        Uri uri = Uri.parse(initialImages.get(i).getImageUrl());
 
-                            //Get image URL from initialImages array list
-                            //if the URL is from Firebase Storage then use Picasso to get the bitmap, load it into new Target, get the uri and add it to the "images" array list
-                            Uri uri = Uri.parse(initialImages.get(i).getImageUrl());
+                        ContentValues values = new ContentValues();
+                        values.put(MediaStore.Images.Media.DISPLAY_NAME, "image_job.jpg");
+                        values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
+                        values.put(MediaStore.Images.Media.RELATIVE_PATH,
+                                Environment.DIRECTORY_PICTURES + "/Handymano");
 
-                            ContentValues values = new ContentValues();
-                            values.put(MediaStore.Images.Media.DISPLAY_NAME, "image_job.jpg");
-                            values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
-                            values.put(MediaStore.Images.Media.RELATIVE_PATH,
-                                    Environment.DIRECTORY_PICTURES + "/Handymano");
+                        Uri tempImgUri =
+                                getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                                        values);
 
-                            Uri tempImgUri =
-                                    getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                                            values);
+                        //For
+                        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.P){
 
-                            //For
-                            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.P){
-
-                                //If Android SDK is 28 or higher than execute this
+                            //If Android SDK is 28 or higher than execute this
 
 
-                                //If image is existing on Firebase Storage
-                                if(uri.toString().contains("firebasestorage.googleapis")){
+                            //If image is existing on Firebase Storage
+                            if(uri.toString().contains("firebasestorage.googleapis")){
 
-                                    Log.d("NEW tempImgUri", tempImgUri.toString());
-                                    OutputStream imageOutStream;
-                                    try {
-                                        imageOutStream = getContentResolver().openOutputStream(tempImgUri);
-                                        Glide.with(view)
-                                                .asBitmap()
-                                                .load(initialImages.get(i).getImageUrl())
-                                                .into(new CustomTarget<Bitmap>() {
-                                                    @Override
-                                                    public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-
-                                                        resource.compress(Bitmap.CompressFormat.JPEG, 100, imageOutStream);
-                                                        try {
-                                                            imageOutStream.close();
-                                                        } catch (IOException e) {
-                                                            e.printStackTrace();
-                                                        }
-
-                                                        images.add(tempImgUri);
-                                                    }
-
-                                                    @Override
-                                                    public void onLoadCleared(@Nullable Drawable placeholder) {
-
-                                                    }
-                                                });
-                                    } catch (FileNotFoundException e) {
-                                        e.printStackTrace();
-                                    }
-
-
-
-
-                                }else{
-                                    //If the image is not existing job image from Firebase Storage then get the bitmap of the image, get the uri and add it to the URI array list "images"
-                                    OutputStream imageOutStream;
-                                    Bitmap bitmap;
-                                    try {
-                                        imageOutStream = getContentResolver().openOutputStream(tempImgUri);
-                                        bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
-                                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, imageOutStream);
-                                        imageOutStream.close();
-                                    } catch (FileNotFoundException e) {
-                                        e.printStackTrace();
-                                    } catch (IOException e) {
-                                        e.printStackTrace();
-                                    }
-
-                                    Log.d("Local tempImgUri", tempImgUri.toString());
-                                    images.add(tempImgUri);
-                                }
-
-                                //If Android SDK is between 23 and 27 (inclusive)
-                            }else{
-                                //If image is from Firebase Storage
-                                if(uri.toString().contains("firebasestorage.googleapis")){
-
+                                Log.d("NEW tempImgUri", tempImgUri.toString());
+                                OutputStream imageOutStream;
+                                try {
+                                    imageOutStream = getContentResolver().openOutputStream(tempImgUri);
                                     Glide.with(view)
                                             .asBitmap()
                                             .load(initialImages.get(i).getImageUrl())
                                             .into(new CustomTarget<Bitmap>() {
                                                 @Override
                                                 public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-                                                    String path = MediaStore.Images.Media.insertImage(getContentResolver(), resource, "Title", null);
-                                                    Log.d("URI", path);
-                                                    Uri tmpUri = Uri.parse(path);
-                                                    images.add(tmpUri);
+
+                                                    resource.compress(Bitmap.CompressFormat.JPEG, 100, imageOutStream);
+                                                    try {
+                                                        imageOutStream.close();
+                                                    } catch (IOException e) {
+                                                        e.printStackTrace();
+                                                    }
+
+                                                    images.add(tempImgUri);
                                                 }
 
                                                 @Override
@@ -518,189 +443,233 @@ public class EditJob extends AppCompatActivity {
 
                                                 }
                                             });
-
-                                }else{
-                                    //If the image is not existing job image from Firebase Storage then get the bitmap of the image, get the uri and add it to the URI array list "images"
-
-                                    try {
-                                        Bitmap bitmap = null;
-                                        bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
-                                        Uri tmpUri = null;
-                                        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
-                                        String path = MediaStore.Images.Media.insertImage(getContentResolver(), bitmap, "Title", null);
-                                        tmpUri = Uri.parse(path);
-                                        images.add(tmpUri);
-                                    } catch (IOException e) {
-                                        e.printStackTrace();
-                                    }
+                                } catch (FileNotFoundException e) {
+                                    e.printStackTrace();
                                 }
+
+
+
+
+                            }else{
+                                //If the image is not existing job image from Firebase Storage then get the bitmap of the image, get the uri and add it to the URI array list "images"
+                                OutputStream imageOutStream;
+                                Bitmap bitmap;
+                                try {
+                                    imageOutStream = getContentResolver().openOutputStream(tempImgUri);
+                                    bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
+                                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, imageOutStream);
+                                    imageOutStream.close();
+                                } catch (FileNotFoundException e) {
+                                    e.printStackTrace();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+
+                                Log.d("Local tempImgUri", tempImgUri.toString());
+                                images.add(tempImgUri);
                             }
 
+                            //If Android SDK is between 23 and 27 (inclusive)
+                        }else{
+                            //If image is from Firebase Storage
+                            if(uri.toString().contains("firebasestorage.googleapis")){
+
+                                Glide.with(view)
+                                        .asBitmap()
+                                        .load(initialImages.get(i).getImageUrl())
+                                        .into(new CustomTarget<Bitmap>() {
+                                            @Override
+                                            public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                                                String path = MediaStore.Images.Media.insertImage(getContentResolver(), resource, "Title", null);
+                                                Log.d("URI", path);
+                                                Uri tmpUri = Uri.parse(path);
+                                                images.add(tmpUri);
+                                            }
+
+                                            @Override
+                                            public void onLoadCleared(@Nullable Drawable placeholder) {
+
+                                            }
+                                        });
+
+                            }else{
+                                //If the image is not existing job image from Firebase Storage then get the bitmap of the image, get the uri and add it to the URI array list "images"
+
+                                try {
+                                    Bitmap bitmap = null;
+                                    bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
+                                    Uri tmpUri = null;
+                                    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+                                    String path = MediaStore.Images.Media.insertImage(getContentResolver(), bitmap, "Title", null);
+                                    tmpUri = Uri.parse(path);
+                                    images.add(tmpUri);
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
                         }
 
-                        Handler hand1 = new Handler();
-                        hand1.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                //Execute after loading the images
-                                //Content validation
-                                if(jobTitle.length() >= 10 && jobTitle.length() <= 50 && jobDescription.length() >= 10 && jobDescription.length() <= 400 && (images.size() > 0)){
-                                    job.put("title", jobTitle);
-                                    job.put("description", jobDescription);
-                                    job.put("creation_date", todayDate);
-                                    job.put("imageCount", images.size());
-                                    job.put("category", jobCategory);
-                                    job.put("status", jobStatus);
-                                    GeoPoint gp = new GeoPoint(tmpLat, tmpLon);
-                                    job.put("location", gp);
-
-                                    //If job title is not changed
-                                    //Update the document
-                                    if(jobTitle.equals(JOB_ID)){
-                                        fStore.collection("user").document(UID)
-                                                .collection("jobs")
-                                                .document(jobTitle)
-                                                .update(job)
-                                                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                    @Override
-                                                    public void onComplete(@NonNull Task<Void> task) {
-                                                        if(task.isSuccessful()){
-
-                                                            //Delete all images for the job from storage
-                                                            StorageReference storageReference = FirebaseStorage.getInstance().getReference()
-                                                                    .child("images")
-                                                                    .child(user.getUid())
-                                                                    .child("jobs")
-                                                                    .child(JOB_ID);
-
-                                                            for(int l = 0; l < imageCount; l++){
-                                                                StorageReference sr = null;
-                                                                sr = storageReference.child(jobCreationDate + "_image_" + l + ".jpeg");
-                                                                int j = l;
-                                                                sr.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                                    @Override
-                                                                    public void onComplete(@NonNull Task<Void> task) {
-                                                                        if(task.isSuccessful()){
-                                                                            Log.d("DELETE LOG: ", "Deleted image " + (j+1));
-                                                                        }else{
-                                                                            Log.e("DELETE LOG: ", task.getException().getLocalizedMessage());
-                                                                        }
-                                                                    }
-                                                                });
-                                                            }
-
-                                                            //Upload all images to Firebase storage folder for the project
-                                                            for(int i = 0; i < images.size(); i++){
-                                                                Bitmap bitmap = null;
-                                                                try {
-                                                                    bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), images.get(i));
-                                                                    uploadImageToFirebaseStorage(bitmap, i);
-                                                                    getContentResolver().delete(images.get(i), null, null);
-                                                                } catch (IOException e) {
-                                                                    e.printStackTrace();
-                                                                }
-                                                            }
-
-
-                                                        }else{
-                                                            Log.d("TASK LOG: ", task.getException().getLocalizedMessage());
-                                                        }
-                                                    }
-                                                }).addOnFailureListener(new OnFailureListener() {
-                                            @Override
-                                            public void onFailure(@NonNull Exception e) {
-                                                Log.e("EXCEPTION: ", e.getLocalizedMessage());
-                                            }
-                                        });
-                                    }else{
-                                        //If job title was changed
-                                        //Delete the job document
-                                        fStore.collection("user").document(UID)
-                                                .collection("jobs")
-                                                .document(JOB_ID)
-                                                .delete().addOnCompleteListener(new OnCompleteListener<Void>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<Void> task) {
-                                                if(task.isSuccessful()){
-                                                    Log.d("TAG: ", "Document deleted");
-                                                }else{
-                                                    Log.e("EXCEPTION", task.getException().getLocalizedMessage());
-                                                }
-                                            }
-                                        });
-                                        //Create new job document
-                                        fStore.collection("user").document(UID)
-                                                .collection("jobs")
-                                                .document(jobTitle)
-                                                .set(job)
-                                                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                    @Override
-                                                    public void onComplete(@NonNull Task<Void> task) {
-                                                        if(task.isSuccessful()){
-                                                            //Delete images from Firebase Storage for the old job title
-                                                            StorageReference storageReference = FirebaseStorage.getInstance().getReference()
-                                                                    .child("images")
-                                                                    .child(user.getUid())
-                                                                    .child("jobs")
-                                                                    .child(JOB_ID);
-
-
-                                                            for(int l = 0; l < imageCount; l++){
-                                                                StorageReference sr = null;
-                                                                sr = storageReference.child(jobCreationDate + "_image_" + l + ".jpeg");
-                                                                int j = l;
-                                                                sr.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                                    @Override
-                                                                    public void onComplete(@NonNull Task<Void> task) {
-                                                                        if(task.isSuccessful()){
-                                                                            Log.d("DELETE LOG: ", "Deleted image " + (j+1));
-                                                                        }else{
-                                                                            Log.e("DELETE LOG: ", task.getException().getLocalizedMessage());
-                                                                        }
-                                                                    }
-                                                                });
-                                                            }
-
-                                                            //Upload images for the job from URI array list
-                                                            for(int i = 0; i < images.size(); i++){
-                                                                Bitmap bitmap = null;
-                                                                try {
-                                                                    bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), images.get(i));
-                                                                    uploadImageToFirebaseStorage(bitmap, i);
-                                                                } catch (IOException e) {
-                                                                    e.printStackTrace();
-                                                                }
-                                                            }
-
-                                                        }else{
-                                                            Log.d("TASK LOG: ", task.getException().getLocalizedMessage());
-                                                        }
-                                                    }
-                                                }).addOnFailureListener(new OnFailureListener() {
-                                            @Override
-                                            public void onFailure(@NonNull Exception e) {
-                                                Log.e("EXCEPTION: ", e.getLocalizedMessage());
-                                            }
-                                        });
-                                    }
-
-                                    Intent intent = new Intent(EditJob.this, JobsActivity.class);
-                                    startActivity(intent);
-                                    cl_editJob.setVisibility(View.VISIBLE);
-                                    cl_savingChanges.setVisibility(View.GONE);
-
-
-                                }else{
-                                    Log.d("LOG: ", "Size of images AL " + images.size());
-                                    Log.d("LOG: ", "Size of initialImages AL " + initialImages.size());
-                                }
-                            }
-                        }, 1500);
-
-                    } else {
-                        //requestPermission(); // Code for permission
                     }
+
+                    Handler hand1 = new Handler();
+                    hand1.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            //Execute after loading the images
+                            //Content validation
+                            if(jobTitle.length() >= 10 && jobTitle.length() <= 50 && jobDescription.length() >= 10 && jobDescription.length() <= 400 && (images.size() > 0)){
+                                job.put("title", jobTitle);
+                                job.put("description", jobDescription);
+                                job.put("creation_date", todayDate);
+                                job.put("imageCount", images.size());
+                                job.put("category", jobCategory);
+                                job.put("status", jobStatus);
+                                GeoPoint gp = new GeoPoint(tmpLat, tmpLon);
+                                job.put("location", gp);
+
+                                //If job title is not changed
+                                //Update the document
+                                if(jobTitle.equals(JOB_ID)){
+                                    fStore.collection("user").document(UID)
+                                            .collection("jobs")
+                                            .document(jobTitle)
+                                            .update(job)
+                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Void> task) {
+                                                    if(task.isSuccessful()){
+
+                                                        //Delete all images for the job from storage
+                                                        StorageReference storageReference = FirebaseStorage.getInstance().getReference()
+                                                                .child("images")
+                                                                .child(user.getUid())
+                                                                .child("jobs")
+                                                                .child(JOB_ID);
+
+                                                        for(int l = 0; l < imageCount; l++){
+                                                            StorageReference sr = null;
+                                                            sr = storageReference.child(jobCreationDate + "_image_" + l + ".jpeg");
+                                                            int j = l;
+                                                            sr.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                @Override
+                                                                public void onComplete(@NonNull Task<Void> task) {
+                                                                    if(task.isSuccessful()){
+                                                                        Log.d("DELETE LOG", "Deleted image " + (j+1));
+                                                                    }else{
+                                                                        Log.e("DELETE LOG ", task.getException().getLocalizedMessage());
+                                                                    }
+                                                                }
+                                                            });
+                                                        }
+
+                                                        //Upload all images to Firebase storage folder for the project
+                                                        for(int i = 0; i < images.size(); i++){
+                                                            Bitmap bitmap = null;
+                                                            try {
+                                                                bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), images.get(i));
+                                                                uploadImageToFirebaseStorage(bitmap, i);
+                                                                getContentResolver().delete(images.get(i), null, null);
+                                                            } catch (IOException e) {
+                                                                e.printStackTrace();
+                                                            }
+                                                        }
+
+
+                                                    }else{
+                                                        Log.d("TASK LOG ", task.getException().getLocalizedMessage());
+                                                    }
+                                                }
+                                            }).addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            Log.e("EXCEPTION: ", e.getLocalizedMessage());
+                                        }
+                                    });
+                                }else{
+                                    //If job title was changed
+                                    //Delete the job document
+                                    fStore.collection("user").document(UID)
+                                            .collection("jobs")
+                                            .document(JOB_ID)
+                                            .delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if(task.isSuccessful()){
+                                                Log.d("TAG: ", "Document deleted");
+                                            }else{
+                                                Log.e("EXCEPTION", task.getException().getLocalizedMessage());
+                                            }
+                                        }
+                                    });
+                                    //Create new job document
+                                    fStore.collection("user").document(UID)
+                                            .collection("jobs")
+                                            .document(jobTitle)
+                                            .set(job)
+                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Void> task) {
+                                                    if(task.isSuccessful()){
+                                                        //Delete images from Firebase Storage for the old job title
+                                                        StorageReference storageReference = FirebaseStorage.getInstance().getReference()
+                                                                .child("images")
+                                                                .child(user.getUid())
+                                                                .child("jobs")
+                                                                .child(JOB_ID);
+
+
+                                                        for(int l = 0; l < imageCount; l++){
+                                                            StorageReference sr = null;
+                                                            sr = storageReference.child(jobCreationDate + "_image_" + l + ".jpeg");
+                                                            int j = l;
+                                                            sr.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                @Override
+                                                                public void onComplete(@NonNull Task<Void> task) {
+                                                                    if(task.isSuccessful()){
+                                                                        Log.d("DELETE LOG: ", "Deleted image " + (j+1));
+                                                                    }else{
+                                                                        Log.e("DELETE LOG: ", task.getException().getLocalizedMessage());
+                                                                    }
+                                                                }
+                                                            });
+                                                        }
+
+                                                        //Upload images for the job from URI array list
+                                                        for(int i = 0; i < images.size(); i++){
+                                                            Bitmap bitmap = null;
+                                                            try {
+                                                                bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), images.get(i));
+                                                                uploadImageToFirebaseStorage(bitmap, i);
+                                                            } catch (IOException e) {
+                                                                e.printStackTrace();
+                                                            }
+                                                        }
+
+                                                    }else{
+                                                        Log.d("TASK LOG: ", task.getException().getLocalizedMessage());
+                                                    }
+                                                }
+                                            }).addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            Log.e("EXCEPTION: ", e.getLocalizedMessage());
+                                        }
+                                    });
+                                }
+
+                                Intent intent = new Intent(EditJob.this, JobsActivity.class);
+                                startActivity(intent);
+                                cl_editJob.setVisibility(View.VISIBLE);
+                                cl_savingChanges.setVisibility(View.GONE);
+
+
+                            }else{
+                                Log.d("LOG: ", "Size of images AL " + images.size());
+                                Log.d("LOG: ", "Size of initialImages AL " + initialImages.size());
+                            }
+                        }
+                    }, 1500);
 
                 }else{
                     if(et_jobTitle.getText().toString().length() < 10 || et_jobTitle.getText().toString().length() > 50){
@@ -721,6 +690,9 @@ public class EditJob extends AppCompatActivity {
 
             }
         });
+
+
+
     }
 
     private void uploadImageToFirebaseStorage(Bitmap bitmap, int imgCount) {
@@ -751,9 +723,9 @@ public class EditJob extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(getParent(), new String[]{
-                    Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, PICK_IMAGE_MULTIPLE);
+                    Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_STORAGE_PERMISSION_CODE);
         }else{
-            if(requestCode == PICK_IMAGE_MULTIPLE && resultCode == RESULT_OK &&
+            if(requestCode == REQUEST_STORAGE_PERMISSION_CODE && resultCode == RESULT_OK &&
                     data != null){
                 String[] filePathColumn = { MediaStore.Images.Media.DATA };
                 imagesEncodedList = new ArrayList<String>();
@@ -839,84 +811,27 @@ public class EditJob extends AppCompatActivity {
         }
     }
 
-    /**
-     * Checks the dynamically-controlled permissions and requests missing permissions from end user.
-     */
-    protected void checkPermissions() {
-        final List<String> missingPermissions = new ArrayList<String>();
-        // check all required dynamic permissions
-        for (final String permission : REQUIRED_PERMISSIONS) {
-            final int result = ContextCompat.checkSelfPermission(this, permission);
-            if (result != PackageManager.PERMISSION_GRANTED) {
-                missingPermissions.add(permission);
-            }
-        }
-        if (!missingPermissions.isEmpty()) {
-            // request all missing permissions
-            final String[] permissions = missingPermissions
-                    .toArray(new String[missingPermissions.size()]);
-            ActivityCompat.requestPermissions(this, permissions, WRITE_REQUEST);
-        } else {
-            final int[] grantResults = new int[REQUIRED_PERMISSIONS.length];
-            Arrays.fill(grantResults, PackageManager.PERMISSION_GRANTED);
-            onRequestPermissionsResult(WRITE_REQUEST, REQUIRED_PERMISSIONS,
-                    grantResults);
-        }
-    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[],
                                            @NonNull int[] grantResults) {
-        switch (requestCode) {
-            case WRITE_REQUEST:
-                for (int index = permissions.length - 1; index >= 0; --index) {
-                    if (grantResults[index] != PackageManager.PERMISSION_GRANTED) {
-                        // exit the app if one permission is not granted
-                        Toast.makeText(this, "Required permission '" + permissions[index]
-                                + "' not granted, exiting", Toast.LENGTH_LONG).show();
-                        finish();
-                        return;
-                    }
-                }
-                // all permissions were granted
-                initialize();
-                break;
+
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if(requestCode == REQUEST_STORAGE_PERMISSION_CODE) {
+            // If request is cancelled, the result arrays are empty.
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+            } else {
+                //Show error message that prevents that informs them about permission
+                Toast.makeText(getApplicationContext(), "Storage permission is denied. Please allow it in the Settings to enable this functionality.", Toast.LENGTH_SHORT).show();
+
+            }
         }
+
+
     }
 
-    private boolean checkPermission() {
-        int result = ContextCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        if (result == PackageManager.PERMISSION_GRANTED) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-/*
-    private void requestPermission() {
 
-        if (ActivityCompat.shouldShowRequestPermissionRationale(getParent(), android.Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-            Toast.makeText(getApplicationContext(), "Write External Storage permission allows us to do store images. Please allow this permission in App Settings.", Toast.LENGTH_LONG).show();
-        } else {
-            ActivityCompat.requestPermissions(getParent(), new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, WRITE_REQUEST);
-        }
-    }*/
-/*
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case WRITE_REQUEST:
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Log.e("value", "Permission Granted");
-                } else {
-                    Log.e("value", "Permission Denied");
-                    requestPermission();
-                }
-                break;
-        }
-    }
-*/
 
 
     private String getCompleteAddressString(double LATITUDE, double LONGITUDE) {

@@ -9,8 +9,10 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentManager;
 
+import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
@@ -25,6 +27,7 @@ import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -62,6 +65,8 @@ public class StandardJobViewActivity extends AppCompatActivity implements PopupM
 
     String jobCreationDate = "";
     long imageCount = 0;
+
+    private static final int REQUEST_STORAGE_PERMISSION_CODE = 1000;
 
     SliderView sliderView;
     private SliderAdapter adapter;
@@ -209,9 +214,16 @@ public class StandardJobViewActivity extends AppCompatActivity implements PopupM
         switch (menuItem.getItemId()){
             case R.id.option_edit:
 
-                Intent intent = new Intent(StandardJobViewActivity.this, EditJob.class);
-                intent.putExtra("JOB_ID", JOB_ID);
-                startActivity(intent);
+                if(getApplicationContext().checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED || getApplicationContext().
+                        checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+                    requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_STORAGE_PERMISSION_CODE);
+                }else{
+                    Intent intent = new Intent(StandardJobViewActivity.this, EditJob.class);
+                    intent.putExtra("JOB_ID", JOB_ID);
+                    startActivity(intent);
+                }
+
+
 
                 return true;
             case R.id.option_delete:
@@ -373,4 +385,18 @@ public class StandardJobViewActivity extends AppCompatActivity implements PopupM
         startActivity(intent);
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if(requestCode == REQUEST_STORAGE_PERMISSION_CODE) {
+            // If request is cancelled, the result arrays are empty.
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+            } else {
+                //Show error message that prevents that informs them about permission
+                Toast.makeText(getApplicationContext(), "Storage permission is denied. Please allow it in the Settings to enable this functionality.", Toast.LENGTH_SHORT).show();
+
+            }
+        }
+    }
 }
