@@ -146,7 +146,7 @@ public class StandardJobViewActivity extends AppCompatActivity implements PopupM
                 addImagesToSlider(sliderView);
 
             }
-        }, 300);
+        }, 600);
 
         handler.postDelayed(new Runnable() {
             @Override
@@ -167,7 +167,7 @@ public class StandardJobViewActivity extends AppCompatActivity implements PopupM
                     }
                 });
             }
-        }, 600);
+        }, 1000);
     }
 
     public void addImagesToSlider(View view){

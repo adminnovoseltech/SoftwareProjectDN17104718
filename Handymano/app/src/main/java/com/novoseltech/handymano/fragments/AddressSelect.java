@@ -34,6 +34,8 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.novoseltech.handymano.BusinessRegistrationActivity;
 import com.novoseltech.handymano.R;
 import com.novoseltech.handymano.views.professional.ProfessionalProfileActivity;
+import com.novoseltech.handymano.views.standard.job.CreateJob;
+import com.novoseltech.handymano.views.standard.job.EditJob;
 
 import java.io.IOException;
 import java.util.List;
@@ -73,6 +75,13 @@ public class AddressSelect extends Fragment implements OnMapReadyCallback{
 
     FrameLayout fl_ppa;
     ConstraintLayout cl_ppa;
+
+    FrameLayout fl_ej;
+    ConstraintLayout cl_ej;
+    Button btn_scej;
+
+    FrameLayout fl_cj;
+    ConstraintLayout cl_cj;
 
     public AddressSelect() {
         // Required empty public constructor
@@ -118,6 +127,13 @@ public class AddressSelect extends Fragment implements OnMapReadyCallback{
         fl_ppa = getActivity().findViewById(R.id.frame_loc_pro);
         cl_ppa = getActivity().findViewById(R.id.cl_editProfileForm);
 
+        fl_ej = getActivity().findViewById(R.id.fl_editJobAddress);
+        cl_ej = getActivity().findViewById(R.id.cl_editJob);
+        btn_scej = getActivity().findViewById(R.id.btn_saveJobChanges);
+
+        fl_cj = getActivity().findViewById(R.id.fl_jobAddressLayout);
+        cl_cj = getActivity().findViewById(R.id.cl_jobCreationLayout);
+
         btn_searchLocation = view.findViewById(R.id.btn_selectLocation);
         btn_saveLocation = view.findViewById(R.id.btn_afSaveLocation);
         btn_saveLocation.setVisibility(View.GONE);
@@ -158,11 +174,15 @@ public class AddressSelect extends Fragment implements OnMapReadyCallback{
                     btn_saveLocation.setVisibility(View.VISIBLE);
                     btn_cancelLocation.setVisibility(View.VISIBLE);
 
-                }else if(mode.equals("New")){
+                }else if(mode.equals("NewJob")){
 
                     LatLng point = new LatLng(53.2734, -7.77832031);
                     googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(point, 7));
-                    et_radius.setFocusable(false);
+                    et_radius.setVisibility(View.GONE);
+
+                    btn_saveLocation.setVisibility(View.GONE);
+                    btn_cancelLocation.setVisibility(View.VISIBLE);
+
 
 
                 }else if(mode.equals("JobEdit")){
@@ -172,6 +192,9 @@ public class AddressSelect extends Fragment implements OnMapReadyCallback{
                     addMarkerToTheMap(point);
                     coordinates[0] = String.valueOf(tmpLat);
                     coordinates[1] = String.valueOf(tmpLon);
+
+                    btn_saveLocation.setVisibility(View.VISIBLE);
+                    btn_cancelLocation.setVisibility(View.VISIBLE);
                     til_radius.setVisibility(View.GONE);
 
                 }else{
@@ -217,6 +240,18 @@ public class AddressSelect extends Fragment implements OnMapReadyCallback{
 
 
 
+        }else if(mode.equals("JobEdit")){
+            Geocoder geocoder;
+            List<Address> addresses;
+            geocoder = new Geocoder(getContext(), Locale.getDefault());
+
+            try {
+                addresses = geocoder.getFromLocation(tmpLat, tmpLon, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
+                String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
+                et_address.setText(address);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
 
@@ -249,8 +284,8 @@ public class AddressSelect extends Fragment implements OnMapReadyCallback{
 
                             if(mode.equals("NewReg")){
                                 btn_saveLocation.setVisibility(View.VISIBLE);
-                            }else if(mode.equals("Edit")){
-
+                            }else if(mode.equals("NewJob")){
+                                btn_saveLocation.setVisibility(View.VISIBLE);
                             }
 
 
@@ -290,15 +325,20 @@ public class AddressSelect extends Fragment implements OnMapReadyCallback{
 
                     ppa.setLocationData(coordinates[0], coordinates[1], radius);
 
+                }else if(mode.equals("JobEdit")){
+                    EditJob ej = (EditJob) getActivity();
+
+                    fl_ej.setVisibility(View.GONE);
+                    cl_ej.setVisibility(View.VISIBLE);
+                    btn_scej.setVisibility(View.VISIBLE);
+                    ej.setLocationData(coordinates[0], coordinates[1]);
+                }else if(mode.equals("NewJob")){
+                    CreateJob cj = (CreateJob) getActivity();
+
+                    fl_cj.setVisibility(View.GONE);
+                    cl_cj.setVisibility(View.VISIBLE);
+                    cj.setLocationData(coordinates[0], coordinates[1]);
                 }
-
-
-
-
-
-
-
-
 
             }
         });
@@ -313,6 +353,13 @@ public class AddressSelect extends Fragment implements OnMapReadyCallback{
                 }else if(mode.equals("Edit")){
                     fl_ppa.setVisibility(View.GONE);
                     cl_ppa.setVisibility(View.VISIBLE);
+                }else if(mode.equals("JobEdit")){
+                    fl_ej.setVisibility(View.GONE);
+                    cl_ej.setVisibility(View.VISIBLE);
+                    btn_scej.setVisibility(View.VISIBLE);
+                }else if(mode.equals("NewJob")){
+                    fl_cj.setVisibility(View.GONE);
+                    cl_cj.setVisibility(View.VISIBLE);
                 }
 
             }

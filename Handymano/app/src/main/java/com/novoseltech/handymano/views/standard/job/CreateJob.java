@@ -74,7 +74,7 @@ public class CreateJob extends AppCompatActivity {
     String imageEncoded;
     List<String> imagesEncodedList;
     Button btn_saveJob;
-    Button btn_createJob;
+    //Button btn_createJob;
     RecyclerView fStoreList;
 
     EditText et_jobTitle;
@@ -106,7 +106,7 @@ public class CreateJob extends AppCompatActivity {
     ImageView iv_jobAddressAdd;
     ConstraintLayout cl_jobCreationLayout;
     FrameLayout fl_jobAddressLayout;
-    Button btn_saveJobLocation;
+    //Button btn_saveJobLocation;
 
     double latitude = 0.0;
     double longitude = 0.0;
@@ -120,8 +120,8 @@ public class CreateJob extends AppCompatActivity {
         cl_jobCreationLayout = findViewById(R.id.cl_jobCreationLayout);
         fl_jobAddressLayout = findViewById(R.id.fl_jobAddressLayout);
         fl_jobAddressLayout.setVisibility(View.GONE);
-        btn_saveJobLocation = findViewById(R.id.btn_saveJobLocationData);
-        btn_saveJobLocation.setVisibility(View.GONE);
+        //btn_saveJobLocation = findViewById(R.id.btn_saveJobLocationData);
+        //btn_saveJobLocation.setVisibility(View.GONE);
         AddressSelect af = new AddressSelect();
 
 
@@ -231,10 +231,10 @@ public class CreateJob extends AppCompatActivity {
             public void onClick(View v) {
                 cl_jobCreationLayout.setVisibility(View.GONE);
                 fl_jobAddressLayout.setVisibility(View.VISIBLE);
-                btn_saveJobLocation.setVisibility(View.VISIBLE);
+                //btn_saveJobLocation.setVisibility(View.VISIBLE);
 
                 Bundle bundle = new Bundle();
-                bundle.putString("mode", "New");
+                bundle.putString("mode", "NewJob");
                 af.setArguments(bundle);
 
                 getSupportFragmentManager().beginTransaction()
@@ -242,22 +242,23 @@ public class CreateJob extends AppCompatActivity {
                         .commit();
             }
         });
-
+/*
         btn_saveJobLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 latitude = Double.parseDouble(af.getLocationData(0));
                 longitude = Double.parseDouble(af.getLocationData(1));
+                tv_jobAddressAdd.setText(getCompleteAddressString(latitude, longitude));
 
                 fl_jobAddressLayout.setVisibility(View.GONE);
                 cl_jobCreationLayout.setVisibility(View.VISIBLE);
 
-                tv_jobAddressAdd.setText(getCompleteAddressString(latitude, longitude));
+
 
                 btn_saveJobLocation.setVisibility(View.GONE);
             }
         });
-
+*/
 
 
         btn_saveJob.setOnClickListener(new View.OnClickListener() {
@@ -307,8 +308,13 @@ public class CreateJob extends AppCompatActivity {
                                 }
                             });
 
-                    btn_createJob.setVisibility(View.VISIBLE);
-                    fStoreList.setVisibility(View.VISIBLE);
+//                    btn_createJob.setVisibility(View.VISIBLE);
+                   // fStoreList.setVisibility(View.VISIBLE);
+
+                    Intent intent = new Intent(CreateJob.this, StandardJobViewActivity.class);
+                    intent.putExtra("JOB_ID", jobTitle);
+                    finish();
+                    startActivity(intent);
 
                 }else{
                     if(jobTitle.length() < 10 || jobTitle.length() > 50){
@@ -496,6 +502,13 @@ public class CreateJob extends AppCompatActivity {
         });
         //Show dialog
         builder.show();
+    }
+
+    public void setLocationData(String lat, String lon){
+        latitude = Double.parseDouble(lat);
+        longitude = Double.parseDouble(lon);
+        tv_jobAddressAdd.setText(getCompleteAddressString(latitude, longitude));
+
     }
 
     @Override

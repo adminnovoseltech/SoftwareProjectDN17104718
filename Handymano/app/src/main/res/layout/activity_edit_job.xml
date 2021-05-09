@@ -6,16 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".views.standard.job.EditJob">
 
-    <Button
-        android:id="@+id/btn_saveEditJobAddress"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="150dp"
-        android:text="Save address"
-        app:layout_constraintBottom_toBottomOf="@+id/cl_savingChanges"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_savingChanges"
         android:layout_width="match_parent"
@@ -75,7 +65,9 @@
         <ScrollView
             android:id="@+id/scrollView4"
             android:layout_width="match_parent"
-            android:layout_height="550dp"
+            android:layout_height="0dp"
+            android:layout_marginBottom="10dp"
+            app:layout_constraintBottom_toTopOf="@+id/btn_saveJobChanges"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
@@ -164,8 +156,8 @@
                     app:layout_constraintTop_toBottomOf="@+id/cv_carousel_job_edit" />
 
                 <com.google.android.material.textfield.TextInputLayout
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                     android:id="@+id/til_jc_dropdown"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                     android:layout_width="350dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
@@ -183,8 +175,8 @@
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                     android:id="@+id/til_js_dropdown"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                     android:layout_width="350dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
@@ -232,11 +224,11 @@
             android:id="@+id/btn_saveJobChanges"
             android:layout_width="300dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginBottom="10dp"
             android:text="@string/save_changes"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/scrollView4" />
+            app:layout_constraintStart_toStartOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

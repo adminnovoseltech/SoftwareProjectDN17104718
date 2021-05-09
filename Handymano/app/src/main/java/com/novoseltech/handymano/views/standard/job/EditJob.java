@@ -73,12 +73,15 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
+import static com.google.common.reflect.Reflection.initialize;
 
 public class EditJob extends AppCompatActivity {
 
@@ -90,8 +93,16 @@ public class EditJob extends AppCompatActivity {
     long imageCount = 0;
     String JOB_CATEGORY = "N/A";
 
-    int PICK_IMAGE_MULTIPLE = 1000;
+
+    //Permission
+    private static final int PICK_IMAGE_MULTIPLE = 1000;
     private static final int WRITE_REQUEST = 1;
+    private static final String[] REQUIRED_PERMISSIONS = new String[]{
+            Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE
+    };
+
+
+
     String imageEncoded;
     List<String> imagesEncodedList;
 
@@ -127,7 +138,7 @@ public class EditJob extends AppCompatActivity {
 
 
     //Job address
-    Button btn_saveAddress;
+    //Button btn_saveAddress;
     FrameLayout fl_editJobAddress;
     ImageView iv_editJobAddress;
     TextView tv_jobAddress;
@@ -142,9 +153,11 @@ public class EditJob extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_job);
 
+        checkPermissions();
+
         //Job address
-        btn_saveAddress = findViewById(R.id.btn_saveEditJobAddress);
-        btn_saveAddress.setVisibility(View.GONE);
+        //btn_saveAddress = findViewById(R.id.btn_saveEditJobAddress);
+        //btn_saveAddress.setVisibility(View.GONE);
         iv_editJobAddress = findViewById(R.id.iv_editJobAddressButton);
         tv_jobAddress = findViewById(R.id.tv_jobAddressEdit);
         fl_editJobAddress = findViewById(R.id.fl_editJobAddress);
@@ -357,7 +370,7 @@ public class EditJob extends AppCompatActivity {
             public void onClick(View v) {
                 cl_editJob.setVisibility(View.GONE);
                 fl_editJobAddress.setVisibility(View.VISIBLE);
-                btn_saveAddress.setVisibility(View.VISIBLE);
+                //btn_saveAddress.setVisibility(View.VISIBLE);
 
                 Bundle bundle = new Bundle();
                 bundle.putString("mode", "JobEdit");
@@ -370,6 +383,7 @@ public class EditJob extends AppCompatActivity {
             }
         });
 
+        /*
         btn_saveAddress.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -383,6 +397,8 @@ public class EditJob extends AppCompatActivity {
                 fl_editJobAddress.setVisibility(View.GONE);
             }
         });
+
+         */
 
         btn_saveChanges.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -683,7 +699,7 @@ public class EditJob extends AppCompatActivity {
                         }, 1500);
 
                     } else {
-                        requestPermission(); // Code for permission
+                        //requestPermission(); // Code for permission
                     }
 
                 }else{
@@ -791,8 +807,6 @@ public class EditJob extends AppCompatActivity {
 
 
             }else {
-                Toast.makeText(getApplicationContext(), "Request code: " + requestCode + " and result code: " + resultCode,
-                        Toast.LENGTH_LONG).show();
             }
         }
     }
@@ -825,6 +839,51 @@ public class EditJob extends AppCompatActivity {
         }
     }
 
+    /**
+     * Checks the dynamically-controlled permissions and requests missing permissions from end user.
+     */
+    protected void checkPermissions() {
+        final List<String> missingPermissions = new ArrayList<String>();
+        // check all required dynamic permissions
+        for (final String permission : REQUIRED_PERMISSIONS) {
+            final int result = ContextCompat.checkSelfPermission(this, permission);
+            if (result != PackageManager.PERMISSION_GRANTED) {
+                missingPermissions.add(permission);
+            }
+        }
+        if (!missingPermissions.isEmpty()) {
+            // request all missing permissions
+            final String[] permissions = missingPermissions
+                    .toArray(new String[missingPermissions.size()]);
+            ActivityCompat.requestPermissions(this, permissions, WRITE_REQUEST);
+        } else {
+            final int[] grantResults = new int[REQUIRED_PERMISSIONS.length];
+            Arrays.fill(grantResults, PackageManager.PERMISSION_GRANTED);
+            onRequestPermissionsResult(WRITE_REQUEST, REQUIRED_PERMISSIONS,
+                    grantResults);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[],
+                                           @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case WRITE_REQUEST:
+                for (int index = permissions.length - 1; index >= 0; --index) {
+                    if (grantResults[index] != PackageManager.PERMISSION_GRANTED) {
+                        // exit the app if one permission is not granted
+                        Toast.makeText(this, "Required permission '" + permissions[index]
+                                + "' not granted, exiting", Toast.LENGTH_LONG).show();
+                        finish();
+                        return;
+                    }
+                }
+                // all permissions were granted
+                initialize();
+                break;
+        }
+    }
+
     private boolean checkPermission() {
         int result = ContextCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
         if (result == PackageManager.PERMISSION_GRANTED) {
@@ -833,7 +892,7 @@ public class EditJob extends AppCompatActivity {
             return false;
         }
     }
-
+/*
     private void requestPermission() {
 
         if (ActivityCompat.shouldShowRequestPermissionRationale(getParent(), android.Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
@@ -841,7 +900,8 @@ public class EditJob extends AppCompatActivity {
         } else {
             ActivityCompat.requestPermissions(getParent(), new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, WRITE_REQUEST);
         }
-    }
+    }*/
+/*
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
@@ -851,10 +911,12 @@ public class EditJob extends AppCompatActivity {
                     Log.e("value", "Permission Granted");
                 } else {
                     Log.e("value", "Permission Denied");
+                    requestPermission();
                 }
                 break;
         }
     }
+*/
 
 
     private String getCompleteAddressString(double LATITUDE, double LONGITUDE) {
@@ -910,6 +972,13 @@ public class EditJob extends AppCompatActivity {
         });
         //Show dialog
         builder.show();
+    }
+
+    public void setLocationData(String lat, String lon){
+        tmpLat = Double.parseDouble(lat);
+        tmpLon = Double.parseDouble(lon);
+        tv_jobAddress.setText(getCompleteAddressString(tmpLat, tmpLon));
+
     }
 
     @Override
