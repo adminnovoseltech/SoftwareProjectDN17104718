@@ -14,7 +14,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.res.Resources;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -25,7 +24,6 @@ import android.provider.Settings;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,7 +48,6 @@ import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
@@ -63,7 +60,6 @@ import com.novoseltech.handymano.MainActivity;
 import com.novoseltech.handymano.R;
 import com.novoseltech.handymano.model.ServicesModel;
 import com.novoseltech.handymano.views.message.MessageMenu;
-import com.novoseltech.handymano.views.professional.HomeActivityProfessional;
 import com.novoseltech.handymano.views.standard.job.JobsActivity;
 
 import java.io.IOException;
@@ -146,9 +142,6 @@ public class HomeActivityStandard extends AppCompatActivity {
 
         profileImage = drawerLayout.findViewById(R.id.profilePicture);
 
-
-        //FirebaseUser user = mAuth.getCurrentUser();
-
         if(user.getPhotoUrl() != null){
             Glide.with(getApplicationContext())
                     .load(user.getPhotoUrl())
@@ -187,7 +180,7 @@ public class HomeActivityStandard extends AppCompatActivity {
         Button btn_search = findViewById(R.id.btn_professionalSearch);
         Button btn_expandSearchOptions = findViewById(R.id.btn_expandSearchOptions);
 
-        btn_expandSearchOptions.setVisibility(View.INVISIBLE);
+        btn_expandSearchOptions.setVisibility(View.GONE);
 
         final AutoCompleteTextView dropdownServiceCategory = findViewById(R.id.dropdownServiceCategoryMenu);
         TextInputLayout til_dropdownServiceCategory = findViewById(R.id.dropdownServiceCategoryLayout);
@@ -223,21 +216,13 @@ public class HomeActivityStandard extends AppCompatActivity {
                     btn_expandSearchOptions.setVisibility(View.VISIBLE);
 
                     //Set visible
-                    btn_search.setVisibility(View.INVISIBLE);
-                    til_stdUserLocation.setVisibility(View.INVISIBLE);
-                    dropdownServiceCategory.setVisibility(View.INVISIBLE);
-                    til_dropdownServiceCategory.setVisibility(View.INVISIBLE);
+                    btn_search.setVisibility(View.GONE);
+                    til_stdUserLocation.setVisibility(View.GONE);
+                    dropdownServiceCategory.setVisibility(View.GONE);
+                    til_dropdownServiceCategory.setVisibility(View.GONE);
 
-                    //Change the fStoreList layout
-                    int dip = 700;
-                    Resources r = getResources();
-                    int px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-                            dip, r.getDisplayMetrics());
-                    params.height = px;
-                    fList.setLayoutParams(params);
 
                 }else{
-                    //Toast.makeText(getApplicationContext(), "To be completed!", Toast.LENGTH_SHORT).show();
 
                     //Clear temp collection
                     clearTempCollection();
@@ -264,18 +249,11 @@ public class HomeActivityStandard extends AppCompatActivity {
                     btn_expandSearchOptions.setVisibility(View.VISIBLE);
 
                     //Set visible
-                    btn_search.setVisibility(View.INVISIBLE);
-                    til_stdUserLocation.setVisibility(View.INVISIBLE);
-                    dropdownServiceCategory.setVisibility(View.INVISIBLE);
-                    til_dropdownServiceCategory.setVisibility(View.INVISIBLE);
+                    btn_search.setVisibility(View.GONE);
+                    til_stdUserLocation.setVisibility(View.GONE);
+                    dropdownServiceCategory.setVisibility(View.GONE);
+                    til_dropdownServiceCategory.setVisibility(View.GONE);
 
-                    //Change the fStoreList layout
-                    int dip = 700;
-                    Resources r = getResources();
-                    int px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-                            dip, r.getDisplayMetrics());
-                    params.height = px;
-                    fList.setLayoutParams(params);
                 }
             }
         });
@@ -290,18 +268,16 @@ public class HomeActivityStandard extends AppCompatActivity {
                     et_stdUserLocation.setFocusableInTouchMode(true);
                     til_stdUserLocation.setHint("Custom address");
                     currentLocationIcon = false;
-                    fStoreList.setVisibility(View.INVISIBLE);
+                    fStoreList.setVisibility(View.GONE);
 
                 }else{//If current icon is map, set the current location icon
                     til_stdUserLocation.setStartIconDrawable(R.drawable.ic_currentlocation);
                     et_stdUserLocation.setFocusable(false);
                     til_stdUserLocation.setHint("Current location");
                     currentLocationIcon = true;
-                    fStoreList.setVisibility(View.INVISIBLE);
+                    fStoreList.setVisibility(View.GONE);
 
                 }
-                //Toast.makeText(getApplicationContext(), "Works", Toast.LENGTH_LONG).show();
-
 
             }
         });
@@ -311,22 +287,13 @@ public class HomeActivityStandard extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 //Set invisible
-                btn_expandSearchOptions.setVisibility(View.INVISIBLE);
+                btn_expandSearchOptions.setVisibility(View.GONE);
 
                 //Set visible
                 btn_search.setVisibility(View.VISIBLE);
                 til_stdUserLocation.setVisibility(View.VISIBLE);
                 dropdownServiceCategory.setVisibility(View.VISIBLE);
                 til_dropdownServiceCategory.setVisibility(View.VISIBLE);
-
-                //Change the fStoreList layout
-                int dip = 475;
-                Resources r = getResources();
-                int px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-                        dip, r.getDisplayMetrics());
-                params.height = px;
-                fList.setLayoutParams(params);
-
 
             }
         });
@@ -390,35 +357,22 @@ public class HomeActivityStandard extends AppCompatActivity {
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        //Toast.makeText(getApplicationContext(), " " + accounts.get(position), Toast.LENGTH_SHORT).show();
                         Intent intent  = new Intent(getApplicationContext(), ViewProfessionalActivity.class);
                         intent.putExtra("USER_ID", String.valueOf(accounts.get(position)));
                         startActivity(intent);
                     }
                 });
 
-
-
-
-
             }
         };
 
-        /**
-         * This is to be monitored
-         */
-        //tv_UserName.setText(userData.get("username").toString());
-
-        /**
-         *
-         */
         fStoreList.setHasFixedSize(true);
         fStoreList.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         fStoreList.setAdapter(adapter);
 
 
         adapter.startListening();
-        fStoreList.setVisibility(View.INVISIBLE);
+        fStoreList.setVisibility(View.GONE);
 
         //Dropdown for service categories
         //Services category - creating the dropdown
@@ -470,8 +424,6 @@ public class HomeActivityStandard extends AppCompatActivity {
         messageNavLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                //drawerLayout.closeDrawer(GravityCompat.START);
 
                 Intent intent = new Intent(HomeActivityStandard.this, MessageMenu.class);
                 intent.putExtra("USER_TYPE", "Standard");
@@ -675,7 +627,6 @@ public class HomeActivityStandard extends AppCompatActivity {
             std_latitude = String.valueOf(location.getLatitude());
             std_longitude = String.valueOf(location.getLongitude());
 
-            //p1 = new LatLng(location.getLatitude(), location.getLongitude() );
 
         } catch (IOException ex) {
 
