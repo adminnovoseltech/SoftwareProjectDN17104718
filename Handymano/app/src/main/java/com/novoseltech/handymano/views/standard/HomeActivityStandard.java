@@ -3,12 +3,14 @@ package com.novoseltech.handymano.views.standard;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -96,7 +98,7 @@ public class HomeActivityStandard extends AppCompatActivity {
     private FirestoreRecyclerAdapter adapter;
 
     //Location objects
-    private static final int REQUEST_LOCATION = 1;
+    private static final int REQUEST_LOCATION_PERMISSION_CODE = 1;
     LocationManager locationManager;
     String std_latitude;
     String std_longitude;
@@ -193,68 +195,78 @@ public class HomeActivityStandard extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                if(currentLocationIcon){
-                    //Clear temp collection
-                    clearTempCollection();
-                    //Clear array
-                    accounts.clear();
-                    //Get users location
-                    getCurrentLocation();
-                    //Calling the method to retrieve professional users account based on their and user's location and travelling preferences
-                    getProUsersFromCurrentLocation();
-                    //Stop adapter listening
-                    adapter.stopListening();
-                    //Start adaper listening
-                    adapter.startListening();
-                    //Setting the RecyclerView to visible
-                    fStoreList.setVisibility(View.VISIBLE);
 
-
-                    //CHANGE
-
-                    //Set invisible
-                    btn_expandSearchOptions.setVisibility(View.VISIBLE);
-
-                    //Set visible
-                    btn_search.setVisibility(View.GONE);
-                    til_stdUserLocation.setVisibility(View.GONE);
-                    dropdownServiceCategory.setVisibility(View.GONE);
-                    til_dropdownServiceCategory.setVisibility(View.GONE);
-
-
+                if(getApplicationContext().checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
+                    requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION_PERMISSION_CODE);
                 }else{
-
-                    //Clear temp collection
-                    clearTempCollection();
-                    //Clear array
-                    accounts.clear();
-                    //Get users location
-                    //getCurrentLocation();
-
-                    getLocationFromAddress(getApplicationContext(), et_stdUserLocation.getText().toString());
-
-                    //Calling the method to retrieve professional users account based on their and user's location and travelling preferences
-                    getProUsersFromCurrentLocation();
-                    //Stop adapter listening
-                    adapter.stopListening();
-                    //Start adaper listening
-                    adapter.startListening();
-                    //Setting the RecyclerView to visible
-                    fStoreList.setVisibility(View.VISIBLE);
+                    if(currentLocationIcon){
 
 
-                    //CHANGE
 
-                    //Set invisible
-                    btn_expandSearchOptions.setVisibility(View.VISIBLE);
+                        //Clear temp collection
+                        clearTempCollection();
+                        //Clear array
+                        accounts.clear();
+                        //Get users location
+                        getCurrentLocation();
+                        //Calling the method to retrieve professional users account based on their and user's location and travelling preferences
+                        getProUsersFromCurrentLocation();
+                        //Stop adapter listening
+                        adapter.stopListening();
+                        //Start adaper listening
+                        adapter.startListening();
+                        //Setting the RecyclerView to visible
+                        fStoreList.setVisibility(View.VISIBLE);
 
-                    //Set visible
-                    btn_search.setVisibility(View.GONE);
-                    til_stdUserLocation.setVisibility(View.GONE);
-                    dropdownServiceCategory.setVisibility(View.GONE);
-                    til_dropdownServiceCategory.setVisibility(View.GONE);
 
+                        //CHANGE
+
+                        //Set invisible
+                        btn_expandSearchOptions.setVisibility(View.VISIBLE);
+
+                        //Set visible
+                        btn_search.setVisibility(View.GONE);
+                        til_stdUserLocation.setVisibility(View.GONE);
+                        dropdownServiceCategory.setVisibility(View.GONE);
+                        til_dropdownServiceCategory.setVisibility(View.GONE);
+
+
+                    }else{
+
+                        //Clear temp collection
+                        clearTempCollection();
+                        //Clear array
+                        accounts.clear();
+                        //Get users location
+                        //getCurrentLocation();
+
+                        getLocationFromAddress(getApplicationContext(), et_stdUserLocation.getText().toString());
+
+                        //Calling the method to retrieve professional users account based on their and user's location and travelling preferences
+                        getProUsersFromCurrentLocation();
+                        //Stop adapter listening
+                        adapter.stopListening();
+                        //Start adaper listening
+                        adapter.startListening();
+                        //Setting the RecyclerView to visible
+                        fStoreList.setVisibility(View.VISIBLE);
+
+
+                        //CHANGE
+
+                        //Set invisible
+                        btn_expandSearchOptions.setVisibility(View.VISIBLE);
+
+                        //Set visible
+                        btn_search.setVisibility(View.GONE);
+                        til_stdUserLocation.setVisibility(View.GONE);
+                        dropdownServiceCategory.setVisibility(View.GONE);
+                        til_dropdownServiceCategory.setVisibility(View.GONE);
+
+                    }
                 }
+
+
             }
         });
 
@@ -598,9 +610,6 @@ public class HomeActivityStandard extends AppCompatActivity {
 
     public void getCurrentLocation() {
 
-        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                REQUEST_LOCATION);
-
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             OnGPS();
@@ -654,22 +663,18 @@ public class HomeActivityStandard extends AppCompatActivity {
     }
 
     private void getLocation() {
-        if (ActivityCompat.checkSelfPermission(
-                HomeActivityStandard.this,Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                HomeActivityStandard.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
+
+        Location locationGPS = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        if (locationGPS != null) {
+            double lat = locationGPS.getLatitude();
+            double lon = locationGPS.getLongitude();
+            std_latitude = String.valueOf(lat);
+            std_longitude = String.valueOf(lon);
         } else {
-            Location locationGPS = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-            if (locationGPS != null) {
-                double lat = locationGPS.getLatitude();
-                double lon = locationGPS.getLongitude();
-                std_latitude = String.valueOf(lat);
-                std_longitude = String.valueOf(lon);
-            } else {
-                Toast.makeText(this, "Unable to find location.", Toast.LENGTH_SHORT).show();
-            }
+            Toast.makeText(this, "Unable to find location.", Toast.LENGTH_SHORT).show();
         }
     }
+
 
     public void logout(){
         //Close app
@@ -799,6 +804,16 @@ public class HomeActivityStandard extends AppCompatActivity {
         builder.show();
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
+        if(requestCode == REQUEST_LOCATION_PERMISSION_CODE){
+            if(grantResults[0] == PackageManager.PERMISSION_GRANTED){
 
+            }else{
+                Toast.makeText(getApplicationContext(), "Location permission is denied. Please allow it in the Settings.", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
 }

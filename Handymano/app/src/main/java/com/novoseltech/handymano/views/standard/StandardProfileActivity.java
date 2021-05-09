@@ -63,7 +63,7 @@ public class StandardProfileActivity extends AppCompatActivity implements Passwo
     //Navigation drawer
     DrawerLayout drawerLayout;
 
-    private static final String TAG = "LOG: ";
+    private static final String TAG = "LOG";
     private static final int PICK_FROM_GALLERY = 10000;
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
     FirebaseFirestore fStore = FirebaseFirestore.getInstance();
@@ -150,10 +150,6 @@ public class StandardProfileActivity extends AppCompatActivity implements Passwo
                     .into(iv_sp_profilePhoto);
         }
 
-
-
-
-
         fStore.collection("user").document(UID).get()
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
@@ -225,11 +221,6 @@ public class StandardProfileActivity extends AppCompatActivity implements Passwo
                     openDialog();
                 }
 
-
-
-                //mAuth.getCurrentUser().updateEmail(et_sp_email.getText().toString());
-
-
                 btn_edit_sp.setVisibility(View.VISIBLE);
 
             }
@@ -280,9 +271,6 @@ public class StandardProfileActivity extends AppCompatActivity implements Passwo
 
                     Bitmap bitmap = BitmapFactory.decodeFile(picturePath);
 
-
-
-                    //Bitmap bitmap = (Bitmap) data.getExtras().get("data");
                     iv_sp_profilePhoto.setImageBitmap(bitmap);
                     uploadImageToFirebaseStorage(bitmap);
             }
@@ -367,12 +355,6 @@ public class StandardProfileActivity extends AppCompatActivity implements Passwo
         PasswordConfirmationDialog exampleDialog = new PasswordConfirmationDialog();
         exampleDialog.show(getSupportFragmentManager(), "example dialog");
     }
-
-   /* @Override
-    public void confirmPassword(String password1, String password2) {
-
-
-    }*/
 
     @Override
     public Boolean passwordMatch(){
