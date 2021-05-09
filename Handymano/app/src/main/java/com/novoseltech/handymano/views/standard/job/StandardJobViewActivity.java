@@ -40,6 +40,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.mikhaellopez.circularimageview.CircularImageView;
 import com.novoseltech.handymano.MainActivity;
 import com.novoseltech.handymano.R;
 import com.novoseltech.handymano.adapter.SliderAdapter;
@@ -89,7 +90,7 @@ public class StandardJobViewActivity extends AppCompatActivity implements PopupM
         setContentView(R.layout.activity_standard_job_view);
         drawerLayout = findViewById(R.id.drawer_layout_standard);
 
-        ShapeableImageView profileImage = drawerLayout.findViewById(R.id.profilePicture);
+        CircularImageView profileImage = drawerLayout.findViewById(R.id.civ_profilePictureStandard);
         if(user.getPhotoUrl() != null){
             Glide.with(getApplicationContext())
                     .load(user.getPhotoUrl())

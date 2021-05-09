@@ -196,7 +196,7 @@ public class MessageMenu extends AppCompatActivity {
             drawerLayout = findViewById(R.id.drawer_layout_standard);
 
             tv_UserName = drawerLayout.findViewById(R.id.text_UserName_Standard);
-            ShapeableImageView profileImage = drawerLayout.findViewById(R.id.profilePicture);
+            CircularImageView profileImage = drawerLayout.findViewById(R.id.civ_profilePictureStandard);
 
             if(mAuth.getCurrentUser().getPhotoUrl() != null){
                 Glide.with(getApplicationContext())

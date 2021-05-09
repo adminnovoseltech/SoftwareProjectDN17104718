@@ -44,6 +44,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.mikhaellopez.circularimageview.CircularImageView;
 import com.novoseltech.handymano.MainActivity;
 import com.novoseltech.handymano.R;
 import com.novoseltech.handymano.fragments.PasswordConfirmationDialog;
@@ -96,7 +97,7 @@ public class StandardProfileActivity extends AppCompatActivity implements Passwo
         setContentView(R.layout.activity_standard_profile);
         drawerLayout = findViewById(R.id.drawer_layout_standard);
 
-        ShapeableImageView profileImage = drawerLayout.findViewById(R.id.profilePicture);
+        CircularImageView profileImage = drawerLayout.findViewById(R.id.civ_profilePictureStandard);
         if(user.getPhotoUrl() != null){
             Glide.with(getApplicationContext())
                     .load(user.getPhotoUrl())

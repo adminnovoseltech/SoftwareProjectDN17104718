@@ -38,6 +38,7 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.mikhaellopez.circularimageview.CircularImageView;
 import com.novoseltech.handymano.MainActivity;
 import com.novoseltech.handymano.R;
 import com.novoseltech.handymano.model.FeedbackModel;
@@ -58,7 +59,6 @@ public class FeedbackActivity extends AppCompatActivity {
 
     //NAVIGATION DRAWERS
     DrawerLayout drawerLayout;
-    ShapeableImageView profileImage;
     TextView tv_myUsername;
 
     //MY DETAILS
@@ -95,7 +95,7 @@ public class FeedbackActivity extends AppCompatActivity {
         TRADE_USERNAME = getIntent().getStringExtra("TRADE_USERNAME");
 
         FirebaseUser user = mAuth.getCurrentUser();
-        profileImage = drawerLayout.findViewById(R.id.profilePicture);
+        CircularImageView profileImage = drawerLayout.findViewById(R.id.civ_profilePictureStandard);
 
         if(mAuth.getCurrentUser().getPhotoUrl() != null){
             Glide.with(getApplicationContext())

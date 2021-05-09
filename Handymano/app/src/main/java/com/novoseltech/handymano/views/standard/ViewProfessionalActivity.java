@@ -42,6 +42,7 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.mikhaellopez.circularimageview.CircularImageView;
 import com.novoseltech.handymano.MainActivity;
 import com.novoseltech.handymano.R;
 import com.novoseltech.handymano.views.message.ChatActivity;
@@ -111,7 +112,7 @@ public class ViewProfessionalActivity extends AppCompatActivity{
 
         String TRADE_UID = getIntent().getStringExtra("USER_ID");
 
-        ShapeableImageView profileImage = drawerLayout.findViewById(R.id.profilePicture);
+        CircularImageView profileImage = drawerLayout.findViewById(R.id.civ_profilePictureStandard);
         iv_tradeProfileImageView = findViewById(R.id.iv_tradeProfileImageView);
 
         if(user.getPhotoUrl() != null){

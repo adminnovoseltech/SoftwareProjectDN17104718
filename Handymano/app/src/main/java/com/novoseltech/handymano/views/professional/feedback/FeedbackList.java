@@ -57,11 +57,11 @@ public class FeedbackList extends AppCompatActivity {
     FirebaseFirestore fStore = FirebaseFirestore.getInstance();
 
     //Feedback banner
-    int oneStarCount = 2;
-    int twoStarCount = 7;
-    int threeStarCount = 32;
-    int fourStarCount = 78;
-    int fiveStarCount = 67;
+    int oneStarCount = 0;
+    int twoStarCount = 0;
+    int threeStarCount = 0;
+    int fourStarCount = 0;
+    int fiveStarCount = 0;
 
     double totalRating = 0.0;
 
@@ -217,7 +217,14 @@ public class FeedbackList extends AppCompatActivity {
                 tv_tradeRatingCountThree.setText(String.valueOf(threeStarCount));
                 tv_tradeRatingCountFour.setText(String.valueOf(fourStarCount));
                 tv_tradeRatingCountFive.setText(String.valueOf(fiveStarCount));
-                tv_tradeTotalRating.setText(String.valueOf(round(totalRating, 1)));
+
+                if(totalScore == 0.0 || totalRates == 0){
+                    tv_tradeTotalRating.setText("0.0");
+                }else{
+                    tv_tradeTotalRating.setText(String.valueOf(round(totalRating, 1)));
+                }
+
+                //tv_tradeTotalRating.setText(String.valueOf(round(totalRating, 1)));
 
             }
         }, 500);

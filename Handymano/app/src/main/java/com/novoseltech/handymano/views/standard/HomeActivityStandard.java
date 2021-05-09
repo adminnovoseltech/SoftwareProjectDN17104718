@@ -58,6 +58,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.mikhaellopez.circularimageview.CircularImageView;
 import com.novoseltech.handymano.MainActivity;
 import com.novoseltech.handymano.R;
 import com.novoseltech.handymano.model.ServicesModel;
@@ -87,7 +88,6 @@ public class HomeActivityStandard extends AppCompatActivity {
     DrawerLayout drawerLayout;
 
     //Layouts
-    ShapeableImageView profileImage;
 
     LinearLayout homeNavLayout;
     LinearLayout messageNavLayout;
@@ -142,7 +142,7 @@ public class HomeActivityStandard extends AppCompatActivity {
         });
 
 
-        profileImage = drawerLayout.findViewById(R.id.profilePicture);
+        CircularImageView profileImage = drawerLayout.findViewById(R.id.civ_profilePictureStandard);
 
         if(user.getPhotoUrl() != null){
             Glide.with(getApplicationContext())
