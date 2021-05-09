@@ -21,7 +21,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
@@ -71,11 +70,11 @@ public class FeedbackActivity extends AppCompatActivity {
     String TRADE_USERNAME = "";
 
     //FEEDBACK BANNER
-    int oneStarCount = 2;
-    int twoStarCount = 7;
-    int threeStarCount = 32;
-    int fourStarCount = 78;
-    int fiveStarCount = 67;
+    int oneStarCount = 0;
+    int twoStarCount = 0;
+    int threeStarCount = 0;
+    int fourStarCount = 0;
+    int fiveStarCount = 0;
     double totalRating = 0.0;
 
     //FEEDBACK LIST
@@ -136,7 +135,10 @@ public class FeedbackActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if(task.isSuccessful()){
                     for(DocumentSnapshot documentSnapshot : task.getResult()){
-                        fiveStarCount++;
+                        if(documentSnapshot.exists()){
+                            fiveStarCount++;
+                        }
+
                     }
                 }else{
                     Log.d("LOG", "Error getting documents");
@@ -153,7 +155,10 @@ public class FeedbackActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if(task.isSuccessful()){
                     for(DocumentSnapshot documentSnapshot : task.getResult()){
-                        fourStarCount++;
+                        if(documentSnapshot.exists()){
+                            fourStarCount++;
+                        }
+
                     }
                 }else{
                     Log.d("LOG", "Error getting documents");
@@ -170,7 +175,10 @@ public class FeedbackActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if(task.isSuccessful()){
                     for(DocumentSnapshot documentSnapshot : task.getResult()){
-                        threeStarCount++;
+                        if(documentSnapshot.exists()){
+                            threeStarCount++;
+                        }
+
                     }
                 }else{
                     Log.d("LOG", "Error getting documents");
@@ -187,7 +195,10 @@ public class FeedbackActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if(task.isSuccessful()){
                     for(DocumentSnapshot documentSnapshot : task.getResult()){
-                        twoStarCount++;
+                        if(documentSnapshot.exists()){
+                            twoStarCount++;
+                        }
+
                     }
                 }else{
                     Log.d("LOG", "Error getting documents");
@@ -204,7 +215,10 @@ public class FeedbackActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if(task.isSuccessful()){
                     for(DocumentSnapshot documentSnapshot : task.getResult()){
-                        oneStarCount++;
+                        if(documentSnapshot.exists()){
+                            oneStarCount++;
+                        }
+
                     }
                 }else{
                     Log.d("LOG", "Error getting documents");
@@ -235,10 +249,8 @@ public class FeedbackActivity extends AppCompatActivity {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 if(documentSnapshot.exists()){
-                    Toast.makeText(getApplicationContext(), "Exists", Toast.LENGTH_SHORT).show();
                     FEEDBACK_MODE = "EDIT";
                 }else{
-                    Toast.makeText(getApplicationContext(), "Does not exist", Toast.LENGTH_SHORT).show();
                     FEEDBACK_MODE = "NEW";
                 }
 
@@ -278,7 +290,14 @@ public class FeedbackActivity extends AppCompatActivity {
                 tv_ratingCountThree.setText(String.valueOf(threeStarCount));
                 tv_ratingCountFour.setText(String.valueOf(fourStarCount));
                 tv_ratingCountFive.setText(String.valueOf(fiveStarCount));
-                tv_totalRating.setText(String.valueOf(round(totalRating, 1)));
+
+                if(totalScore == 0.0 || totalRates == 0){
+                    tv_totalRating.setText("0.0");
+                }else{
+                    tv_totalRating.setText(String.valueOf(round(totalRating, 1)));
+                }
+
+
                 if(FEEDBACK_MODE.equals("NEW")){
                     btn_addTradeFeedback.setText("ADD FEEDBACK");
                 }else if(FEEDBACK_MODE.equals("EDIT")){

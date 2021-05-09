@@ -90,11 +90,11 @@ public class ViewProfessionalActivity extends AppCompatActivity{
     //Rating
     Button btn_viewTradeFeedback;
     RatingBar rb_tradeRating;
-    int oneStarCount = 2;
-    int twoStarCount = 7;
-    int threeStarCount = 32;
-    int fourStarCount = 78;
-    int fiveStarCount = 67;
+    int oneStarCount = 0;
+    int twoStarCount = 0;
+    int threeStarCount = 0;
+    int fourStarCount = 0;
+    int fiveStarCount = 0;
 
     double totalRating = 0.0;
 
@@ -171,7 +171,7 @@ public class ViewProfessionalActivity extends AppCompatActivity{
          * **/
 
         fStore.collection("rating")
-                .document(user.getUid())
+                .document(TRADE_UID)
                 .collection("feedback")
                 .whereEqualTo("stars", 5)
                 .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -188,7 +188,7 @@ public class ViewProfessionalActivity extends AppCompatActivity{
         });
 
         fStore.collection("rating")
-                .document(user.getUid())
+                .document(TRADE_UID)
                 .collection("feedback")
                 .whereEqualTo("stars", 4)
                 .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -205,7 +205,7 @@ public class ViewProfessionalActivity extends AppCompatActivity{
         });
 
         fStore.collection("rating")
-                .document(user.getUid())
+                .document(TRADE_UID)
                 .collection("feedback")
                 .whereEqualTo("stars", 3)
                 .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -222,7 +222,7 @@ public class ViewProfessionalActivity extends AppCompatActivity{
         });
 
         fStore.collection("rating")
-                .document(user.getUid())
+                .document(TRADE_UID)
                 .collection("feedback")
                 .whereEqualTo("stars", 2)
                 .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -239,7 +239,7 @@ public class ViewProfessionalActivity extends AppCompatActivity{
         });
 
         fStore.collection("rating")
-                .document(user.getUid())
+                .document(TRADE_UID)
                 .collection("feedback")
                 .whereEqualTo("stars", 1)
                 .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -275,7 +275,6 @@ public class ViewProfessionalActivity extends AppCompatActivity{
 
                     Log.d("LAT", String.valueOf(tradeLatitude));
                     Log.d("LON", String.valueOf(tradeLongitude));
-                    //String address = getAddressFromLatLng(tradeLatitude, tradeLongitude);
                     String address = getCompleteAddressString(tradeLatitude, tradeLongitude);
                     tv_tradeAddress.setText(address);
                 }
@@ -325,6 +324,10 @@ public class ViewProfessionalActivity extends AppCompatActivity{
                 double totalScore = oneStarCount + (twoStarCount * 2) + (threeStarCount * 3) + (fourStarCount * 4) + (fiveStarCount * 5);
                 totalRating = totalScore / totalRates;
 
+                Log.d("TAG", "Start of log");
+                Log.d("TOTAL RATES 4", String.valueOf(fourStarCount));
+                Log.d("TOTAL SCORE", String.valueOf(totalScore));
+
                 rb_tradeRating.setRating((float) totalRating);
 
 
@@ -334,6 +337,10 @@ public class ViewProfessionalActivity extends AppCompatActivity{
                 tv_tradeCategory.setText(tradeCategory);
                 tv_tradeExperience.setText(tradeExperience);
                 tv_tradeLastProject.setText("Last project: " + lastProject);
+
+                if(tv_tradeLastProject.getText().toString().equals("Last project: User has no projects created")){
+                    tv_viewTradeAllProjects.setVisibility(View.GONE);
+                }
 
 
                 btn_viewTradeFeedback.setOnClickListener(new View.OnClickListener() {
@@ -358,10 +365,14 @@ public class ViewProfessionalActivity extends AppCompatActivity{
                 tv_tradeLastProject.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent intent  = new Intent(getApplicationContext(), ViewProject.class);
-                        intent.putExtra("USER_ID", TRADE_UID);
-                        intent.putExtra("PROJECT_ID", lastProject);
-                        startActivity(intent);
+
+                        if(!tv_tradeLastProject.getText().toString().equals("Last project: User has no projects created")){
+                            Intent intent  = new Intent(getApplicationContext(), ViewProject.class);
+                            intent.putExtra("USER_ID", TRADE_UID);
+                            intent.putExtra("PROJECT_ID", lastProject);
+                            startActivity(intent);
+                        }
+
                     }
                 });
 
@@ -385,22 +396,12 @@ public class ViewProfessionalActivity extends AppCompatActivity{
                     public void onMapReady(GoogleMap googleMap) {
 
                         LatLng point = new LatLng(tradeLatitude, tradeLongitude);
-                        //googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(point, 7));
                         addMarkerToTheMap(point, tradeName);
                     }
                 });
 
             }
-        }, 400);
-
-        //String address = getAddressFromLatLng(tradeLatitude, tradeLongitude);
-        //Log.d("LAT", String.valueOf(tradeLatitude));
-        //Log.d("LON", String.valueOf(tradeLongitude));
-
-
-       // tv_tradeAddress.setText(address);
-
-
+        }, 1000);
 
     }
 
