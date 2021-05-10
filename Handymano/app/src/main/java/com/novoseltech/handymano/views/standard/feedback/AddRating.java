@@ -31,24 +31,27 @@ import java.util.Locale;
 import java.util.Map;
 
 public class AddRating extends AppCompatActivity {
-    //FIREBASE
-    FirebaseFirestore fStore = FirebaseFirestore.getInstance();
 
-    //MY DETAILS
-    String MY_UID = "";
-    String MY_USERNAME = "";
+    //Layout components
+    private TextView tv_addTradeRatingTitle;
+    private RatingBar rb_tradeRatingTemp;
+    private EditText et_ml_tradeFeedback;
+    private Button btn_saveTradeFeedback;
 
-    //TRADE DETAILS
-    String TRADE_UID = "";
-    String TRADE_USERNAME = "";
+    //Firebase components
+    private FirebaseFirestore fStore = FirebaseFirestore.getInstance();
 
-    //FEEDBACK DETAILS
-    float ratingStars = 0.0f;
-    String feedbackComment = "";
-    Date dt = Calendar.getInstance().getTime();
-    SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy", Locale.getDefault());
-    String todayDate = df.format(dt);
-    String FEEDBACK_MODE = "";
+    //Objects
+    private float ratingStars = 0.0f;
+    private Date dt = Calendar.getInstance().getTime();
+    private SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy", Locale.getDefault());
+    private String todayDate = df.format(dt);
+    private String feedbackComment = "";
+    private String FEEDBACK_MODE = "";
+    private String MY_UID = "";
+    private String MY_USERNAME = "";
+    private String TRADE_UID = "";
+    private String TRADE_USERNAME = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,11 +64,10 @@ public class AddRating extends AppCompatActivity {
         TRADE_USERNAME = getIntent().getStringExtra("TRADE_USERNAME");
         FEEDBACK_MODE = getIntent().getStringExtra("FEEDBACK_MODE");
 
-        //LAYOUT OBJECTS
-        TextView tv_addTradeRatingTitle = findViewById(R.id.tv_addTradeRatingTitle);
-        RatingBar rb_tradeRatingTemp = findViewById(R.id.rb_tradeRatingTemp);
-        EditText et_ml_tradeFeedback = findViewById(R.id.et_ml_tradeFeedback);
-        Button btn_saveTradeFeedback = findViewById(R.id.btn_saveTradeFeedback);
+        tv_addTradeRatingTitle = findViewById(R.id.tv_addTradeRatingTitle);
+        rb_tradeRatingTemp = findViewById(R.id.rb_tradeRatingTemp);
+        et_ml_tradeFeedback = findViewById(R.id.et_ml_tradeFeedback);
+        btn_saveTradeFeedback = findViewById(R.id.btn_saveTradeFeedback);
 
         if(FEEDBACK_MODE.equals("EDIT")){
             fStore.collection("rating")
@@ -143,6 +145,7 @@ public class AddRating extends AppCompatActivity {
             public void onClick(DialogInterface dialogInterface, int i) {
                 finish();
                 Intent intent = new Intent(AddRating.this, FeedbackActivity.class);
+                intent.putExtra("USER_ID", TRADE_UID);
                 startActivity(intent);
             }
         });

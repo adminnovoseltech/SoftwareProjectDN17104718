@@ -8,7 +8,6 @@ import android.view.View;
 
 public class RegistrationChoiceActivity extends AppCompatActivity {
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -16,7 +15,6 @@ public class RegistrationChoiceActivity extends AppCompatActivity {
     }
 
     public void ClickLooking(View view){
-
         Intent intent = new Intent(this, UserRegistrationActivity.class);
         startActivity(intent);
     }

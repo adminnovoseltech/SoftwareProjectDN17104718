@@ -18,9 +18,11 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/registerUsername_layout"
-        android:layout_width="300dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
         android:layout_marginTop="15dp"
+        android:layout_marginEnd="30dp"
         android:hint="@string/register_hint_username"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -36,9 +38,11 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/registerEmail_layout"
-        android:layout_width="300dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
         android:layout_marginTop="15dp"
+        android:layout_marginEnd="30dp"
         android:hint="@string/register_hint_email"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -54,9 +58,11 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/registerPhoneNo_layout"
-        android:layout_width="300dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
         android:layout_marginTop="15dp"
+        android:layout_marginEnd="30dp"
         android:hint="@string/register_hint_phoneNo"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -72,9 +78,11 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/registerPassword_layout"
-        android:layout_width="300dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
         android:layout_marginTop="15dp"
+        android:layout_marginEnd="30dp"
         android:hint="@string/register_hint_password"
         app:endIconMode="password_toggle"
         app:errorEnabled="true"
@@ -91,12 +99,14 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_Register"
-        android:layout_width="300dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
         android:layout_marginTop="15dp"
+        android:layout_marginEnd="30dp"
+        android:onClick="ClickRegisterUser"
         android:text="@string/user_register_button"
         android:textStyle="bold"
-        android:onClick="ClickRegisterUser"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/registerPassword_layout" />
@@ -115,12 +125,14 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_RegisterCancel"
-        android:layout_width="300dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
         android:layout_marginTop="15dp"
+        android:layout_marginEnd="30dp"
+        android:onClick="ClickCancelUserRegistration"
         android:text="@string/cancel"
         android:textStyle="bold"
-        android:onClick="ClickCancelUserRegistration"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView_or4" />|

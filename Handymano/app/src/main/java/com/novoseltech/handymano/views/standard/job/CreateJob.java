@@ -68,64 +68,52 @@ import java.util.Map;
 
 public class CreateJob extends AppCompatActivity {
 
+    //Layout components
+    private Button btn_saveJob;
+    private RecyclerView fStoreList;
+    private EditText et_jobTitle;
+    private EditText et_jobDescription;
+    private ImageView iv_addImg;
+    private ImageView iv_deleteImg;
+    private AutoCompleteTextView dropdownJobCategory;
+    private SliderView sliderView;
+    private TextView tv_jobAddressAdd;
+    private ImageView iv_jobAddressAdd;
+    private ConstraintLayout cl_jobCreationLayout;
+    private FrameLayout fl_jobAddressLayout;
+
+    //Firebase components
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private FirebaseFirestore fStore = FirebaseFirestore.getInstance();
+    private FirebaseUser user = mAuth.getCurrentUser();
+
+    //Variables
     private static final int REQUEST_STORAGE_PERMISSION_CODE = 2014;
     private static final int REQUEST_LOCATION_PERMISSION_CODE = 1;
-
-    long imageCount = 0;
-
-    String imageEncoded;
-    List<String> imagesEncodedList;
-    Button btn_saveJob;
-    //Button btn_createJob;
-    RecyclerView fStoreList;
-
-    EditText et_jobTitle;
-    EditText et_jobDescription;
-
-    FirebaseAuth mAuth = FirebaseAuth.getInstance();
-    FirebaseFirestore fStore = FirebaseFirestore.getInstance();
-    FirebaseUser user = mAuth.getCurrentUser();
-    String UID = user.getUid();
-
-    Uri mImageUri;
-    ArrayList<Uri> mArrayUri = new ArrayList<Uri>();
-
-    Date dt = Calendar.getInstance().getTime();
-    SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy", Locale.getDefault());
-    String todayDate = df.format(dt);
-
-    ImageView iv_addImg;
-    ImageView iv_deleteImg;
-
-    SliderView sliderView;
-    SliderAdapter adapter;
-
-    List<SliderItem> imagesArrayList = new ArrayList<>();
-    AutoCompleteTextView dropdownJobCategory;
+    private long imageCount = 0;
+    private String imageEncoded;
+    private List<String> imagesEncodedList;
+    private String UID = user.getUid();
+    private Uri mImageUri;
+    private ArrayList<Uri> mArrayUri = new ArrayList<Uri>();
+    private Date dt = Calendar.getInstance().getTime();
+    private SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy", Locale.getDefault());
+    private String todayDate = df.format(dt);
+    private SliderAdapter adapter;
+    private List<SliderItem> imagesArrayList = new ArrayList<>();
     private String jobCategory ="N/A";
-
-    TextView tv_jobAddressAdd;
-    ImageView iv_jobAddressAdd;
-    ConstraintLayout cl_jobCreationLayout;
-    FrameLayout fl_jobAddressLayout;
-    //Button btn_saveJobLocation;
-
-    double latitude = 0.0;
-    double longitude = 0.0;
+    private double latitude = 0.0;
+    private double longitude = 0.0;
+    private AddressSelect af = new AddressSelect();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_job);
 
-        //Address selection
         cl_jobCreationLayout = findViewById(R.id.cl_jobCreationLayout);
         fl_jobAddressLayout = findViewById(R.id.fl_jobAddressLayout);
         fl_jobAddressLayout.setVisibility(View.GONE);
-        //btn_saveJobLocation = findViewById(R.id.btn_saveJobLocationData);
-        //btn_saveJobLocation.setVisibility(View.GONE);
-        AddressSelect af = new AddressSelect();
-
 
         btn_saveJob = findViewById(R.id.btn_saveJob);
         et_jobTitle = findViewById(R.id.et_jobTitle);
@@ -135,10 +123,8 @@ public class CreateJob extends AppCompatActivity {
         sliderView = findViewById(R.id.imageSliderJobAdd);
 
         dropdownJobCategory = findViewById(R.id.dropdownJobCategory);
-
         adapter = new SliderAdapter(getApplicationContext());
         sliderView.setSliderAdapter(adapter);
-
         tv_jobAddressAdd = findViewById(R.id.tv_jobAddressCreate);
         iv_jobAddressAdd = findViewById(R.id.iv_locationButton);
 
@@ -151,7 +137,6 @@ public class CreateJob extends AppCompatActivity {
                 sliderView.setSliderTransformAnimation(SliderAnimations.SIMPLETRANSFORMATION);
                 sliderView.setIndicatorSelectedColor(Color.WHITE);
                 sliderView.setIndicatorUnselectedColor(Color.GRAY);
-
                 sliderView.setOnIndicatorClickListener(new DrawController.ClickListener() {
                     @Override
                     public void onIndicatorClicked(int position) {
@@ -239,7 +224,6 @@ public class CreateJob extends AppCompatActivity {
             public void onClick(View v) {
                 cl_jobCreationLayout.setVisibility(View.GONE);
                 fl_jobAddressLayout.setVisibility(View.VISIBLE);
-                //btn_saveJobLocation.setVisibility(View.VISIBLE);
 
                 Bundle bundle = new Bundle();
                 bundle.putString("mode", "NewJob");
@@ -297,9 +281,6 @@ public class CreateJob extends AppCompatActivity {
                                     Toast.makeText(getApplicationContext(), e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                                 }
                             });
-
-//                    btn_createJob.setVisibility(View.VISIBLE);
-                   // fStoreList.setVisibility(View.VISIBLE);
 
                     Intent intent = new Intent(CreateJob.this, StandardJobViewActivity.class);
                     intent.putExtra("JOB_ID", jobTitle);
@@ -505,7 +486,6 @@ public class CreateJob extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        //super.onBackPressed();
         discardChanges();
 
     }

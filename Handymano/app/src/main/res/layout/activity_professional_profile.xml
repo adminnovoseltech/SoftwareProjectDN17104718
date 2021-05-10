@@ -40,7 +40,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
-                    <com.google.android.material.imageview.ShapeableImageView
+                    <!--<com.google.android.material.imageview.ShapeableImageView
                         android:id="@+id/iv_pp_profilePhoto"
                         android:layout_width="150dp"
                         android:layout_height="150dp"
@@ -48,14 +48,32 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize10Percent"
-                        app:srcCompat="@drawable/ic_profile_512" />
+                        app:srcCompat="@drawable/ic_profile_512" />-->
+
+                    <com.mikhaellopez.circularimageview.CircularImageView
+                        android:id="@+id/iv_pp_profilePhoto"
+                        android:layout_width="150dp"
+                        android:layout_height="150dp"
+                        android:layout_marginTop="10dp"
+                        android:src="@drawable/ic_profile_512"
+                        app:civ_border_color="#3f51b5"
+                        app:civ_border_width="4dp"
+                        app:civ_shadow="true"
+                        app:civ_shadow_color="#3f51b5"
+                        app:civ_shadow_radius="0dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
                         android:id="@+id/textView_AddressTitle"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="30dp"
                         android:layout_marginTop="20dp"
+                        android:layout_marginEnd="30dp"
                         android:text="Address"
+                        android:textAlignment="center"
                         android:textAllCaps="true"
                         android:textSize="28sp"
                         android:textStyle="bold"
@@ -65,9 +83,11 @@
 
                     <TextView
                         android:id="@+id/textView_currentAddress"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="30dp"
                         android:layout_marginTop="20dp"
+                        android:layout_marginEnd="30dp"
                         android:text="@string/address"
                         android:textAlignment="center"
                         android:textSize="28sp"
@@ -77,9 +97,11 @@
 
                     <Button
                         android:id="@+id/btn_chooseLoc"
-                        android:layout_width="300dp"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="30dp"
                         android:layout_marginTop="25dp"
+                        android:layout_marginEnd="30dp"
                         android:text="@string/chooseLocation"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -87,10 +109,13 @@
 
                     <TextView
                         android:id="@+id/textViewpp1"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="30dp"
                         android:layout_marginTop="20dp"
+                        android:layout_marginEnd="30dp"
                         android:text="Username"
+                        android:textAlignment="center"
                         android:textAllCaps="true"
                         android:textSize="28sp"
                         android:textStyle="bold"
@@ -100,10 +125,13 @@
 
                     <TextView
                         android:id="@+id/tv_pp_username"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="30dp"
                         android:layout_marginTop="20dp"
+                        android:layout_marginEnd="30dp"
                         android:text="Username"
+                        android:textAlignment="center"
                         android:textSize="28sp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -111,9 +139,11 @@
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/layout_pp_username_edit"
-                        android:layout_width="300dp"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="30dp"
                         android:layout_marginTop="20dp"
+                        android:layout_marginEnd="30dp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/textViewpp1">
@@ -128,10 +158,13 @@
 
                     <TextView
                         android:id="@+id/textViewpp2"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="30dp"
                         android:layout_marginTop="40dp"
+                        android:layout_marginEnd="30dp"
                         android:text="Phone number"
+                        android:textAlignment="center"
                         android:textAllCaps="true"
                         android:textSize="28sp"
                         android:textStyle="bold"
@@ -141,10 +174,13 @@
 
                     <TextView
                         android:id="@+id/tv_pp_phoneNo"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="30dp"
                         android:layout_marginTop="20dp"
+                        android:layout_marginEnd="30dp"
                         android:text="Phone No"
+                        android:textAlignment="center"
                         android:textSize="28sp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -152,9 +188,11 @@
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/layout_pp_phoneno_edit"
-                        android:layout_width="300dp"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="30dp"
                         android:layout_marginTop="20dp"
+                        android:layout_marginEnd="30dp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/textViewpp2">
@@ -169,10 +207,13 @@
 
                     <TextView
                         android:id="@+id/textViewpp3"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="30dp"
                         android:layout_marginTop="40dp"
+                        android:layout_marginEnd="30dp"
                         android:text="Email"
+                        android:textAlignment="center"
                         android:textAllCaps="true"
                         android:textSize="28sp"
                         android:textStyle="bold"
@@ -182,10 +223,13 @@
 
                     <TextView
                         android:id="@+id/tv_pp_email"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="30dp"
                         android:layout_marginTop="20dp"
+                        android:layout_marginEnd="30dp"
                         android:text="Email"
+                        android:textAlignment="center"
                         android:textSize="28sp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.498"
@@ -194,9 +238,11 @@
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/layout_pp_email_edit"
-                        android:layout_width="300dp"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="30dp"
                         android:layout_marginTop="20dp"
+                        android:layout_marginEnd="30dp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/textViewpp3">
@@ -215,8 +261,10 @@
 
             <Button
                 android:id="@+id/btn_save_pp"
-                android:layout_width="300dp"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="30dp"
                 android:layout_marginBottom="20dp"
                 android:text="SAVE"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -225,8 +273,10 @@
 
             <Button
                 android:id="@+id/btn_edit_pp"
-                android:layout_width="300dp"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="30dp"
                 android:layout_marginBottom="20dp"
                 android:text="EDIT"
                 android:textStyle="bold"

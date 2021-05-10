@@ -2,15 +2,12 @@ package com.novoseltech.handymano.views.standard;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -33,7 +30,6 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -46,7 +42,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -75,38 +70,39 @@ import java.util.Map;
 
 public class HomeActivityStandard extends AppCompatActivity {
 
-    private static final String TAG = "LOG: ";
-
-    //Firebase objects
-    FirebaseAuth mAuth = FirebaseAuth.getInstance();
-    FirebaseFirestore fStore = FirebaseFirestore.getInstance();
-    FirebaseUser user = mAuth.getCurrentUser();
-    String UID = user.getUid();
-
-
-    //Navigation drawer
-    DrawerLayout drawerLayout;
-
-    //Layouts
-
-    LinearLayout homeNavLayout;
-    LinearLayout messageNavLayout;
-    LinearLayout jobsNavLayout;
-
-    //Recycler view objects
+    //Layout components
+    private DrawerLayout drawerLayout;
+    private LinearLayout homeNavLayout;
+    private LinearLayout messageNavLayout;
+    private LinearLayout jobsNavLayout;
     private RecyclerView fStoreList;
-    private FirestoreRecyclerAdapter adapter;
+    private CircularImageView profileImage;
+    private TextView tv_UserName;
+    private EditText et_stdUserLocation;
+    private TextInputLayout til_stdUserLocation;
+    private Button btn_search;
+    private Button btn_expandSearchOptions;
+    private TextInputLayout til_dropdownServiceCategory;
+    private RecyclerView fList;
 
-    //Location objects
+    //Firebase components
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private FirebaseFirestore fStore = FirebaseFirestore.getInstance();
+    private FirebaseUser user = mAuth.getCurrentUser();
+    private FirebaseFirestore tempFireStore = FirebaseFirestore.getInstance();
+
+    //Variables
+    private static final String TAG = "LOG: ";
+    private String UID = user.getUid();
+    private FirestoreRecyclerAdapter adapter;
     private static final int REQUEST_LOCATION_PERMISSION_CODE = 1;
-    LocationManager locationManager;
-    String std_latitude;
-    String std_longitude;
-    Boolean currentLocationIcon = true;
-    FirebaseFirestore tempFireStore = FirebaseFirestore.getInstance();
-    Map<String, Object> pUsers = new HashMap<>();
-    ArrayList accounts = new ArrayList();
-    String categorySelected = "All categories";
+    private LocationManager locationManager;
+    private String std_latitude;
+    private String std_longitude;
+    private Boolean currentLocationIcon = true;
+    private Map<String, Object> pUsers = new HashMap<>();
+    private ArrayList accounts = new ArrayList();
+    private String categorySelected = "All categories";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -142,7 +138,7 @@ public class HomeActivityStandard extends AppCompatActivity {
         });
 
 
-        CircularImageView profileImage = drawerLayout.findViewById(R.id.civ_profilePictureStandard);
+        profileImage = drawerLayout.findViewById(R.id.civ_profilePictureStandard);
 
         if(user.getPhotoUrl() != null){
             Glide.with(getApplicationContext())
@@ -159,7 +155,7 @@ public class HomeActivityStandard extends AppCompatActivity {
             }
         });
 
-        TextView tv_UserName = drawerLayout.findViewById(R.id.text_UserName_Standard);
+        tv_UserName = drawerLayout.findViewById(R.id.text_UserName_Standard);
         fStore.collection("user")
                 .document(user.getUid())
                 .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -173,23 +169,22 @@ public class HomeActivityStandard extends AppCompatActivity {
         });
 
         //Location text input field
-        EditText et_stdUserLocation = findViewById(R.id.standardUserLocationET);
+        et_stdUserLocation = findViewById(R.id.standardUserLocationET);
         et_stdUserLocation.setFocusable(false);
-        TextInputLayout til_stdUserLocation = findViewById(R.id.standardUserLocationLayout);
+        til_stdUserLocation = findViewById(R.id.standardUserLocationLayout);
         til_stdUserLocation.setHint("Current location");
 
         //Location based search button
-        Button btn_search = findViewById(R.id.btn_professionalSearch);
-        Button btn_expandSearchOptions = findViewById(R.id.btn_expandSearchOptions);
+        btn_search = findViewById(R.id.btn_professionalSearch);
+        btn_expandSearchOptions = findViewById(R.id.btn_expandSearchOptions);
 
         btn_expandSearchOptions.setVisibility(View.GONE);
 
         final AutoCompleteTextView dropdownServiceCategory = findViewById(R.id.dropdownServiceCategoryMenu);
-        TextInputLayout til_dropdownServiceCategory = findViewById(R.id.dropdownServiceCategoryLayout);
+        til_dropdownServiceCategory = findViewById(R.id.dropdownServiceCategoryLayout);
 
         //recycler view layout modification
-        RecyclerView fList = findViewById(R.id.firestoreList);
-        ViewGroup.LayoutParams params = fList.getLayoutParams();
+        fList = findViewById(R.id.firestoreList);
 
         btn_search.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -200,8 +195,6 @@ public class HomeActivityStandard extends AppCompatActivity {
                     requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION_PERMISSION_CODE);
                 }else{
                     if(currentLocationIcon){
-
-
 
                         //Clear temp collection
                         clearTempCollection();
@@ -250,10 +243,6 @@ public class HomeActivityStandard extends AppCompatActivity {
                         adapter.startListening();
                         //Setting the RecyclerView to visible
                         fStoreList.setVisibility(View.VISIBLE);
-
-
-                        //CHANGE
-
                         //Set invisible
                         btn_expandSearchOptions.setVisibility(View.VISIBLE);
 
@@ -629,20 +618,17 @@ public class HomeActivityStandard extends AppCompatActivity {
             // May throw an IOException
             address = coder.getFromLocationName(strAddress, 5);
             if (address == null) {
-                //return null;
+
             }
 
             Address location = address.get(0);
             std_latitude = String.valueOf(location.getLatitude());
             std_longitude = String.valueOf(location.getLongitude());
 
-
         } catch (IOException ex) {
 
             ex.printStackTrace();
         }
-
-        //return p1;
     }
 
     private void OnGPS() {
@@ -663,7 +649,6 @@ public class HomeActivityStandard extends AppCompatActivity {
     }
 
     private void getLocation() {
-
         Location locationGPS = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         if (locationGPS != null) {
             double lat = locationGPS.getLatitude();
@@ -730,15 +715,6 @@ public class HomeActivityStandard extends AppCompatActivity {
         logout();
     }
 
-    public void ClickHome(View view) {
-    }
-
-    public void ClickProfile(View view) {
-    }
-
-    public void ClickMessages(View view) {
-    }
-
     public static double round(double value, int places) {
         //https://stackoverflow.com/questions/2808535/round-a-double-to-2-decimal-places
         if (places < 0) throw new IllegalArgumentException();
@@ -752,14 +728,14 @@ public class HomeActivityStandard extends AppCompatActivity {
         private TextView list_username;
         private TextView list_category;
         private TextView list_distance;
-        private ImageView list_image;
+        private CircularImageView list_image;
 
         public ServicesViewHolder(@NonNull View itemView) {
             super(itemView);
-            list_username = itemView.findViewById(R.id.tv_chatSenderUsername);
-            list_category = itemView.findViewById(R.id.list_category);
-            list_distance = itemView.findViewById(R.id.list_distance);
-            list_image = itemView.findViewById(R.id.iv_chatSenderImageList);
+            list_username = itemView.findViewById(R.id.tv_tradeListUsername);
+            list_category = itemView.findViewById(R.id.tv_tradeListCategory);
+            list_distance = itemView.findViewById(R.id.tv_tradeListDistance);
+            list_image = itemView.findViewById(R.id.iv_tradeListImage);
         }
     }
 

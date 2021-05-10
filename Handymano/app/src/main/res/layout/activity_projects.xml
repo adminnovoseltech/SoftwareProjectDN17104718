@@ -41,8 +41,10 @@ tools:context=".views.professional.project.ProjectsActivity">
 
         <Button
             android:id="@+id/btn_createProject"
-            android:layout_width="300dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp"
             android:layout_marginBottom="20dp"
             android:text="@string/create_new_project"
             app:layout_constraintBottom_toBottomOf="parent"

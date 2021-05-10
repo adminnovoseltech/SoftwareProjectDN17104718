@@ -69,44 +69,38 @@ import java.util.Map;
 
 public class EditProject extends AppCompatActivity {
 
-    ConstraintLayout cl_editProject;
-    ConstraintLayout cl_savingProjectChanges;
+    //Layout components
+    private ConstraintLayout cl_editProject;
+    private ConstraintLayout cl_savingProjectChanges;
+    private EditText et_projectTitle;
+    private EditText et_projectDescription;
+    private ImageView iv_deleteImg;
+    private ImageView iv_addImg;
+    private Button btn_saveChanges;
+    private SliderView sliderView;
+    private ImageView iv_temp;
 
-    String PROJECT_ID;
-    String projectCreationDate = "";
-    long imageCount = 0;
+    //Firebase components
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private FirebaseFirestore fStore = FirebaseFirestore.getInstance();
+    private FirebaseUser user = mAuth.getCurrentUser();
 
-    int PICK_IMAGE_MULTIPLE = 1000;
+    //Objects
+    private long imageCount = 0;
+    private int PICK_IMAGE_MULTIPLE = 1000;
     private static final int WRITE_REQUEST = 1;
-    String imageEncoded;
-    List<String> imagesEncodedList;
-
-    Uri mImageUri;
-    ArrayList<Uri> mArrayUri = new ArrayList<Uri>();
-
-    Date dt = Calendar.getInstance().getTime();
-    SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy", Locale.getDefault());
-    String todayDate = df.format(dt);
-
-
-    EditText et_projectTitle;
-    EditText et_projectDescription;
-    ImageView iv_deleteImg;
-    ImageView iv_addImg;
-    Button btn_saveChanges;
-
-
-    FirebaseAuth mAuth = FirebaseAuth.getInstance();
-    FirebaseFirestore fStore = FirebaseFirestore.getInstance();
-    FirebaseUser user = mAuth.getCurrentUser();
-    String UID = user.getUid();
-
-    SliderView sliderView;
-    SliderAdapter adapter;
-
-    List<SliderItem> initialImages = new ArrayList<>();
-
-    ImageView iv_temp;
+    private Uri mImageUri;
+    private Date dt = Calendar.getInstance().getTime();
+    private SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy", Locale.getDefault());
+    private SliderAdapter adapter;
+    private List<SliderItem> initialImages = new ArrayList<>();
+    private ArrayList<Uri> mArrayUri = new ArrayList<Uri>();
+    private List<String> imagesEncodedList;
+    private String PROJECT_ID;
+    private String projectCreationDate = "";
+    private String todayDate = df.format(dt);
+    private String UID = user.getUid();
+    private String imageEncoded;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -380,9 +374,9 @@ public class EditProject extends AppCompatActivity {
                                                                     @Override
                                                                     public void onComplete(@NonNull Task<Void> task) {
                                                                         if(task.isSuccessful()){
-                                                                            //Log.d("DELETE LOG: ", "Deleted image " + (j+1));
+
                                                                         }else{
-                                                                            //Log.e("DELETE LOG: ", task.getException().getLocalizedMessage());
+
                                                                         }
                                                                     }
                                                                 });
@@ -402,7 +396,7 @@ public class EditProject extends AppCompatActivity {
 
 
                                                         }else{
-                                                            //Log.d("TASK LOG: ", task.getException().getLocalizedMessage());
+
                                                         }
                                                     }
                                                 }).addOnFailureListener(new OnFailureListener() {
@@ -421,9 +415,9 @@ public class EditProject extends AppCompatActivity {
                                             @Override
                                             public void onComplete(@NonNull Task<Void> task) {
                                                 if(task.isSuccessful()){
-                                                    //Log.d("TAG: ", "Document deleted");
+
                                                 }else{
-                                                    //Log.e("EXCEPTION", task.getException().getLocalizedMessage());
+
                                                 }
                                             }
                                         });
@@ -442,7 +436,6 @@ public class EditProject extends AppCompatActivity {
                                                                     .child(user.getUid())
                                                                     .child("projects")
                                                                     .child(PROJECT_ID);
-
 
                                                             for(int l = 0; l < imageCount; l++){
                                                                 StorageReference sr = null;
@@ -472,7 +465,7 @@ public class EditProject extends AppCompatActivity {
                                                             }
 
                                                         }else{
-                                                            //Log.d("TASK LOG: ", task.getException().getLocalizedMessage());
+
                                                         }
                                                     }
                                                 }).addOnFailureListener(new OnFailureListener() {
@@ -488,7 +481,6 @@ public class EditProject extends AppCompatActivity {
                                     startActivity(intent);
                                     cl_editProject.setVisibility(View.VISIBLE);
                                     cl_savingProjectChanges.setVisibility(View.GONE);
-
 
                                 }else{
                                     Log.d("LOG: ", "Size of images AL " + images.size());
@@ -600,14 +592,12 @@ public class EditProject extends AppCompatActivity {
 
                         }
 
-                       //Log.d("MULTIPLE IMAGE PICKER: ", "Selected Images" + mArrayUri.size());
                     }
                 }
 
 
             }else {
-                //Toast.makeText(getApplicationContext(), "Request code: " + requestCode + " and result code: " + resultCode,
-                       // Toast.LENGTH_LONG).show();
+
             }
         }
     }
@@ -633,7 +623,7 @@ public class EditProject extends AppCompatActivity {
                         initialImages.add(sliderItem);
                         adapter.addItem(sliderItem);
                     }else{
-                       //Log.e("Error loading images", task.getException().getLocalizedMessage());
+
                     }
                 }
             });

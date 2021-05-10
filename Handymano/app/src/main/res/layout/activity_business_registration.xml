@@ -14,13 +14,15 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_businessRegisterCancel"
-            android:layout_width="300dp"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="50dp"
             android:layout_marginTop="10dp"
+            android:layout_marginEnd="50dp"
             android:onClick="ClickCancelBusinessRegistration"
             android:text="@string/cancel"
             android:textStyle="bold"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.495"
             app:layout_constraintStart_toStartOf="parent"
@@ -28,10 +30,11 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_businessRegister"
-            android:layout_width="300dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="50dp"
             android:layout_marginTop="10dp"
-            android:onClick="ClickRegisterBusiness"
+            android:layout_marginEnd="50dp"
             android:text="@string/user_register_button"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
@@ -40,9 +43,11 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_chooseLocation"
-            android:layout_width="300dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="50dp"
             android:layout_marginTop="10dp"
+            android:layout_marginEnd="50dp"
             android:text="@string/chooseLocation"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
@@ -51,9 +56,11 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/registerBusinessUsername_layout"
-            android:layout_width="300dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="50dp"
             android:layout_marginTop="20dp"
+            android:layout_marginEnd="50dp"
             android:hint="@string/register_hint_username"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -69,9 +76,11 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/registerBusinessPassword_layout"
-            android:layout_width="300dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="50dp"
             android:layout_marginTop="20dp"
+            android:layout_marginEnd="50dp"
             android:hint="@string/register_hint_password"
             app:endIconMode="password_toggle"
             app:errorEnabled="true"
@@ -88,9 +97,11 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/registerBusinessEmail_layout"
-            android:layout_width="300dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="50dp"
             android:layout_marginTop="20dp"
+            android:layout_marginEnd="50dp"
             android:hint="@string/register_hint_email"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -106,9 +117,11 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/registerBusinessPhoneNo_layout"
-            android:layout_width="300dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="50dp"
             android:layout_marginTop="20dp"
+            android:layout_marginEnd="50dp"
             android:hint="@string/register_hint_phoneNo"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -126,9 +139,11 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/yearsOfExperience_layout"
             style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
-            android:layout_width="300dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="50dp"
             android:layout_marginTop="20dp"
+            android:layout_marginEnd="50dp"
             android:hint="@string/years_of_experience"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -146,9 +161,11 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/servicesCategory_layout"
             style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
-            android:layout_width="300dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="50dp"
             android:layout_marginTop="20dp"
+            android:layout_marginEnd="50dp"
             android:hint="@string/services_category"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

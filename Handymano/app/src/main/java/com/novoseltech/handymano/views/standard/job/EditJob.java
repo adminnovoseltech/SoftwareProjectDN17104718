@@ -82,82 +82,64 @@ import static com.google.common.reflect.Reflection.initialize;
 
 public class EditJob extends AppCompatActivity {
 
-    ConstraintLayout cl_editJob;
-    ConstraintLayout cl_savingChanges;
+    //Layout components
+    private ConstraintLayout cl_editJob;
+    private ConstraintLayout cl_savingChanges;
+    private EditText et_jobTitle;
+    private EditText et_jobDescription;
+    private ImageView iv_deleteImg;
+    private ImageView iv_addImg;
+    private Button btn_saveChanges;
+    private SliderView sliderView;
+    private ImageView iv_temp;
+    private AutoCompleteTextView dropdownJobCategory;
+    private AutoCompleteTextView dropdownJobStatus;
+    private FrameLayout fl_editJobAddress;
+    private ImageView iv_editJobAddress;
+    private TextView tv_jobAddress;
 
-    String JOB_ID;
-    String jobCreationDate = "";
-    long imageCount = 0;
-    String JOB_CATEGORY = "N/A";
+    //Firebase components
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private FirebaseFirestore fStore = FirebaseFirestore.getInstance();
+    private FirebaseUser user = mAuth.getCurrentUser();
 
-
-    //Permission
+    //Variables
+    private String JOB_ID;
+    private String jobCreationDate = "";
+    private long imageCount = 0;
+    private String JOB_CATEGORY = "N/A";
     private static final int REQUEST_STORAGE_PERMISSION_CODE = 1000;
     private static final int WRITE_REQUEST = 1;
     private static final String[] REQUIRED_PERMISSIONS = new String[]{
             Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE
     };
-
-
-
-    String imageEncoded;
-    List<String> imagesEncodedList;
-
-    Uri mImageUri;
-    ArrayList<Uri> mArrayUri = new ArrayList<Uri>();
-
-    Date dt = Calendar.getInstance().getTime();
-    SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy", Locale.getDefault());
-    String todayDate = df.format(dt);
-
-
-    EditText et_jobTitle;
-    EditText et_jobDescription;
-    ImageView iv_deleteImg;
-    ImageView iv_addImg;
-    Button btn_saveChanges;
-
-
-    FirebaseAuth mAuth = FirebaseAuth.getInstance();
-    FirebaseFirestore fStore = FirebaseFirestore.getInstance();
-    FirebaseUser user = mAuth.getCurrentUser();
-    String UID = user.getUid();
-
-    SliderView sliderView;
-    SliderAdapter adapter;
-    List<SliderItem> initialImages = new ArrayList<>();
-    ImageView iv_temp;
-
-    AutoCompleteTextView dropdownJobCategory;
+    private String imageEncoded;
+    private List<String> imagesEncodedList;
+    private Uri mImageUri;
+    private ArrayList<Uri> mArrayUri = new ArrayList<Uri>();
+    private Date dt = Calendar.getInstance().getTime();
+    private SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy", Locale.getDefault());
+    private String todayDate = df.format(dt);
+    private String UID = user.getUid();
+    private SliderAdapter adapter;
+    private List<SliderItem> initialImages = new ArrayList<>();
     private String jobCategory ="";
-    AutoCompleteTextView dropdownJobStatus;
-    String jobStatus = "";
-
-
-    //Job address
-    //Button btn_saveAddress;
-    FrameLayout fl_editJobAddress;
-    ImageView iv_editJobAddress;
-    TextView tv_jobAddress;
-    double tmpLat;
-    double tmpLon;
-
-    double newLat;
-    double newLon;
+    private String jobStatus = "";
+    private double tmpLat;
+    private double tmpLon;
+    private double newLat;
+    private double newLon;
+    private AddressSelect af = new AddressSelect();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_job);
 
-        //Job address
-        //btn_saveAddress = findViewById(R.id.btn_saveEditJobAddress);
-        //btn_saveAddress.setVisibility(View.GONE);
         iv_editJobAddress = findViewById(R.id.iv_editJobAddressButton);
         tv_jobAddress = findViewById(R.id.tv_jobAddressEdit);
         fl_editJobAddress = findViewById(R.id.fl_editJobAddress);
         fl_editJobAddress.setVisibility(View.GONE);
-        AddressSelect af = new AddressSelect();
 
         cl_editJob = findViewById(R.id.cl_editJob);
         cl_savingChanges = findViewById(R.id.cl_savingChanges);
@@ -195,8 +177,6 @@ public class EditJob extends AppCompatActivity {
                     jobCreationDate = documentSnapshot.getString("creation_date");
                     imageCount = documentSnapshot.getLong("imageCount");
                     jobCategory = documentSnapshot.getString("category");
-
-
 
                     //dropdownJobCategory.setText(jobCategory);
                     jobStatus = documentSnapshot.getString("status");
@@ -236,7 +216,6 @@ public class EditJob extends AppCompatActivity {
                     }
                 });
 
-
             }
         }, 600);
 
@@ -248,7 +227,6 @@ public class EditJob extends AppCompatActivity {
                 "Electricity",
                 "Metal works"
         };
-
 
         if(jobCategory.equals("Builder")){
             dropdownJobCategory.setText("Building");
@@ -263,12 +241,8 @@ public class EditJob extends AppCompatActivity {
         }
 
         ArrayAdapter<String> adapterJobCategory = new ArrayAdapter<>(this, R.layout.services_category_layout, R.id.tv_1, JOB_CATEGORY);
-
-        //final AutoCompleteTextView dropdownJobCategory = view.findViewById(R.id.dropdownJobCategory);
         dropdownJobCategory.setAdapter(adapterJobCategory);
         dropdownJobCategory.setInputType(0);
-
-
 
         dropdownJobCategory.addTextChangedListener(new TextWatcher() {
             @Override
@@ -363,7 +337,6 @@ public class EditJob extends AppCompatActivity {
             public void onClick(View v) {
                 cl_editJob.setVisibility(View.GONE);
                 fl_editJobAddress.setVisibility(View.VISIBLE);
-                //btn_saveAddress.setVisibility(View.VISIBLE);
 
                 Bundle bundle = new Bundle();
                 bundle.putString("mode", "JobEdit");
@@ -412,8 +385,6 @@ public class EditJob extends AppCompatActivity {
                         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.P){
 
                             //If Android SDK is 28 or higher than execute this
-
-
                             //If image is existing on Firebase Storage
                             if(uri.toString().contains("firebasestorage.googleapis")){
 
@@ -691,8 +662,6 @@ public class EditJob extends AppCompatActivity {
             }
         });
 
-
-
     }
 
     private void uploadImageToFirebaseStorage(Bitmap bitmap, int imgCount) {
@@ -811,7 +780,6 @@ public class EditJob extends AppCompatActivity {
         }
     }
 
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[],
                                            @NonNull int[] grantResults) {
@@ -828,11 +796,7 @@ public class EditJob extends AppCompatActivity {
             }
         }
 
-
     }
-
-
-
 
     private String getCompleteAddressString(double LATITUDE, double LONGITUDE) {
         String strAdd = "";
@@ -898,7 +862,6 @@ public class EditJob extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        //super.onBackPressed();
         discardChanges();
     }
 }

@@ -16,22 +16,20 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class PasswordReset extends AppCompatActivity {
 
-    FirebaseAuth mAuth;
+    //Layout components
+    private Button btn_resetPassword;
+    private EditText et_Email;
 
-    Button btn_resetPassword;
-    EditText et_Email;
+    //Firebase components
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_password_reset);
 
-        btn_resetPassword = findViewById(R.id.btn_resetPassword);
         et_Email = findViewById(R.id.emailPasswordReset);
-
-        mAuth = FirebaseAuth.getInstance();
-
-
+        btn_resetPassword = findViewById(R.id.btn_resetPassword);
         btn_resetPassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

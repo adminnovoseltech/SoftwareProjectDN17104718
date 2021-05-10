@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -51,37 +52,35 @@ import java.util.List;
 
 public class MessageMenu extends AppCompatActivity {
 
-    //Navigation drawer
-    DrawerLayout drawerLayout;
+    //Layout components
+    private DrawerLayout drawerLayout;
+    private RecyclerView rv_chatList;
+    private TextView tv_UserName;
+    private LinearLayout homeNavLayout;
+    private LinearLayout messageNavLayout;
+    private LinearLayout jobsNavLayout;
+    private LinearLayout projectsNavLayout;
+    private LinearLayout feedbackNavLayout;
+    private LinearLayout appLogoutLayout;
 
-    FirebaseFirestore fStore;
-    FirebaseAuth mAuth;
-    FirebaseUser user;
+    //Firebase components
+    private FirebaseFirestore fStore = FirebaseFirestore.getInstance();
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();;
+    private FirebaseUser user = mAuth.getCurrentUser();
 
-    RecyclerView rv_chatList;
-    RecyclerView.Adapter adapter;
+    //Objeects
+    private RecyclerView.Adapter adapter;
+    private List<String> messageReceipients = new ArrayList<>();
+    private List<String> lastMessageSent = new ArrayList<>();
+    private String USER_TYPE = "";
 
-    List<String> messageReceipients = new ArrayList<>();
-    List<String> lastMessageSent = new ArrayList<>();
 
-    String USER_TYPE = "";
-
-    TextView tv_UserName;
-    LinearLayout homeNavLayout;
-    LinearLayout messageNavLayout;
-    LinearLayout jobsNavLayout;
-    LinearLayout projectsNavLayout;
-    LinearLayout feedbackNavLayout;
-    LinearLayout appLogoutLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         USER_TYPE = getIntent().getStringExtra("USER_TYPE");
-        mAuth = FirebaseAuth.getInstance();
-        fStore = FirebaseFirestore.getInstance();
-        user = mAuth.getCurrentUser();
 
         if(USER_TYPE.equals("Professional")){
             setContentView(R.layout.activity_message_menu_professional);
@@ -244,8 +243,6 @@ public class MessageMenu extends AppCompatActivity {
                 }
             });
 
-
-
             jobsNavLayout = drawerLayout.findViewById(R.id.jobsNavigation);
             jobsNavLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -282,8 +279,6 @@ public class MessageMenu extends AppCompatActivity {
              *************************************************************/
         }
 
-
-
         rv_chatList = findViewById(R.id.rv_chatList);
 
         fStore.collection("chat").document(user.getUid())
@@ -294,32 +289,43 @@ public class MessageMenu extends AppCompatActivity {
                     DocumentSnapshot documentSnapshot = task.getResult();
                     messageReceipients = (List<String>) documentSnapshot.get("recipients");
 
-                    for(int i = 0; i < messageReceipients.size(); i++){
+                    if(messageReceipients != null){
+                        for(int i = 0; i < messageReceipients.size(); i++){
 
-                        String toSplit = messageReceipients.get(i);
-                        String[] messageData = toSplit.split(",");
-                        String userID = messageData[0];
+                            String toSplit = messageReceipients.get(i);
+                            String[] messageData = toSplit.split(",");
+                            String userID = messageData[0];
 
-                        fStore.collection("chat").document(user.getUid())
-                                .collection(userID)
-                                .orderBy("timestamp", Query.Direction.DESCENDING)
-                                .limit(1)
-                                .addSnapshotListener(new EventListener<QuerySnapshot>() {
-                                    @Override
-                                    public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                                        if(value != null){
-                                            List<DocumentSnapshot> dsList = value.getDocuments();
-                                            DocumentSnapshot docSnap = dsList.get(0);
-                                            PrettyTime p = new PrettyTime();
+                            fStore.collection("chat").document(user.getUid())
+                                    .collection(userID)
+                                    .orderBy("timestamp", Query.Direction.DESCENDING)
+                                    .limit(1)
+                                    .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                                        @Override
+                                        public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                                            if(value != null){
+                                                List<DocumentSnapshot> dsList = value.getDocuments();
 
-                                            Timestamp ts = docSnap.getTimestamp("timestamp");
-                                            String timestamp = p.format(ts.toDate());
+                                                if(dsList.isEmpty()){
 
-                                            lastMessageSent.add(timestamp + "," + docSnap.getString("message"));
+                                                }else{
+                                                    DocumentSnapshot docSnap = dsList.get(0);
+                                                    PrettyTime p = new PrettyTime();
+
+                                                    Timestamp ts = docSnap.getTimestamp("timestamp");
+                                                    String timestamp = p.format(ts.toDate());
+
+                                                    lastMessageSent.add(timestamp + "," + docSnap.getString("message"));
+                                                }
+
+                                            }else{
+
+                                            }
                                         }
-                                    }
-                                });
+                                    });
+                        }
                     }
+
                 }
             }
         });
@@ -337,38 +343,16 @@ public class MessageMenu extends AppCompatActivity {
             }
         }, 1000);
 
-
     }
 
     public void ClickMenu(View view) {
         openDrawer(drawerLayout);
     }
 
-   /* public void ClickProfile(View view) {
-    }
-
-    public void ClickProjects(View view){
-    }
-
-    public void ClickMessages(View view){
-    }
-
-    public void ClickJobs(View view){
-    }
-*/
-
     public static void openDrawer(DrawerLayout drawerLayout) {
         //Open drawer layout
         drawerLayout.openDrawer(GravityCompat.START);
     }
-/*
-    public void ClickLogOut(View view) {
-        //logout();
-    }
-
-    public void ClickHome(View view){
-
-    }*/
 
     public void logout(){
         //Close app

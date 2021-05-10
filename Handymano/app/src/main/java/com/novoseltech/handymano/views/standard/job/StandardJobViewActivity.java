@@ -58,31 +58,30 @@ import java.util.Locale;
 
 public class StandardJobViewActivity extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener{
 
-    //Navigation drawer
-    DrawerLayout drawerLayout;
+    //Layout components
+    private DrawerLayout drawerLayout;
+    private SliderView sliderView;
+    private ConstraintLayout cl_jobView;
+    private TextView tv_jobTitle;
+    private ScrollView svJob;
+    private CardView cv_carousel_job;
+    private ImageView iv_jobMore;
+    private CircularImageView profileImage;
+    private TextView tv_UserName;
+    private TextView tv_jobDescription;
 
+    //Firebase components
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private FirebaseFirestore fStore = FirebaseFirestore.getInstance();
+    private FirebaseUser user = mAuth.getCurrentUser();
+
+    //Variables
     private static final String TAG = "LOG: ";
-    String JOB_ID;
-
-    String jobCreationDate = "";
-    long imageCount = 0;
-
+    private String JOB_ID;
+    private String jobCreationDate = "";
+    private long imageCount = 0;
     private static final int REQUEST_STORAGE_PERMISSION_CODE = 1000;
-
-    SliderView sliderView;
     private SliderAdapter adapter;
-
-    //Firebase objects
-    FirebaseAuth mAuth = FirebaseAuth.getInstance();
-    FirebaseFirestore fStore = FirebaseFirestore.getInstance();
-    FirebaseUser user = mAuth.getCurrentUser();
-
-    //Layout
-    ConstraintLayout cl_jobView;
-    TextView tv_jobTitle;
-    ScrollView svJob;
-    CardView cv_carousel_job;
-    ImageView iv_jobMore;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,14 +89,14 @@ public class StandardJobViewActivity extends AppCompatActivity implements PopupM
         setContentView(R.layout.activity_standard_job_view);
         drawerLayout = findViewById(R.id.drawer_layout_standard);
 
-        CircularImageView profileImage = drawerLayout.findViewById(R.id.civ_profilePictureStandard);
+        profileImage = drawerLayout.findViewById(R.id.civ_profilePictureStandard);
         if(user.getPhotoUrl() != null){
             Glide.with(getApplicationContext())
                     .load(user.getPhotoUrl())
                     .into(profileImage);
         }
 
-        TextView tv_UserName = drawerLayout.findViewById(R.id.text_UserName_Standard);
+        tv_UserName = drawerLayout.findViewById(R.id.text_UserName_Standard);
         fStore.collection("user")
                 .document(user.getUid())
                 .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -121,7 +120,7 @@ public class StandardJobViewActivity extends AppCompatActivity implements PopupM
 
         //Layout objects
         tv_jobTitle = findViewById(R.id.tv_jobTitle);
-        TextView tv_jobDescription = findViewById(R.id.tv_jobDescription);
+        tv_jobDescription = findViewById(R.id.tv_jobDescription);
         tv_jobTitle.setText(JOB_ID);
 
         svJob = findViewById(R.id.svJob);
@@ -152,7 +151,7 @@ public class StandardJobViewActivity extends AppCompatActivity implements PopupM
                 addImagesToSlider(sliderView);
 
             }
-        }, 600);
+        }, 1000);
 
         handler.postDelayed(new Runnable() {
             @Override
@@ -173,12 +172,12 @@ public class StandardJobViewActivity extends AppCompatActivity implements PopupM
                     }
                 });
             }
-        }, 1000);
+        }, 1500);
     }
 
     public void addImagesToSlider(View view){
         if(imageCount == 0){
-            //tv_currentImg.setVisibility(View.INVISIBLE);
+
         }else{
             StorageReference storageReference = FirebaseStorage.getInstance().getReference()
                     .child("images")
@@ -224,8 +223,6 @@ public class StandardJobViewActivity extends AppCompatActivity implements PopupM
                     startActivity(intent);
                 }
 
-
-
                 return true;
             case R.id.option_delete:
                 AlertDialog.Builder deleteJobDialog = new AlertDialog.Builder(StandardJobViewActivity.this);
@@ -254,7 +251,6 @@ public class StandardJobViewActivity extends AppCompatActivity implements PopupM
                                             }
                                         }
                                     });
-
                                 }
 
                                 fStore.collection("user")
@@ -361,7 +357,6 @@ public class StandardJobViewActivity extends AppCompatActivity implements PopupM
 
     public void ClickJobs(View view){
         //recreate the activity
-
         Intent intent = new Intent(StandardJobViewActivity.this, JobsActivity.class);
         startActivity(intent);
     }

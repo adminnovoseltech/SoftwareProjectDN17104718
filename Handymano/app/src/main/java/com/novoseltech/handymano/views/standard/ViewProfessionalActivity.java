@@ -59,50 +59,47 @@ import java.util.Locale;
 
 public class ViewProfessionalActivity extends AppCompatActivity{
 
-    //Navigation drawer
-    DrawerLayout drawerLayout;
-
-    TextView tv_tradeName;
-    TextView tv_tradeCategory;
-    TextView tv_tradeExperience;
-    TextView tv_tradeLastProject;
-    TextView tv_viewTradeAllProjects;
-    TextView tv_tradeAddress;
-    TextView tv_tradePhoneNo;
-    TextView tv_tradeEmailAddress;
-    ImageView iv_messageTrade;
-    ShapeableImageView iv_tradeProfileImageView;
-    LinearLayout ll_tradePhoneNo;
-    LinearLayout ll_tradeEmailAddress;
-    SupportMapFragment mapFragment;
+    //Layout components
+    private DrawerLayout drawerLayout;
+    private TextView tv_tradeName;
+    private TextView tv_tradeCategory;
+    private TextView tv_tradeExperience;
+    private TextView tv_tradeLastProject;
+    private TextView tv_viewTradeAllProjects;
+    private TextView tv_tradeAddress;
+    private TextView tv_tradePhoneNo;
+    private TextView tv_tradeEmailAddress;
+    private ImageView iv_messageTrade;
+    private CircularImageView iv_tradeProfileImageView;
+    private LinearLayout ll_tradePhoneNo;
+    private LinearLayout ll_tradeEmailAddress;
+    private SupportMapFragment mapFragment;
+    private Button btn_viewTradeFeedback;
+    private RatingBar rb_tradeRating;
+    private CircularImageView profileImage;
+    private TextView tv_UserName;
 
     //Firebase objects
-    FirebaseAuth mAuth = FirebaseAuth.getInstance();
-    FirebaseFirestore fStore = FirebaseFirestore.getInstance();
-    FirebaseUser user = mAuth.getCurrentUser();
-    String UID = user.getUid();
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private FirebaseFirestore fStore = FirebaseFirestore.getInstance();
+    private FirebaseUser user = mAuth.getCurrentUser();
 
-
-    String tradeName;
-    String tradeCategory;
-    String tradeExperience;
-    String lastProject;
-    double tradeLatitude;
-    double tradeLongitude;
-    GeoPoint tradeGeopoint;
-
-
-
-    //Rating
-    Button btn_viewTradeFeedback;
-    RatingBar rb_tradeRating;
-    int oneStarCount = 0;
-    int twoStarCount = 0;
-    int threeStarCount = 0;
-    int fourStarCount = 0;
-    int fiveStarCount = 0;
-
-    double totalRating = 0.0;
+    //Variables
+    private String UID = user.getUid();
+    private String tradeName;
+    private String tradeCategory;
+    private String tradeExperience;
+    private String lastProject;
+    private double tradeLatitude;
+    private double tradeLongitude;
+    private GeoPoint tradeGeopoint;
+    private int oneStarCount = 0;
+    private int twoStarCount = 0;
+    private int threeStarCount = 0;
+    private int fourStarCount = 0;
+    private int fiveStarCount = 0;
+    private double totalRating = 0.0;
+    private String TRADE_UID = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,9 +107,9 @@ public class ViewProfessionalActivity extends AppCompatActivity{
         setContentView(R.layout.activity_view_professional);
         drawerLayout = findViewById(R.id.drawer_layout_standard);
 
-        String TRADE_UID = getIntent().getStringExtra("USER_ID");
+        TRADE_UID = getIntent().getStringExtra("USER_ID");
 
-        CircularImageView profileImage = drawerLayout.findViewById(R.id.civ_profilePictureStandard);
+        profileImage = drawerLayout.findViewById(R.id.civ_profilePictureStandard);
         iv_tradeProfileImageView = findViewById(R.id.iv_tradeProfileImageView);
 
         if(user.getPhotoUrl() != null){
@@ -128,7 +125,7 @@ public class ViewProfessionalActivity extends AppCompatActivity{
         tv_tradePhoneNo = findViewById(R.id.tv_tradePhoneNo);
         tv_tradeEmailAddress = findViewById(R.id.tv_tradeEmail);
 
-        TextView tv_UserName = drawerLayout.findViewById(R.id.text_UserName_Standard);
+        tv_UserName = drawerLayout.findViewById(R.id.text_UserName_Standard);
         fStore.collection("user")
                 .document(user.getUid())
                 .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -353,7 +350,7 @@ public class ViewProfessionalActivity extends AppCompatActivity{
 
                 tv_tradeName.setText(tradeName);
                 tv_tradeCategory.setText(tradeCategory);
-                tv_tradeExperience.setText(tradeExperience);
+                tv_tradeExperience.setText(tradeExperience + " of experience");
                 tv_tradeLastProject.setText("Last project: " + lastProject);
 
                 if(tv_tradeLastProject.getText().toString().equals("Last project: User has no projects created")){

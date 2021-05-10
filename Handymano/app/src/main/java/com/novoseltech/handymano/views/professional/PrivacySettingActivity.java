@@ -30,15 +30,15 @@ import com.novoseltech.handymano.fragments.PasswordConfirmationDialog;
 
 public class PrivacySettingActivity extends AppCompatActivity {
 
-    Switch sw_email;
-    Switch sw_phone;
-    LinearLayout ll_passwordChange;
+    //Layout components
+    private Switch sw_email;
+    private Switch sw_phone;
+    private LinearLayout ll_passwordChange;
 
-    FirebaseAuth mAuth = FirebaseAuth.getInstance();
-    FirebaseFirestore fStore = FirebaseFirestore.getInstance();
-    FirebaseUser user = mAuth.getCurrentUser();
-
-
+    //Firebase components
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private FirebaseFirestore fStore = FirebaseFirestore.getInstance();
+    private FirebaseUser user = mAuth.getCurrentUser();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,8 +48,6 @@ public class PrivacySettingActivity extends AppCompatActivity {
         sw_email = findViewById(R.id.sw_email);
         sw_phone = findViewById(R.id.sw_phone);
         ll_passwordChange = findViewById(R.id.ll_passwordChange);
-
-
 
         fStore.collection("user")
                 .document(user.getUid())
@@ -101,8 +99,6 @@ public class PrivacySettingActivity extends AppCompatActivity {
                 showDialog();
             }
         });
-
-
 
     }
 

@@ -52,26 +52,37 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 public class FeedbackList extends AppCompatActivity {
-    DrawerLayout drawerLayout;
-    FirebaseAuth mAuth = FirebaseAuth.getInstance();
-    FirebaseFirestore fStore = FirebaseFirestore.getInstance();
 
-    //Feedback banner
-    int oneStarCount = 0;
-    int twoStarCount = 0;
-    int threeStarCount = 0;
-    int fourStarCount = 0;
-    int fiveStarCount = 0;
-
-    double totalRating = 0.0;
-
-
-    //Feedback list
+    //Layout components
+    private DrawerLayout drawerLayout;
     private RecyclerView fStoreList;
+    private ConstraintLayout cl_tradeFeedbackList;
+    private LayoutInflater layoutInflater;
+    private CircularImageView profileImage;
+    private TextView tv_drawerUsername;
+    private TextView tv_tradeRatingCountOne;
+    private TextView tv_tradeRatingCountTwo;
+    private TextView tv_tradeRatingCountThree;
+    private TextView tv_tradeRatingCountFour;
+    private TextView tv_tradeRatingCountFive;
+    private TextView tv_tradeTotalRating;
+
+    //Firebase components
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private FirebaseFirestore fStore = FirebaseFirestore.getInstance();
+    private FirebaseUser user = mAuth.getCurrentUser();
+
+    //Objects
     private FirestoreRecyclerAdapter adapter;
 
-    ConstraintLayout cl_tradeFeedbackList;
-    LayoutInflater layoutInflater;
+    //Feedback banner objects
+    private int oneStarCount = 0;
+    private int twoStarCount = 0;
+    private int threeStarCount = 0;
+    private int fourStarCount = 0;
+    private int fiveStarCount = 0;
+    private double totalRating = 0.0;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,10 +90,8 @@ public class FeedbackList extends AppCompatActivity {
         setContentView(R.layout.activity_feedback_list);
         drawerLayout = findViewById(R.id.drawer_layout_professional);
 
-        FirebaseUser user = mAuth.getCurrentUser();
-
-        CircularImageView profileImage = drawerLayout.findViewById(R.id.civ_profilePictureProfessional);
-        TextView tv_drawerUsername = drawerLayout.findViewById(R.id.text_UserName_Professional);
+        profileImage = drawerLayout.findViewById(R.id.civ_profilePictureProfessional);
+        tv_drawerUsername = drawerLayout.findViewById(R.id.text_UserName_Professional);
 
         if(mAuth.getCurrentUser().getPhotoUrl() != null){
             Glide.with(getApplicationContext())
@@ -93,12 +102,12 @@ public class FeedbackList extends AppCompatActivity {
         }
 
         //Feedback banner
-        TextView tv_tradeRatingCountOne = findViewById(R.id.tv_tradeRatingCountOne);
-        TextView tv_tradeRatingCountTwo = findViewById(R.id.tv_tradeRatingCountTwo);
-        TextView tv_tradeRatingCountThree = findViewById(R.id.tv_tradeRatingCountThree);
-        TextView tv_tradeRatingCountFour = findViewById(R.id.tv_tradeRatingCountFour);
-        TextView tv_tradeRatingCountFive = findViewById(R.id.tv_tradeRatingCountFive);
-        TextView tv_tradeTotalRating = findViewById(R.id.tv_tradeTotalRating);
+        tv_tradeRatingCountOne = findViewById(R.id.tv_tradeRatingCountOne);
+        tv_tradeRatingCountTwo = findViewById(R.id.tv_tradeRatingCountTwo);
+        tv_tradeRatingCountThree = findViewById(R.id.tv_tradeRatingCountThree);
+        tv_tradeRatingCountFour = findViewById(R.id.tv_tradeRatingCountFour);
+        tv_tradeRatingCountFive = findViewById(R.id.tv_tradeRatingCountFive);
+        tv_tradeTotalRating = findViewById(R.id.tv_tradeTotalRating);
 
         //Feedback list
         cl_tradeFeedbackList = findViewById(R.id.cl_tradeFeedbackList);

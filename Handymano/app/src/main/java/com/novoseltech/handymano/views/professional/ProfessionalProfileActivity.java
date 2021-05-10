@@ -66,58 +66,52 @@ import java.util.Map;
 
 public class ProfessionalProfileActivity extends AppCompatActivity implements PasswordConfirmationDialog.PasswordConfirmationDialogListener{
 
-    DrawerLayout drawerLayout;
+    //Layout components
+    private DrawerLayout drawerLayout;
+    private CircularImageView iv_pp_profilePhoto;
+    private CircularImageView profileImage;
+    private FrameLayout mapFrame;
+    private ScrollView sv_pro;
+    private ConstraintLayout cl_editProfile;
+    private TextView tv_currentAddress;
+    private TextView tv_pp_username;
+    private TextView tv_pp_email;
+    private TextView tv_pp_phoneNo;
+    private TextView tv_drawerUsername;
+    private TextInputLayout til_pp_username;
+    private TextInputLayout til_pp_phoneNo;
+    private TextInputLayout til_pp_email;
+    private EditText et_pp_username;
+    private EditText et_pp_phoneNo;
+    private EditText et_pp_email;
+    private Button btn_edit_pp;
+    private Button btn_save_pp;
+    private Button btn_chooseLocation;
 
+    //Firebase components
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private FirebaseFirestore fStore = FirebaseFirestore.getInstance();
+    private FirebaseUser user = mAuth.getCurrentUser();
+
+    //Objects
     private static final String TAG = "LOG: ";
     private static final int PICK_FROM_GALLERY = 10000;
-    FirebaseAuth mAuth = FirebaseAuth.getInstance();
-    FirebaseFirestore fStore = FirebaseFirestore.getInstance();
-    String UID = mAuth.getCurrentUser().getUid();
-
-    String username;
-    String email = mAuth.getCurrentUser().getEmail();
-    String phoneNo;
-
-    double latitude;
-    double longitude;
-    String radius;
-
-    double tmpLat;
-    double tmpLon;
-    String tmpRad;
-    String tmpAddress;
-
-    String trade;
-    String yearsOfExp;
-
-    String pass = "";
-
-    ShapeableImageView iv_pp_profilePhoto;
-
-    //Location
-    FrameLayout mapFrame;
-
-    //Editing data
-    TextInputLayout til_pp_username;
-    TextInputLayout til_pp_phoneNo;
-    TextInputLayout til_pp_email;
-
-    EditText et_pp_username;
-    EditText et_pp_phoneNo;
-    EditText et_pp_email;
-
-    Button btn_edit_pp;
-    Button btn_save_pp;
-    Button btn_chooseLocation;
-    Button btn_saveLoc;
-
-    ScrollView sv_pro;
-    ConstraintLayout cl_editProfile;
-
-    Boolean editMode = false;
-
-    TextView tv_currentAddress;
-
+    private double latitude;
+    private double longitude;
+    private double tmpLat;
+    private double tmpLon;
+    private String UID = mAuth.getCurrentUser().getUid();
+    private String username;
+    private String email = mAuth.getCurrentUser().getEmail();
+    private String phoneNo;
+    private String radius;
+    private String tmpRad;
+    private String tmpAddress;
+    private String trade;
+    private String yearsOfExp;
+    private String pass = "";
+    private Boolean editMode = false;
+    private AddressSelect af = new AddressSelect();
 
 
     @Override
@@ -128,10 +122,10 @@ public class ProfessionalProfileActivity extends AppCompatActivity implements Pa
 
         cl_editProfile = findViewById(R.id.cl_editProfileForm);
 
-        TextView tv_pp_username = findViewById(R.id.tv_pp_username);
-        TextView tv_pp_email = findViewById(R.id.tv_pp_email);
+        tv_pp_username = findViewById(R.id.tv_pp_username);
+        tv_pp_email = findViewById(R.id.tv_pp_email);
         tv_pp_email.setText(email);
-        TextView tv_pp_phoneNo = findViewById(R.id.tv_pp_phoneNo);
+        tv_pp_phoneNo = findViewById(R.id.tv_pp_phoneNo);
 
         tv_currentAddress = findViewById(R.id.textView_currentAddress);
         tv_currentAddress.setVisibility(View.VISIBLE);
@@ -165,9 +159,6 @@ public class ProfessionalProfileActivity extends AppCompatActivity implements Pa
 
         btn_chooseLocation = findViewById(R.id.btn_chooseLoc);
         btn_chooseLocation.setVisibility(View.GONE);
-        AddressSelect af = new AddressSelect();
-
-        FirebaseUser user = mAuth.getCurrentUser();
 
         if(mAuth.getCurrentUser().getPhotoUrl() != null){
             Glide.with(this)
@@ -175,8 +166,8 @@ public class ProfessionalProfileActivity extends AppCompatActivity implements Pa
                     .into(iv_pp_profilePhoto);
         }
 
-        CircularImageView profileImage = drawerLayout.findViewById(R.id.civ_profilePictureProfessional);
-        TextView tv_drawerUsername = drawerLayout.findViewById(R.id.text_UserName_Professional);
+        profileImage = drawerLayout.findViewById(R.id.civ_profilePictureProfessional);
+        tv_drawerUsername = drawerLayout.findViewById(R.id.text_UserName_Professional);
 
         if(mAuth.getCurrentUser().getPhotoUrl() != null){
             Glide.with(getApplicationContext())
@@ -249,8 +240,6 @@ public class ProfessionalProfileActivity extends AppCompatActivity implements Pa
             }
         });
 
-
-
         btn_save_pp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -265,7 +254,6 @@ public class ProfessionalProfileActivity extends AppCompatActivity implements Pa
                 tv_pp_phoneNo.setVisibility(View.VISIBLE);
                 tv_pp_email.setVisibility(View.VISIBLE);
                 tv_currentAddress.setVisibility(View.VISIBLE);
-
 
                 //If nothing was changed
                 if(et_pp_username.getText().toString().equals(username) &&
@@ -293,16 +281,11 @@ public class ProfessionalProfileActivity extends AppCompatActivity implements Pa
 
                 }
 
-
                 btn_edit_pp.setVisibility(View.VISIBLE);
-
                 editMode = false;
 
             }
         });
-
-
-
 
         //Location choice
         btn_chooseLocation.setOnClickListener(new View.OnClickListener() {
@@ -535,10 +518,7 @@ public class ProfessionalProfileActivity extends AppCompatActivity implements Pa
     }
 
     public void ClickProfile(View view) {
-
-
         //recreate the activity
-
         finish();
         startActivity(getIntent());
     }
@@ -568,7 +548,6 @@ public class ProfessionalProfileActivity extends AppCompatActivity implements Pa
     public void ClickHome(View view){
         finish();
         Intent intent = new Intent(ProfessionalProfileActivity.this, HomeActivityProfessional.class);
-
         startActivity(intent);
     }
 
@@ -641,8 +620,5 @@ public class ProfessionalProfileActivity extends AppCompatActivity implements Pa
             btn_edit_pp.setVisibility(View.VISIBLE);
         }
     }
-
-
-
 
 }

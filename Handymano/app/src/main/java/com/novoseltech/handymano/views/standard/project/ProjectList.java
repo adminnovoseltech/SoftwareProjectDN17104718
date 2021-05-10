@@ -20,7 +20,6 @@ import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.imageview.ShapeableImageView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -38,15 +37,20 @@ import com.novoseltech.handymano.views.standard.job.JobsActivity;
 
 public class ProjectList extends AppCompatActivity {
 
-    //Navigation drawer
+    //Layout components
     DrawerLayout drawerLayout;
-
     private RecyclerView rv_tradeProjectList;
-    private FirestoreRecyclerAdapter adapter;
+    CircularImageView profileImage;
+    TextView tv_UserName;
 
-    FirebaseFirestore fStore;
-    FirebaseAuth mAuth;
-    FirebaseUser user;
+    //Firebase components
+    FirebaseFirestore fStore = FirebaseFirestore.getInstance();
+    FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    FirebaseUser user = mAuth.getCurrentUser();
+
+    //Variables
+    private FirestoreRecyclerAdapter adapter;
+    String USER_ID = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,21 +58,16 @@ public class ProjectList extends AppCompatActivity {
         setContentView(R.layout.activity_project_list);
 
         drawerLayout = findViewById(R.id.drawer_layout_standard);
+        USER_ID = getIntent().getStringExtra("USER_ID");
 
-        String user_id = getIntent().getStringExtra("USER_ID");
-
-        mAuth = FirebaseAuth.getInstance();
-        fStore = FirebaseFirestore.getInstance();
-        user = mAuth.getCurrentUser();
-
-        CircularImageView profileImage = drawerLayout.findViewById(R.id.civ_profilePictureStandard);
+        profileImage = drawerLayout.findViewById(R.id.civ_profilePictureStandard);
         if(user.getPhotoUrl() != null){
             Glide.with(getApplicationContext())
                     .load(user.getPhotoUrl())
                     .into(profileImage);
         }
 
-        TextView tv_UserName = drawerLayout.findViewById(R.id.text_UserName_Standard);
+        tv_UserName = drawerLayout.findViewById(R.id.text_UserName_Standard);
         fStore.collection("user")
                 .document(user.getUid())
                 .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -85,7 +84,7 @@ public class ProjectList extends AppCompatActivity {
 
         //Query
         Query query = fStore.collection("user")
-                .document(user_id)
+                .document(USER_ID)
                 .collection("projects")
                 .orderBy("creation_date", Query.Direction.DESCENDING);
 
@@ -111,9 +110,8 @@ public class ProjectList extends AppCompatActivity {
                     public void onClick(View view) {
 
                         Intent intent  = new Intent(getApplicationContext(), ViewProject.class);
-                        intent.putExtra("USER_ID", user_id);
+                        intent.putExtra("USER_ID", USER_ID);
                         intent.putExtra("PROJECT_ID", holder.projectTitle.getText());
-                        //intent.putExtra("PROJECT_ID", holder.itemView.getId())
                         startActivity(intent);
                     }
                 });

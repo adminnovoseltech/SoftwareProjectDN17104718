@@ -16,13 +16,17 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_jobCreationLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <ScrollView
             android:id="@+id/sv_addJob"
-            android:layout_width="350dp"
+            android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginStart="31dp"
+            android:layout_marginStart="30dp"
             android:layout_marginEnd="30dp"
             android:layout_marginBottom="10dp"
             app:layout_constraintBottom_toTopOf="@+id/btn_saveJob"
@@ -36,7 +40,7 @@
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/til_jobTitle"
-                    android:layout_width="350dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:hint="@string/job_title"
@@ -88,6 +92,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
                     app:cardCornerRadius="6dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/til_jobDescription">
 
                     <com.smarteist.autoimageslider.SliderView
@@ -113,7 +119,7 @@
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/til_jobDescription"
-                    android:layout_width="350dp"
+                    android:layout_width="match_parent"
                     android:layout_height="200dp"
                     android:layout_marginTop="20dp"
                     android:hint="@string/job_description"
@@ -149,13 +155,15 @@
 
                 <TextView
                     android:id="@+id/tv_jobAddressCreate"
-                    android:layout_width="250dp"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
                     android:layout_marginTop="20dp"
+                    android:layout_marginEnd="10dp"
                     android:text="JobAddress"
                     android:textSize="24sp"
                     android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/iv_locationButton"
                     app:layout_constraintTop_toBottomOf="@+id/textInputLayout" />
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -163,8 +171,10 @@
 
         <Button
             android:id="@+id/btn_saveJob"
-            android:layout_width="300dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="50dp"
+            android:layout_marginEnd="50dp"
             android:layout_marginBottom="10dp"
             android:text="@string/save_job"
             app:layout_constraintBottom_toBottomOf="parent"

@@ -33,22 +33,32 @@ import com.novoseltech.handymano.views.professional.project.ProjectsActivity;
 
 public class  HomeActivityProfessional extends AppCompatActivity {
 
+    //Layout components
+    private TextView tv_tradeHomeName;
+    private TextView tv_tradeHomeCategory;
+    private CardView cv_tradeHomeProject;
+    private CardView cv_tradeHomeJob;
+    private CardView cv_tradeHomeMessage;
+    private CardView cv_tradeHomeFeedback;
+    private Button btn_tradePrivacy;
+    private Button btn_tradeHomeLogout;
+    private CircularImageView circularImageView;
+
+    //Firebase components
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private FirebaseFirestore fStore = FirebaseFirestore.getInstance();
+    private FirebaseUser user = mAuth.getCurrentUser();
+
+    //Objects
     private static final String TAG = "LOG: ";
-    FirebaseAuth mAuth = FirebaseAuth.getInstance();
-    FirebaseFirestore fStore = FirebaseFirestore.getInstance();
-
-    String USERNAME = "";
-    String CATEGORY = "";
-
+    private String USERNAME = "";
+    private String CATEGORY = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_professional);
 
-        FirebaseUser user = mAuth.getCurrentUser();
-
-        fStore = FirebaseFirestore.getInstance();
         fStore.collection("user").document(mAuth.getCurrentUser().getUid())
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -73,15 +83,13 @@ public class  HomeActivityProfessional extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                TextView tv_tradeHomeName = findViewById(R.id.tv_tradeHomeName);
+                tv_tradeHomeName = findViewById(R.id.tv_tradeHomeName);
                 tv_tradeHomeName.setText(USERNAME);
 
-                TextView tv_tradeHomeCategory = findViewById(R.id.tv_tradeHomeCategory);
+                tv_tradeHomeCategory = findViewById(R.id.tv_tradeHomeCategory);
                 tv_tradeHomeCategory.setText(CATEGORY);
 
-                CircularImageView circularImageView = findViewById(R.id.civ_tradeHomeProfileImage);
-
-
+                circularImageView = findViewById(R.id.civ_tradeHomeProfileImage);
                 if(user.getPhotoUrl() != null){
                     Glide.with(getApplicationContext())
                             .load(user.getPhotoUrl())
@@ -99,7 +107,7 @@ public class  HomeActivityProfessional extends AppCompatActivity {
                     }
                 });
 
-                CardView cv_tradeHomeProject = findViewById(R.id.cv_tradeHomeProject);
+                cv_tradeHomeProject = findViewById(R.id.cv_tradeHomeProject);
                 cv_tradeHomeProject.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -109,7 +117,7 @@ public class  HomeActivityProfessional extends AppCompatActivity {
                     }
                 });
 
-                CardView cv_tradeHomeJob = findViewById(R.id.cv_tradeHomeJob);
+                cv_tradeHomeJob = findViewById(R.id.cv_tradeHomeJob);
                 cv_tradeHomeJob.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -119,7 +127,7 @@ public class  HomeActivityProfessional extends AppCompatActivity {
                     }
                 });
 
-                CardView cv_tradeHomeMessage = findViewById(R.id.cv_tradeHomeMessage);
+                cv_tradeHomeMessage = findViewById(R.id.cv_tradeHomeMessage);
                 cv_tradeHomeMessage.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -130,7 +138,7 @@ public class  HomeActivityProfessional extends AppCompatActivity {
                     }
                 });
 
-                CardView cv_tradeHomeFeedback = findViewById(R.id.cv_tradeHomeFeedback);
+                cv_tradeHomeFeedback = findViewById(R.id.cv_tradeHomeFeedback);
                 cv_tradeHomeFeedback.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -140,7 +148,7 @@ public class  HomeActivityProfessional extends AppCompatActivity {
                     }
                 });
 
-                Button btn_tradePrivacy = findViewById(R.id.btn_tradePrivacy);
+                btn_tradePrivacy = findViewById(R.id.btn_tradePrivacy);
                 btn_tradePrivacy.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -149,7 +157,7 @@ public class  HomeActivityProfessional extends AppCompatActivity {
                     }
                 });
 
-                Button btn_tradeHomeLogout = findViewById(R.id.btn_tradeHomeLogout);
+                btn_tradeHomeLogout = findViewById(R.id.btn_tradeHomeLogout);
                 btn_tradeHomeLogout.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

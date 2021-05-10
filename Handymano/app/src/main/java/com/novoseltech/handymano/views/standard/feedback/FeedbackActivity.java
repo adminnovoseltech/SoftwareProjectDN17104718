@@ -53,36 +53,39 @@ import java.math.RoundingMode;
 
 public class FeedbackActivity extends AppCompatActivity {
 
-    //FIREBASE
-    FirebaseAuth mAuth = FirebaseAuth.getInstance();
-    FirebaseFirestore fStore = FirebaseFirestore.getInstance();
-
-    //NAVIGATION DRAWERS
-    DrawerLayout drawerLayout;
-    TextView tv_myUsername;
-
-    //MY DETAILS
-    String MY_USERNAME = "";
-    String MY_UID = mAuth.getCurrentUser().getUid();
-
-    //TRADE DETAILS
-    String TRADE_UID = "";
-    String TRADE_USERNAME = "";
-
-    //FEEDBACK BANNER
-    int oneStarCount = 0;
-    int twoStarCount = 0;
-    int threeStarCount = 0;
-    int fourStarCount = 0;
-    int fiveStarCount = 0;
-    double totalRating = 0.0;
-
-    //FEEDBACK LIST
+    //Layout components
+    private DrawerLayout drawerLayout;
+    private TextView tv_myUsername;
     private RecyclerView fStoreList;
+    private ConstraintLayout cl_feedbackList;
+    private TextView tv_ratingCountOne;
+    private TextView tv_ratingCountTwo;
+    private TextView tv_ratingCountThree;
+    private TextView tv_ratingCountFour;
+    private TextView tv_ratingCountFive;
+    private TextView tv_totalRating;
+    private Button btn_addTradeFeedback;
+    private CircularImageView profileImage;
+
+    //Firebase components
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private FirebaseFirestore fStore = FirebaseFirestore.getInstance();
+    private FirebaseUser user = mAuth.getCurrentUser();
+
+    //Variables
+    private String MY_USERNAME = "";
+    private String MY_UID = mAuth.getCurrentUser().getUid();
+    private String TRADE_UID = "";
+    private String TRADE_USERNAME = "";
+    private int oneStarCount = 0;
+    private int twoStarCount = 0;
+    private int threeStarCount = 0;
+    private int fourStarCount = 0;
+    private int fiveStarCount = 0;
+    private double totalRating = 0.0;
+    private LayoutInflater layoutInflater;
     private FirestoreRecyclerAdapter adapter;
-    ConstraintLayout cl_feedbackList;
-    LayoutInflater layoutInflater;
-    String FEEDBACK_MODE = "";
+    private String FEEDBACK_MODE = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,8 +97,8 @@ public class FeedbackActivity extends AppCompatActivity {
         TRADE_UID = getIntent().getStringExtra("USER_ID");
         TRADE_USERNAME = getIntent().getStringExtra("TRADE_USERNAME");
 
-        FirebaseUser user = mAuth.getCurrentUser();
-        CircularImageView profileImage = drawerLayout.findViewById(R.id.civ_profilePictureStandard);
+
+        profileImage = drawerLayout.findViewById(R.id.civ_profilePictureStandard);
 
         if(mAuth.getCurrentUser().getPhotoUrl() != null){
             Glide.with(getApplicationContext())
@@ -106,19 +109,16 @@ public class FeedbackActivity extends AppCompatActivity {
         }
 
         //Feedback banner
-        TextView tv_ratingCountOne = findViewById(R.id.tv_ratingCountOne);
-        TextView tv_ratingCountTwo = findViewById(R.id.tv_ratingCountTwo);
-        TextView tv_ratingCountThree = findViewById(R.id.tv_ratingCountThree);
-        TextView tv_ratingCountFour = findViewById(R.id.tv_ratingCountFour);
-        TextView tv_ratingCountFive = findViewById(R.id.tv_ratingCountFive);
-        TextView tv_totalRating = findViewById(R.id.tv_totalRating);
+        tv_ratingCountOne = findViewById(R.id.tv_ratingCountOne);
+        tv_ratingCountTwo = findViewById(R.id.tv_ratingCountTwo);
+        tv_ratingCountThree = findViewById(R.id.tv_ratingCountThree);
+        tv_ratingCountFour = findViewById(R.id.tv_ratingCountFour);
+        tv_ratingCountFive = findViewById(R.id.tv_ratingCountFive);
+        tv_totalRating = findViewById(R.id.tv_totalRating);
 
         //Feedback list
         cl_feedbackList = findViewById(R.id.cl_fList);
         layoutInflater = LayoutInflater.from(getApplicationContext());
-
-
-
 
         /**
          *
@@ -258,7 +258,7 @@ public class FeedbackActivity extends AppCompatActivity {
         });
 
         //New feedback
-        Button btn_addTradeFeedback = findViewById(R.id.btn_addTradeFeedback);
+        btn_addTradeFeedback = findViewById(R.id.btn_addTradeFeedback);
         btn_addTradeFeedback.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -455,7 +455,7 @@ public class FeedbackActivity extends AppCompatActivity {
         private TextView feedbackAuthor;
         private TextView feedbackComment;
         private ImageView feedbackImage;
-        LinearLayout ll_starContainer;
+        private LinearLayout ll_starContainer;
 
         private ConstraintLayout cl_deleteFeedback;
         private Button btn_deleteFeedbackYes;

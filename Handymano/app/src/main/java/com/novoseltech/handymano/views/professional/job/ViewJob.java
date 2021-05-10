@@ -39,38 +39,42 @@ import java.util.Locale;
 
 public class ViewJob extends AppCompatActivity {
 
-    String JOB_ID;
-    String USER_ID;
-    String USER_NAME;
+    //Layout components
+    private SliderView sliderView;
+    private Button btnMessageAdvertiser;
+    private TextView tv_proJobTitle;
+    private TextView tv_tradeJobDescription;
+    private TextView tv_tradePostedBy;
+    private TextView tv_jobAddress;
 
-    String jobCreationDate = "";
+    //Firebase components
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private FirebaseFirestore fStore = FirebaseFirestore.getInstance();
+    private FirebaseUser user = mAuth.getCurrentUser();
+
+    //Objects
+    private String JOB_ID;
+    private String USER_ID;
+    private String USER_NAME;
+    private String jobCreationDate = "";
     long imageCount = 0;
-
-    SliderView sliderView;
     private SliderAdapter adapter;
 
-    //Firebase objects
-    FirebaseAuth mAuth = FirebaseAuth.getInstance();
-    FirebaseFirestore fStore = FirebaseFirestore.getInstance();
-    FirebaseUser user = mAuth.getCurrentUser();
-
-    Button btnMessageAdvertiser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_job);
 
-        TextView tv_proJobTitle = findViewById(R.id.tv_professionalJobTitle);
-        TextView tv_tradeJobDescription = findViewById(R.id.tv_tradeJobDescription);
-        TextView tv_tradePostedBy = findViewById(R.id.tv_postedBy);
-        TextView tv_jobAddress = findViewById(R.id.tv_jobAddressTradeView);
-        btnMessageAdvertiser = findViewById(R.id.btn_messageAdvertiser);
         JOB_ID = getIntent().getStringExtra("JOB_ID");
         USER_ID = getIntent().getStringExtra("USER_ID");
 
+        tv_proJobTitle = findViewById(R.id.tv_professionalJobTitle);
         tv_proJobTitle.setText(JOB_ID);
-
+        tv_tradeJobDescription = findViewById(R.id.tv_tradeJobDescription);
+        tv_tradePostedBy = findViewById(R.id.tv_postedBy);
+        tv_jobAddress = findViewById(R.id.tv_jobAddressTradeView);
+        btnMessageAdvertiser = findViewById(R.id.btn_messageAdvertiser);
         sliderView = findViewById(R.id.is_tradeJobImagesSlider);
         adapter = new SliderAdapter(getApplicationContext());
         sliderView.setSliderAdapter(adapter);
@@ -86,7 +90,6 @@ public class ViewJob extends AppCompatActivity {
                 }
             }
         });
-
 
         DocumentReference documentReference = fStore.collection("user")
                 .document(USER_ID)

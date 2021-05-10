@@ -28,26 +28,30 @@
 
     <TextView
         android:id="@+id/tv_tradeFeedbackAuthor"
-        android:layout_width="280dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
         android:text="UserSays"
         android:textColor="@color/black"
         android:textSize="18sp"
         android:textStyle="bold|italic"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/iv_tradeFeedbackProfileImage"
         app:layout_constraintTop_toTopOf="@+id/view9" />
 
     <TextView
         android:id="@+id/tv_tradeFeedbackComment"
-        android:layout_width="280dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:layout_marginTop="5dp"
+        android:layout_marginEnd="10dp"
         android:paddingBottom="10dp"
         android:text="FeedbackText"
         android:textColor="@color/black"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/iv_tradeFeedbackProfileImage"
         app:layout_constraintTop_toBottomOf="@+id/ll_starContainer" />
 

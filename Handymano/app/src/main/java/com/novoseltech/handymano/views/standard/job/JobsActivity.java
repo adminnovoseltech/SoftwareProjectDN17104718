@@ -40,20 +40,21 @@ import com.novoseltech.handymano.views.standard.StandardProfileActivity;
 
 public class JobsActivity extends AppCompatActivity {
 
-    //Navigation drawer
-    DrawerLayout drawerLayout;
-
-
-    //UI objects
-    Button btn_newJob;
-
+    //Layout components
+    private DrawerLayout drawerLayout;
+    private Button btn_newJob;
     private RecyclerView fStoreList;
+    private CircularImageView profileImage;
+    private TextView tv_UserName;
+
+    //Firebase components
+    private FirebaseFirestore fStore = FirebaseFirestore.getInstance();
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();;
+    private FirebaseUser user = mAuth.getCurrentUser();
+
+    //Variables
     private FirestoreRecyclerAdapter adapter;
 
-    //Firebase objects
-    FirebaseFirestore fStore;
-    FirebaseAuth mAuth;
-    FirebaseUser user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,18 +62,15 @@ public class JobsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_jobs);
         drawerLayout = findViewById(R.id.drawer_layout_standard);
 
-        mAuth = FirebaseAuth.getInstance();
-        fStore = FirebaseFirestore.getInstance();
-        user = mAuth.getCurrentUser();
 
-        CircularImageView profileImage = drawerLayout.findViewById(R.id.civ_profilePictureStandard);
+        profileImage = drawerLayout.findViewById(R.id.civ_profilePictureStandard);
         if(user.getPhotoUrl() != null){
             Glide.with(getApplicationContext())
                     .load(user.getPhotoUrl())
                     .into(profileImage);
         }
 
-        TextView tv_UserName = drawerLayout.findViewById(R.id.text_UserName_Standard);
+        tv_UserName = drawerLayout.findViewById(R.id.text_UserName_Standard);
         fStore.collection("user")
                 .document(user.getUid())
                 .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -145,7 +143,6 @@ public class JobsActivity extends AppCompatActivity {
     private class JobsViewHolder extends RecyclerView.ViewHolder{
 
         private TextView jobTitle;
-        private ImageView iv_more_list;
 
         public JobsViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -207,18 +204,14 @@ public class JobsActivity extends AppCompatActivity {
     }
 
     public static void closeDrawer(DrawerLayout drawerLayout) {
-        //Close drawer layout
-        //Check condition
+
         if(drawerLayout.isDrawerOpen(GravityCompat.START)){
-            //When drawer is open
-            //Close drawer
             drawerLayout.closeDrawer(GravityCompat.START);
         }
     }
 
     public void ClickJobs(View view){
         //recreate the activity
-
         finish();
         startActivity(getIntent());
     }

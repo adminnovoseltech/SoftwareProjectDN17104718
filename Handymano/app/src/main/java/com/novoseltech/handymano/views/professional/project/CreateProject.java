@@ -54,35 +54,33 @@ import java.util.Map;
 
 public class CreateProject extends AppCompatActivity {
 
-    int REQUEST_STORAGE_PERMISSION_CODE = 2014;
-    long imageCount = 0;
+    //Layout components
+    private Button btn_saveProject;
+    private EditText et_projectTitle;
+    private EditText et_projectDescription;
+    private ImageView iv_addImg;
+    private ImageView iv_deleteImg;
+    private SliderView sliderView;
+    private SliderAdapter adapter;
 
-    String imageEncoded;
-    List<String> imagesEncodedList;
-    Button btn_saveProject;
 
-    EditText et_projectTitle;
-    EditText et_projectDescription;
+    //Firebase components
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private FirebaseFirestore fStore = FirebaseFirestore.getInstance();
+    private FirebaseUser user = mAuth.getCurrentUser();
 
-    FirebaseAuth mAuth = FirebaseAuth.getInstance();
-    FirebaseFirestore fStore = FirebaseFirestore.getInstance();
-    FirebaseUser user = mAuth.getCurrentUser();
-    String UID = user.getUid();
-
-    Uri mImageUri;
-    ArrayList<Uri> mArrayUri = new ArrayList<Uri>();
-
-    Date dt = Calendar.getInstance().getTime();
-    SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy", Locale.getDefault());
-    String todayDate = df.format(dt);
-
-    ImageView iv_addImg;
-    ImageView iv_deleteImg;
-
-    SliderView sliderView;
-    SliderAdapter adapter;
-
-    List<SliderItem> imagesArrayList = new ArrayList<>();
+    //Objects
+    private int REQUEST_STORAGE_PERMISSION_CODE = 2014;
+    private long imageCount = 0;
+    private String imageEncoded;
+    private List<String> imagesEncodedList;
+    private String UID = user.getUid();
+    private Uri mImageUri;
+    private ArrayList<Uri> mArrayUri = new ArrayList<Uri>();
+    private Date dt = Calendar.getInstance().getTime();
+    private SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy", Locale.getDefault());
+    private String todayDate = df.format(dt);
+    private List<SliderItem> imagesArrayList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,7 +114,6 @@ public class CreateProject extends AppCompatActivity {
                         //Log.i("GGG", "onIndicatorClicked: " + sliderView.getCurrentPagePosition());
                     }
                 });
-
 
             }
         }, 600);
@@ -314,12 +311,12 @@ public class CreateProject extends AppCompatActivity {
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        //Log.d("TAG", "Upload of image " + imgCount + " successful");
+
                     }
                 }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                //Log.e("TAG", "onFailure: ", e.getCause());
+
             }
         });
     }

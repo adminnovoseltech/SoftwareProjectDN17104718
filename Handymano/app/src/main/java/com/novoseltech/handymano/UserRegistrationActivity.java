@@ -33,21 +33,20 @@ import java.util.regex.Pattern;
 
 public class UserRegistrationActivity extends AppCompatActivity {
 
+    //Layout components
+    private EditText etUsername;
+    private EditText etEmail;
+    private EditText etPhoneNo;
+    private EditText etPassword;
 
-    //Initializing objects
-    EditText etUsername;
-    EditText etEmail;
-    EditText etPhoneNo;
-    EditText etPassword;
+    //Firebase components
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private FirebaseFirestore fStore = FirebaseFirestore.getInstance();
 
-    //Firebase objects
-    private FirebaseAuth mAuth;
-    private FirebaseFirestore fStore;
+    //Variables
     private String UID;
-
     private boolean usernameMatches = false;
     private boolean phoneNoMatches = false;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,10 +57,6 @@ public class UserRegistrationActivity extends AppCompatActivity {
         etEmail = findViewById(R.id.registerEmail_input);
         etPhoneNo = findViewById(R.id.registerPhoneNo_input);
         etPassword = findViewById(R.id.registerPassword_input);
-
-        mAuth = FirebaseAuth.getInstance();
-        fStore = FirebaseFirestore.getInstance();
-
 
     }
 

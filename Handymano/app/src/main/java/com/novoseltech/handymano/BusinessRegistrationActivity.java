@@ -44,39 +44,33 @@ import java.util.regex.Pattern;
 
 public class BusinessRegistrationActivity extends AppCompatActivity {
 
-    //Initializing objects
-    EditText etBusinessUsername;
-    EditText etBusinessEmail;
-    EditText etBusinessPhoneNo;
-    EditText etBusinessPassword;
-    TextView or4;
-    TextView or5;
+    //Layout components
+    private EditText etBusinessUsername;
+    private EditText etBusinessEmail;
+    private EditText etBusinessPhoneNo;
+    private EditText etBusinessPassword;
+    private TextView or4;
+    private Button btn_register;
+    private Button btn_cancel;
+    private Button btn_chooseLocation;
+    private FrameLayout mapFrame;
+    private ConstraintLayout cl_regFormBusiness;
+    private ConstraintLayout.LayoutParams btc;
 
-    Button btn_register;
-    Button btn_cancel;
-    //Button btn_saveLocation;
-    Button btn_chooseLocation;
+    //Firebase components
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private FirebaseFirestore fStore = FirebaseFirestore.getInstance();
 
-    //Firebase objects
-    private FirebaseAuth mAuth;
-    private FirebaseFirestore fStore;
+    //Variables
     private String UID;
     private String businessCategory="N/A";
     private String businessExperience="N/A";
     private boolean usernameMatches = false;
     private boolean phoneNoMatches = false;
-
-    //Location
-    FrameLayout mapFrame;
-    ConstraintLayout cl_regFormBusiness;
-
-    //Location data
-    double latitude;
-    double longitude;
-    String radius;
-
-    //Layout
-    ConstraintLayout.LayoutParams btc;
+    private double latitude;
+    private double longitude;
+    private String radius;
+    private AddressSelect af = new AddressSelect();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,30 +82,14 @@ public class BusinessRegistrationActivity extends AppCompatActivity {
         etBusinessPhoneNo = findViewById(R.id.registerBusinessPhoneNo_input);
         etBusinessPassword = findViewById(R.id.registerBusinessPassword_input);
         or4 = findViewById(R.id.textView_or4);
-        //or5 = findViewById(R.id.textView_or5);
-
         btn_register = findViewById(R.id.btn_businessRegister);
         btn_cancel = findViewById(R.id.btn_businessRegisterCancel);
-        //btn_saveLocation = findViewById(R.id.btn_saveLocation);
         btn_chooseLocation = findViewById(R.id.btn_chooseLocation);
-
-        mAuth = FirebaseAuth.getInstance();
-        fStore = FirebaseFirestore.getInstance();
-
         mapFrame = findViewById(R.id.frame_location);
         mapFrame.setVisibility(View.GONE);
-
         cl_regFormBusiness = findViewById(R.id.cl_regFormBusiness);
-
         btn_register.setVisibility(View.GONE);
-        //btn_saveLocation.setVisibility(View.GONE);
         btn_chooseLocation.setVisibility(View.VISIBLE);
-
-        //or5.setVisibility(View.GONE);
-
-        AddressSelect af = new AddressSelect();
-
-        //Layout params
         btc = (ConstraintLayout.LayoutParams) btn_cancel.getLayoutParams();
 
 
@@ -126,14 +104,6 @@ public class BusinessRegistrationActivity extends AppCompatActivity {
                         .commit();
 
                 cl_regFormBusiness.setVisibility(View.GONE);
-
-                //btn_register.setVisibility(View.GONE);
-                //btn_cancel.setVisibility(View.GONE);
-                //or4.setVisibility(View.GONE);
-                //or5.setVisibility(View.GONE);
-                //btn_chooseLocation.setVisibility(View.GONE);
-
-                //btn_saveLocation.setVisibility(View.VISIBLE);
                 mapFrame.setVisibility(View.VISIBLE);
             }
         });
@@ -141,8 +111,6 @@ public class BusinessRegistrationActivity extends AppCompatActivity {
         btn_register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-
 
                 fStore.collection("user")
                         .get()
@@ -175,42 +143,6 @@ public class BusinessRegistrationActivity extends AppCompatActivity {
 
             }
         });
-/*
-        btn_saveLocation.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                latitude = Double.parseDouble(af.getLocationData(0));
-                longitude = Double.parseDouble(af.getLocationData(1));
-                radius = af.getLocationData(2);
-
-
-
-                if(((latitude == 0.0) && (longitude == 0.0)) || (radius == null)){
-                    if(radius == null){
-                        Toast.makeText(getApplicationContext(), "Radius cannot be empty", Toast.LENGTH_SHORT).show();
-                    }else{
-                        Toast.makeText(getApplicationContext(), "Location needs to be set", Toast.LENGTH_SHORT).show();
-                    }
-                }else{
-
-                    btc.setMargins(btc.leftMargin, 2500, btc.rightMargin, btc.bottomMargin);
-                    btn_register.setVisibility(View.VISIBLE);
-
-                    btn_chooseLocation.setVisibility(View.VISIBLE);
-
-                    btn_cancel.setVisibility(View.VISIBLE);
-                    or4.setVisibility(View.VISIBLE);
-                    or5.setVisibility(View.VISIBLE);
-
-                    btn_saveLocation.setVisibility(View.GONE);
-                    mapFrame.setVisibility(View.GONE);
-
-                }
-
-
-            }
-        });*/
 
         //Services category - creating the dropdown
         final String[] SERVICES_CATEGORY = new String[] {
@@ -304,19 +236,9 @@ public class BusinessRegistrationActivity extends AppCompatActivity {
 
         //End of Years of experience dropdown
 
-
-    }
-
-    public void ClickRegisterBusiness(View view){
-        //Register user temporarily disabled
-        //registerBusinessUser();
-        //mapFrame.setVisibility(View.VISIBLE);
-
-
     }
 
     public void ClickCancelBusinessRegistration(View view){
-
         mapFrame.setVisibility(View.GONE);
         finish();
         Intent intent = new Intent(BusinessRegistrationActivity.this, RegistrationChoiceActivity.class);
@@ -328,7 +250,6 @@ public class BusinessRegistrationActivity extends AppCompatActivity {
         String email = etBusinessEmail.getText().toString().trim();
         String phoneNo = etBusinessPhoneNo.getText().toString().trim();
         String password = etBusinessPassword.getText().toString().trim();
-
 
         if(username.isEmpty()){
             etBusinessUsername.setError("Username is required");
@@ -392,10 +313,11 @@ public class BusinessRegistrationActivity extends AppCompatActivity {
                     user.put("experience", businessExperience);
                     user.put("location", gp);
                     user.put("radius", radius);
+                    user.put("email_visible", false);
+                    user.put("phone_visible", false);
 
                     List<String> chatList = new ArrayList<>();
                     chatMap.put("recipients", chatList);
-
 
                     docReference.set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override

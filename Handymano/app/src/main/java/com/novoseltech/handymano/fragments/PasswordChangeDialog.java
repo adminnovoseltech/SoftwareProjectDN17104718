@@ -30,13 +30,14 @@ import java.util.regex.Pattern;
 
 public class PasswordChangeDialog extends DialogFragment {
 
-    EditText et_oldPassword;
-    EditText et_newPasswordOne;
-    EditText et_newPasswordTwo;
+    //Layout components
+    private EditText et_oldPassword;
+    private EditText et_newPasswordOne;
+    private EditText et_newPasswordTwo;
 
-
-    FirebaseAuth mAuth = FirebaseAuth.getInstance();
-    FirebaseUser user = mAuth.getCurrentUser();
+    //Firebase objects
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private FirebaseUser user = mAuth.getCurrentUser();
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER

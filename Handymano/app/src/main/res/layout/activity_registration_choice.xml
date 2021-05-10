@@ -18,8 +18,10 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_serviceLooking"
-        android:layout_width="300dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="30dp"
         android:layout_marginBottom="15dp"
         android:onClick="ClickLooking"
         android:text="@string/choice_button_looking"
@@ -42,8 +44,10 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_serviceOffering"
-        android:layout_width="300dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="30dp"
         android:layout_marginBottom="15dp"
         android:onClick="ClickOffer"
         android:text="@string/choice_button_offer"
@@ -66,8 +70,10 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_registerCancel"
-        android:layout_width="300dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="30dp"
         android:layout_marginBottom="50dp"
         android:onClick="ClickCancel"
         android:text="@string/cancel"

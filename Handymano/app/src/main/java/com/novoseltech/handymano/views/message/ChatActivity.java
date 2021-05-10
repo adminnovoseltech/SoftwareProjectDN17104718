@@ -41,8 +41,10 @@ import com.mikhaellopez.circularimageview.CircularImageView;
 import com.novoseltech.handymano.R;
 import com.novoseltech.handymano.adapter.ChatAdapter;
 import com.novoseltech.handymano.model.ChatModel;
+import com.novoseltech.handymano.views.professional.job.ViewJob;
 import com.novoseltech.handymano.views.professional.project.ProjectsActivity;
 import com.novoseltech.handymano.views.professional.project.ViewProjectActivity;
+import com.novoseltech.handymano.views.standard.ViewProfessionalActivity;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -50,42 +52,43 @@ import java.util.List;
 
 public class ChatActivity extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener{
 
-    RecyclerView rv_chatContent;
-    LinearLayoutManager linearLayoutManager;
-    EditText et_chatMessage;
-    ChatAdapter chatAdapter;
-    String SENDER_NAME = "";
-    String RECIPIENT_ID = "";
-    String RECIPIENT_NAME = "";
-    String MODE = "";
-    String USER_TYPE = "";
-    List<String> messageRecipientsSender = new ArrayList<>();
-    List<String> messageRecipientsReceiver = new ArrayList<>();
+    //Layout components
+    private RecyclerView rv_chatContent;
+    private EditText et_chatMessage;
+    private CircularImageView civ_profileImageChat;
+    private TextView tv_chatSenderName;
+    private ImageView iv_chatMoreButton;
 
-    CircularImageView civ_profileImageChat;
-    TextView tv_chatSenderName;
-    ImageView iv_chatMoreButton;
+    //Firebase components
+    private FirebaseFirestore fStore = FirebaseFirestore.getInstance();
+    private FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    private String UID = user.getUid();
 
-    FirebaseFirestore fStore = FirebaseFirestore.getInstance();
-    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-    String UID = user.getUid();
+    //Objects
+    private LinearLayoutManager linearLayoutManager;
+    private ChatAdapter chatAdapter;
+    private String SENDER_NAME = "";
+    private String RECIPIENT_ID = "";
+    private String RECIPIENT_NAME = "";
+    private String MODE = "";
+    private String USER_TYPE = "";
+    private String JOB_ID = "";
+    private String JOB_DATE = "";
+    private List<String> messageRecipientsSender = new ArrayList<>();
+    private List<String> messageRecipientsReceiver = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
 
-        MODE = getIntent().getStringExtra("MODE");
-
-
-
+        //Layout
         et_chatMessage = findViewById(R.id.et_chatMessage);
         civ_profileImageChat = findViewById(R.id.civ_chatActivityProfileImage);
         tv_chatSenderName = findViewById(R.id.tv_chatSenderName);
         iv_chatMoreButton = findViewById(R.id.iv_chatMoreButton);
 
-
-
+        MODE = getIntent().getStringExtra("MODE");
         if(MODE.equals("PROFILE_VISIT")){
             RECIPIENT_ID = getIntent().getStringExtra("TRADE_ID");
             RECIPIENT_NAME = getIntent().getStringExtra("TRADE_NAME");
@@ -93,13 +96,13 @@ public class ChatActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         }else if(MODE.equals("JOB_VISIT")){
             RECIPIENT_ID = getIntent().getStringExtra("ADVERTISER_ID");
             RECIPIENT_NAME = getIntent().getStringExtra("ADVERTISER_NAME");
+            JOB_ID = getIntent().getStringExtra("JOB_ID");
 
-            String JOB_ID = getIntent().getStringExtra("JOB_ID");
-            String JOB_DATE = getIntent().getStringExtra("JOB_DATE");
+            JOB_ID = getIntent().getStringExtra("JOB_ID");
+            JOB_DATE = getIntent().getStringExtra("JOB_DATE");
             et_chatMessage.setText("Hello, I would like to offer my services on job ad " + "'" + JOB_ID +
                     "'" +" that you posted on " + JOB_DATE + ".");
-        }
-        else{
+        }else{
             RECIPIENT_ID = getIntent().getStringExtra("USER_ID");
             RECIPIENT_NAME = getIntent().getStringExtra("USERNAME");
         }
@@ -114,12 +117,10 @@ public class ChatActivity extends AppCompatActivity implements PopupMenu.OnMenuI
             public void onComplete(@NonNull Task<Uri> task) {
 
                 if(task.isSuccessful()){
-
                     Glide.with(getApplicationContext())
                             .load(task.getResult().toString())
                             .into(civ_profileImageChat);
                 }
-
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -131,8 +132,6 @@ public class ChatActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         });
 
         tv_chatSenderName.setText(RECIPIENT_NAME);
-
-
 
         CollectionReference chatReference = fStore.collection("chat").document(UID).collection(RECIPIENT_ID);
         CollectionReference receiverReference = fStore.collection("chat").document(RECIPIENT_ID).collection(UID);
@@ -175,7 +174,6 @@ public class ChatActivity extends AppCompatActivity implements PopupMenu.OnMenuI
             }
         });
 
-
         //GET MY USERNAME
         fStore.collection("user").document(UID)
         .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -189,8 +187,6 @@ public class ChatActivity extends AppCompatActivity implements PopupMenu.OnMenuI
                 }
             }
         });
-
-
 
         findViewById(R.id.ic_sendMessage).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -241,14 +237,22 @@ public class ChatActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         Query query = FirebaseFirestore.getInstance()
                 .collection("chat").document(UID).collection(RECIPIENT_ID).orderBy("timestamp", Query.Direction.ASCENDING);
 
+
+
         FirestoreRecyclerOptions<ChatModel> options = new FirestoreRecyclerOptions.Builder<ChatModel>().setQuery(query, ChatModel.class).build();
         chatAdapter = new ChatAdapter(options, SENDER_NAME);
         chatAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             @Override
             public void onItemRangeInserted(int positionStart, int itemCount) {
                 rv_chatContent.scrollToPosition(chatAdapter.getItemCount() - 1);
+
+
             }
         });
+
+        if(chatAdapter.getItemCount() == 0){
+            iv_chatMoreButton.setVisibility(View.GONE);
+        }
 
         rv_chatContent.setAdapter(chatAdapter);
 
@@ -324,9 +328,24 @@ public class ChatActivity extends AppCompatActivity implements PopupMenu.OnMenuI
                                             }
                                         });
 
+                                Intent intent;
+                                if(MODE.equals("PROFILE_VISIT")){
+                                    intent = new Intent(ChatActivity.this, ViewProfessionalActivity.class);
+                                    intent.putExtra("USER_ID", RECIPIENT_ID);
 
-                                Intent intent = new Intent(ChatActivity.this, MessageMenu.class);
-                                intent.putExtra("USER_TYPE", USER_TYPE);
+                                }else if(MODE.equals("JOB_VISIT")){
+                                    intent = new Intent(ChatActivity.this, ViewJob.class);
+                                    intent.putExtra("USER_ID", RECIPIENT_ID);
+                                    intent.putExtra("JOB_ID", JOB_ID);
+                                }else{
+                                    intent = new Intent(ChatActivity.this, MessageMenu.class);
+                                    intent.putExtra("USER_TYPE", USER_TYPE);
+                                }
+
+
+                                //Intent intent = new Intent(ChatActivity.this, MessageMenu.class);
+                                //intent.putExtra("USER_TYPE", USER_TYPE);
+                                finish();
                                 startActivity(intent);
                             }
                         })

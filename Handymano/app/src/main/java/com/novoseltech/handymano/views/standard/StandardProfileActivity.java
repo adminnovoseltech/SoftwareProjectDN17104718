@@ -47,6 +47,7 @@ import com.google.firebase.storage.UploadTask;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.novoseltech.handymano.MainActivity;
 import com.novoseltech.handymano.R;
+import com.novoseltech.handymano.fragments.PasswordChangeDialog;
 import com.novoseltech.handymano.fragments.PasswordConfirmationDialog;
 import com.novoseltech.handymano.views.message.MessageMenu;
 import com.novoseltech.handymano.views.standard.job.JobsActivity;
@@ -61,35 +62,37 @@ import java.util.Map;
 
 public class StandardProfileActivity extends AppCompatActivity implements PasswordConfirmationDialog.PasswordConfirmationDialogListener {
 
-    //Navigation drawer
+    //Layout components
     DrawerLayout drawerLayout;
-
-    private static final String TAG = "LOG";
-    private static final int PICK_FROM_GALLERY = 10000;
-    FirebaseAuth mAuth = FirebaseAuth.getInstance();
-    FirebaseFirestore fStore = FirebaseFirestore.getInstance();
-    FirebaseUser user = mAuth.getCurrentUser();
-    String UID = mAuth.getCurrentUser().getUid();
-
-    String username;
-    String email = mAuth.getCurrentUser().getEmail();
-    String phoneNo;
-
-    String pass = "";
-
-    ShapeableImageView iv_sp_profilePhoto;
-
-    //Editing data
+    CircularImageView iv_sp_profilePhoto;
     TextInputLayout til_sp_username;
     TextInputLayout til_sp_phoneNo;
     TextInputLayout til_sp_email;
-
     EditText et_sp_username;
     EditText et_sp_phoneNo;
     EditText et_sp_email;
-
     Button btn_edit_sp;
     Button btn_save_sp;
+    Button btn_stdUserChangePassword;
+    CircularImageView profileImage;
+    TextView tv_UserName;
+    TextView tv_sp_username;
+    TextView tv_sp_email;
+    TextView tv_sp_phoneNo;
+
+    //Firebase components
+    FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    FirebaseFirestore fStore = FirebaseFirestore.getInstance();
+    FirebaseUser user = mAuth.getCurrentUser();
+
+    //Variables
+    private static final String TAG = "LOG";
+    private static final int PICK_FROM_GALLERY = 10000;
+    String UID = mAuth.getCurrentUser().getUid();
+    String username;
+    String email = mAuth.getCurrentUser().getEmail();
+    String phoneNo;
+    String pass = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,14 +100,14 @@ public class StandardProfileActivity extends AppCompatActivity implements Passwo
         setContentView(R.layout.activity_standard_profile);
         drawerLayout = findViewById(R.id.drawer_layout_standard);
 
-        CircularImageView profileImage = drawerLayout.findViewById(R.id.civ_profilePictureStandard);
+        profileImage = drawerLayout.findViewById(R.id.civ_profilePictureStandard);
         if(user.getPhotoUrl() != null){
             Glide.with(getApplicationContext())
                     .load(user.getPhotoUrl())
                     .into(profileImage);
         }
 
-        TextView tv_UserName = drawerLayout.findViewById(R.id.text_UserName_Standard);
+        tv_UserName = drawerLayout.findViewById(R.id.text_UserName_Standard);
         fStore.collection("user")
                 .document(user.getUid())
                 .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -117,33 +120,27 @@ public class StandardProfileActivity extends AppCompatActivity implements Passwo
             }
         });
 
-        TextView tv_sp_username = findViewById(R.id.tv_sp_username);
-        TextView tv_sp_email = findViewById(R.id.tv_sp_email);
+        tv_sp_username = findViewById(R.id.tv_sp_username);
+        tv_sp_email = findViewById(R.id.tv_sp_email);
         tv_sp_email.setText(email);
-        TextView tv_sp_phoneNo = findViewById(R.id.tv_sp_phoneNo);
+        tv_sp_phoneNo = findViewById(R.id.tv_sp_phoneNo);
 
         iv_sp_profilePhoto = findViewById(R.id.iv_sp_profilePhoto);
-
 
         //Editing data
         til_sp_username = findViewById(R.id.layout_sp_username_edit);
         til_sp_phoneNo = findViewById(R.id.layout_sp_phoneno_edit);
         til_sp_email = findViewById(R.id.layout_sp_email_edit);
-
         et_sp_username = findViewById(R.id.et_sp_username_edit);
         et_sp_phoneNo = findViewById(R.id.et_sp_phoneno_edit);
         et_sp_email = findViewById(R.id.et_sp_email_edit);
-
         til_sp_username.setVisibility(View.INVISIBLE);
         til_sp_phoneNo.setVisibility(View.INVISIBLE);
         til_sp_email.setVisibility(View.INVISIBLE);
-
         btn_edit_sp = findViewById(R.id.btn_edit_sp);
         btn_save_sp = findViewById(R.id.btn_save_sp);
-
         btn_save_sp.setVisibility(View.INVISIBLE);
-
-        FirebaseUser user = mAuth.getCurrentUser();
+        btn_stdUserChangePassword = findViewById(R.id.btn_stdUserChangePassword);
 
         if(mAuth.getCurrentUser().getPhotoUrl() != null){
             Glide.with(this)
@@ -160,14 +157,11 @@ public class StandardProfileActivity extends AppCompatActivity implements Passwo
 
                             username = documentSnapshot.getString("username");
                             phoneNo = documentSnapshot.getString("phoneNo");
-
                             tv_sp_username.setText(documentSnapshot.getString("username"));
                             tv_sp_phoneNo.setText(documentSnapshot.getString("phoneNo"));
-
                             et_sp_username.setText(username);
                             et_sp_phoneNo.setText(phoneNo);
                             et_sp_email.setText(email);
-
 
                         }else {
                             Exception exception = task.getException();
@@ -175,23 +169,18 @@ public class StandardProfileActivity extends AppCompatActivity implements Passwo
                     }
                 });
 
-
-
-
         btn_edit_sp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 btn_edit_sp.setVisibility(View.INVISIBLE);
-
                 til_sp_username.setVisibility(View.VISIBLE);
                 til_sp_phoneNo.setVisibility(View.VISIBLE);
                 til_sp_email.setVisibility(View.VISIBLE);
-
                 tv_sp_username.setVisibility(View.INVISIBLE);
                 tv_sp_phoneNo.setVisibility(View.INVISIBLE);
                 tv_sp_email.setVisibility(View.INVISIBLE);
-
                 btn_save_sp.setVisibility(View.VISIBLE);
+                btn_stdUserChangePassword.setVisibility(View.GONE);
             }
         });
 
@@ -201,14 +190,13 @@ public class StandardProfileActivity extends AppCompatActivity implements Passwo
             @Override
             public void onClick(View view) {
                 btn_save_sp.setVisibility(View.INVISIBLE);
-
                 til_sp_username.setVisibility(View.INVISIBLE);
                 til_sp_phoneNo.setVisibility(View.INVISIBLE);
                 til_sp_email.setVisibility(View.INVISIBLE);
-
                 tv_sp_username.setVisibility(View.VISIBLE);
                 tv_sp_phoneNo.setVisibility(View.VISIBLE);
                 tv_sp_email.setVisibility(View.VISIBLE);
+                btn_stdUserChangePassword.setVisibility(View.VISIBLE);
 
                 //If nothing was changed
                 if(et_sp_username.getText().toString().equals(username) &&
@@ -224,6 +212,13 @@ public class StandardProfileActivity extends AppCompatActivity implements Passwo
 
                 btn_edit_sp.setVisibility(View.VISIBLE);
 
+            }
+        });
+
+        btn_stdUserChangePassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDialog();
             }
         });
 
@@ -479,6 +474,11 @@ public class StandardProfileActivity extends AppCompatActivity implements Passwo
         Intent intent = new Intent(StandardProfileActivity.this, MessageMenu.class);
         intent.putExtra("USER_TYPE", "Standard");
         startActivity(intent);
+    }
+
+    public void showDialog(){
+        PasswordChangeDialog exampleDialog = new PasswordChangeDialog();
+        exampleDialog.show(getSupportFragmentManager(), "example dialog");
     }
 
 

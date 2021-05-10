@@ -57,6 +57,7 @@ public class AddressSelect extends Fragment implements OnMapReadyCallback{
     private String mParam1;
     private String mParam2;
 
+    //Layout components
     private Button btn_searchLocation;
     private Button btn_saveLocation;
     private Button btn_cancelLocation;
@@ -69,19 +70,15 @@ public class AddressSelect extends Fragment implements OnMapReadyCallback{
     private String tmpRad;
     private Double tmpLat;
     private Double tmpLon;
-
-    FrameLayout fl_bra;
-    ConstraintLayout cl_bra;
-
-    FrameLayout fl_ppa;
-    ConstraintLayout cl_ppa;
-
-    FrameLayout fl_ej;
-    ConstraintLayout cl_ej;
-    Button btn_scej;
-
-    FrameLayout fl_cj;
-    ConstraintLayout cl_cj;
+    private FrameLayout fl_bra;
+    private ConstraintLayout cl_bra;
+    private FrameLayout fl_ppa;
+    private ConstraintLayout cl_ppa;
+    private FrameLayout fl_ej;
+    private ConstraintLayout cl_ej;
+    private Button btn_scej;
+    private FrameLayout fl_cj;
+    private ConstraintLayout cl_cj;
 
     public AddressSelect() {
         // Required empty public constructor
@@ -254,8 +251,6 @@ public class AddressSelect extends Fragment implements OnMapReadyCallback{
             }
         }
 
-
-
         btn_searchLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -405,8 +400,6 @@ public class AddressSelect extends Fragment implements OnMapReadyCallback{
             // May throw an IOException
             address = coder.getFromLocationName(strAddress, 5);
             if (address == null) {
-                //Toast.makeText(getContext(), "Address cannot be found. Please include more information",
-                //       Toast.LENGTH_LONG).show();
                 return null;
             }
 

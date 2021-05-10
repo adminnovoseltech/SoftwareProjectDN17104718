@@ -29,17 +29,18 @@ import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
+    //Layout components
+    private EditText etEmail;
+    private EditText etPassword;
+    private Button btn_passwordReset;
 
+    //Firebase components
+    private FirebaseAuth mAuth;
+    private FirebaseFirestore fStore;
 
-    FirebaseAuth mAuth;
-    FirebaseFirestore fStore;
-
-    EditText etEmail;
-    EditText etPassword;
-    Button btn_passwordReset;
-
-    String accountType = "";
-    String email = "";
+    //Variables
+    private String accountType = "";
+    private String email = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +50,6 @@ public class MainActivity extends AppCompatActivity {
         etEmail = findViewById(R.id.loginEmailInput);
         etPassword = findViewById(R.id.loginPasswordInput);
         mAuth = FirebaseAuth.getInstance();
-
         btn_passwordReset = findViewById(R.id.forgotPassword);
 
         btn_passwordReset.setOnClickListener(new View.OnClickListener() {

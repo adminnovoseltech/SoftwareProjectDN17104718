@@ -42,30 +42,28 @@ import com.novoseltech.handymano.views.professional.job.JobsList;
 
 public class ProjectsActivity extends AppCompatActivity {
 
-    //Navigation drawer
-    DrawerLayout drawerLayout;
-
+    //Layout components
+    private DrawerLayout drawerLayout;
     private RecyclerView fStoreList;
+    private CircularImageView profileImage;
+    private TextView tv_drawerUsername;
+
     private FirestoreRecyclerAdapter adapter;
 
-    FirebaseFirestore fStore;
-    FirebaseAuth mAuth;
-    FirebaseUser user;
+    //Firebase components
+    private FirebaseFirestore fStore = FirebaseFirestore.getInstance();
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private FirebaseUser user = mAuth.getCurrentUser();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_projects);
+
         drawerLayout = findViewById(R.id.drawer_layout_professional);
-
-        mAuth = FirebaseAuth.getInstance();
-        fStore = FirebaseFirestore.getInstance();
-        user = mAuth.getCurrentUser();
-
-        CircularImageView profileImage = drawerLayout.findViewById(R.id.civ_profilePictureProfessional);
-        TextView tv_drawerUsername = drawerLayout.findViewById(R.id.text_UserName_Professional);
-
-        FirebaseUser user = mAuth.getCurrentUser();
+        profileImage = drawerLayout.findViewById(R.id.civ_profilePictureProfessional);
+        tv_drawerUsername = drawerLayout.findViewById(R.id.text_UserName_Professional);
+        fStoreList = findViewById(R.id.firestoreListProjects);
 
         if(mAuth.getCurrentUser().getPhotoUrl() != null){
             Glide.with(getApplicationContext())
@@ -86,8 +84,6 @@ public class ProjectsActivity extends AppCompatActivity {
                 }
             }
         });
-
-        fStoreList = findViewById(R.id.firestoreListProjects);
 
         //Query
         Query query = fStore.collection("user")
@@ -148,7 +144,6 @@ public class ProjectsActivity extends AppCompatActivity {
 
         public ProjectsViewHolder(@NonNull View itemView) {
             super(itemView);
-
             projectTitle = itemView.findViewById(R.id.list_projectTitle);
         }
     }
@@ -177,7 +172,6 @@ public class ProjectsActivity extends AppCompatActivity {
 
     public void ClickProjects(View view){
         //recreate the activity
-
         finish();
         startActivity(getIntent());
     }
@@ -208,7 +202,6 @@ public class ProjectsActivity extends AppCompatActivity {
     public void ClickHome(View view){
         finish();
         Intent intent = new Intent(ProjectsActivity.this, HomeActivityProfessional.class);
-
         startActivity(intent);
     }
 
@@ -235,7 +228,6 @@ public class ProjectsActivity extends AppCompatActivity {
                 finish();
                 Intent intent = new Intent(ProjectsActivity.this, MainActivity.class);
                 startActivity(intent);
-                //functions.redirectActivity(HomeActivityProfessional.this, MainActivity.class);
 
             }
         });
@@ -255,6 +247,5 @@ public class ProjectsActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         //super.onBackPressed();
-        Toast.makeText(getApplicationContext(), "Works", Toast.LENGTH_SHORT).show();
     }
 }

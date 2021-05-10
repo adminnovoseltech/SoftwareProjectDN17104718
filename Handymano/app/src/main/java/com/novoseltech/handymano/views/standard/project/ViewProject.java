@@ -2,7 +2,6 @@ package com.novoseltech.handymano.views.standard.project;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
 
 import android.graphics.Color;
 import android.net.Uri;
@@ -10,7 +9,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -29,27 +27,25 @@ import com.smarteist.autoimageslider.IndicatorView.draw.controller.DrawControlle
 import com.smarteist.autoimageslider.SliderAnimations;
 import com.smarteist.autoimageslider.SliderView;
 
-import org.w3c.dom.Text;
-
 public class ViewProject extends AppCompatActivity {
 
-    TextView tv_tradeProjectTitle;
-    TextView tv_tradeProjectDescription;
+    //Layout components
+    private TextView tv_tradeProjectTitle;
+    private TextView tv_tradeProjectDescription;
+    private SliderView sliderView;
 
+    //Firebase components
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private FirebaseFirestore fStore = FirebaseFirestore.getInstance();
 
-    //Image slider
-    SliderView sliderView;
+    //Variables
+    private String USER_ID;
+    private String PROJECT_ID;
     private SliderAdapter adapter;
-    long imageCount = 0;
-    String projectCreationDate = "";
-
-    //Firebase objects
-    FirebaseAuth mAuth = FirebaseAuth.getInstance();
-    FirebaseFirestore fStore = FirebaseFirestore.getInstance();
-
-    String USER_ID;
-    String PROJECT_ID;
-
+    private long imageCount = 0;
+    private String projectCreationDate = "";
+    private String TRADE_ID;
+    private String project;
 
 
     @Override
@@ -57,11 +53,11 @@ public class ViewProject extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_project);
 
-        String user_id = getIntent().getStringExtra("USER_ID");
-        String project_id = getIntent().getStringExtra("PROJECT_ID");
+        TRADE_ID = getIntent().getStringExtra("USER_ID");
+        project = getIntent().getStringExtra("PROJECT_ID");
 
-        USER_ID = user_id;
-        PROJECT_ID = project_id;
+        USER_ID = TRADE_ID;
+        PROJECT_ID = project;
 
         tv_tradeProjectTitle = findViewById(R.id.tv_tradeProjectTitle);
         tv_tradeProjectDescription = findViewById(R.id.tv_tradeProjectDescription);
@@ -71,9 +67,9 @@ public class ViewProject extends AppCompatActivity {
 
 
         DocumentReference documentReference = fStore.collection("user")
-                .document(user_id)
+                .document(TRADE_ID)
                 .collection("projects")
-                .document(project_id);
+                .document(project);
 
         documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -145,8 +141,6 @@ public class ViewProject extends AppCompatActivity {
                     }
                 }
             });
-
-
 
         }
     }

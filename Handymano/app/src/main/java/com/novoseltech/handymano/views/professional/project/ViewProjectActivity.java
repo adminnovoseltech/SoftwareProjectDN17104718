@@ -43,28 +43,27 @@ import com.smarteist.autoimageslider.SliderView;
 
 public class ViewProjectActivity extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener {
 
+    //Layout components
+    private ConstraintLayout cl_projectView;
+    private TextView tv_projectTitle;
+    private TextView tv_projectDescription;
+    private ScrollView svProject;
+    private CardView cv_carousel_project;
+    private ImageView iv_projectMore;
+    private SliderView sliderView;
+
+    //Firebase components
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private FirebaseFirestore fStore = FirebaseFirestore.getInstance();
+    private FirebaseUser user = mAuth.getCurrentUser();
+
+    //Objects
     private static final String TAG = "TAG: ";
     private static final int REQUEST_STORAGE_PERMISSION_CODE = 1000;
-    String PROJECT_ID;
-
-    String projectCreationDate = "";
-    long imageCount = 0;
-
-    SliderView sliderView;
+    private String PROJECT_ID;
+    private String projectCreationDate = "";
+    private long imageCount = 0;
     private SliderAdapter adapter;
-
-
-    //Firebase objects
-    FirebaseAuth mAuth = FirebaseAuth.getInstance();
-    FirebaseFirestore fStore = FirebaseFirestore.getInstance();
-    FirebaseUser user = mAuth.getCurrentUser();
-
-    //Layout
-    ConstraintLayout cl_projectView;
-    TextView tv_projectTitle;
-    ScrollView svProject;
-    CardView cv_carousel_project;
-    ImageView iv_projectMore;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,7 +81,7 @@ public class ViewProjectActivity extends AppCompatActivity implements PopupMenu.
 
         //Layout objects
         tv_projectTitle = findViewById(R.id.tv_projectTitle);
-        TextView tv_projectDescription = findViewById(R.id.tv_projectDescription);
+        tv_projectDescription = findViewById(R.id.tv_projectDescription);
         tv_projectTitle.setText(PROJECT_ID);
 
         svProject = findViewById(R.id.svProject);

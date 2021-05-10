@@ -43,40 +43,35 @@ import java.util.List;
 
 public class JobsList extends AppCompatActivity {
 
-    //Navigation drawer
-    DrawerLayout drawerLayout;
+    //Layout components
+    private DrawerLayout drawerLayout;
+    private TextView tv_drawerUsername;
+    private CircularImageView profileImage;
+    private RecyclerView rv_regularJobList;
 
+    //Firebase components
+    private FirebaseFirestore fStore = FirebaseFirestore.getInstance();
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private FirebaseUser user = mAuth.getCurrentUser();
+
+    //Objects
+    private List<String> usersAL = new ArrayList<>();
+    private List<String> jobsAL = new ArrayList<>();
+    private RecyclerView.Adapter adapter;
+    private GeoPoint tradeGP;
+    private String tradeRadius;
+    private String tradeCategory;
     private static final String TAG = "";
-
-    FirebaseFirestore fStore;
-    FirebaseAuth mAuth;
-    FirebaseUser user;
-
-    List<String> usersAL = new ArrayList<>();
-    List<String> jobsAL = new ArrayList<>();
-
-    RecyclerView rv_regularJobList;
-    RecyclerView.Adapter adapter;
-
-    GeoPoint tradeGP;
-    String tradeRadius;
-    String tradeCategory;
-
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_jobs_list);
+
         drawerLayout = findViewById(R.id.drawer_layout_professional);
-        TextView tv_drawerUsername = drawerLayout.findViewById(R.id.text_UserName_Professional);
-        CircularImageView profileImage = drawerLayout.findViewById(R.id.civ_profilePictureProfessional);
-
-
-        mAuth = FirebaseAuth.getInstance();
-        fStore = FirebaseFirestore.getInstance();
-        user = mAuth.getCurrentUser();
+        tv_drawerUsername = drawerLayout.findViewById(R.id.text_UserName_Professional);
+        profileImage = drawerLayout.findViewById(R.id.civ_profilePictureProfessional);
+        rv_regularJobList = findViewById(R.id.rv_regularJobList);
 
         if(mAuth.getCurrentUser().getPhotoUrl() != null){
             Glide.with(getApplicationContext())
@@ -85,8 +80,6 @@ public class JobsList extends AppCompatActivity {
         }else{
             Log.d("TAG", "Profile image not found. Loading default image.");
         }
-
-        rv_regularJobList = findViewById(R.id.rv_regularJobList);
 
         //Query
         fStore.collection("user").document(user.getUid())
@@ -287,6 +280,6 @@ public class JobsList extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         //super.onBackPressed();
-        Toast.makeText(getApplicationContext(), "Works", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getApplicationContext(), "Works", Toast.LENGTH_SHORT).show();
     }
 }

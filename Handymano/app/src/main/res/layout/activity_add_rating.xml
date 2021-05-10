@@ -8,9 +8,11 @@
 
     <TextView
         android:id="@+id/tv_addTradeRatingTitle"
-        android:layout_width="300dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
         android:layout_marginTop="20dp"
+        android:layout_marginEnd="10dp"
         android:text="TradeRatingTitle"
         android:textAlignment="center"
         android:textSize="30sp"
@@ -23,19 +25,24 @@
         android:id="@+id/rb_tradeRatingTemp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="75dp"
         android:layout_marginTop="30dp"
+        android:layout_marginEnd="75dp"
+        android:numStars="5"
+        android:stepSize="1"
+        android:theme="@style/RatingBar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        android:stepSize="1"
-        android:theme="@style/RatingBar"
         app:layout_constraintTop_toBottomOf="@+id/tv_addTradeRatingTitle" />
 
     <EditText
         android:id="@+id/et_ml_tradeFeedback"
-        android:layout_width="300dp"
+        android:layout_width="0dp"
         android:layout_height="300dp"
+        android:layout_marginStart="50dp"
         android:layout_marginTop="30dp"
+        android:layout_marginEnd="50dp"
         android:ems="10"
         android:gravity="start|top"
         android:hint="Feedback (Optional)"
@@ -46,8 +53,11 @@
 
     <Button
         android:id="@+id/btn_saveTradeFeedback"
-        android:layout_width="300dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="50dp"
+        android:layout_marginEnd="50dp"
+        android:layout_marginBottom="10dp"
         android:text="Save feedback"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

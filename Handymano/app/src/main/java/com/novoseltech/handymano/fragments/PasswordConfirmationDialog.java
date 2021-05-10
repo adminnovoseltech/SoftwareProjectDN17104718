@@ -22,6 +22,7 @@ import com.novoseltech.handymano.R;
 
 public class PasswordConfirmationDialog extends DialogFragment {
 
+    //Layout components
     private EditText et_password1;
     private EditText et_password2;
     private PasswordConfirmationDialogListener listener;

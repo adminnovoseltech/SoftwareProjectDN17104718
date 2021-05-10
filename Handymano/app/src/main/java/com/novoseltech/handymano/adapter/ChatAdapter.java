@@ -22,7 +22,7 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, ChatAdapter
     public static final int MSG_TYPE_RIGHT = 1;
 
     PrettyTime prettyTime = new PrettyTime();
-    FirebaseUser user  = FirebaseAuth.getInstance().getCurrentUser();
+    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
     String CURRENT_USERNAME;
     String MESSAGE_SENDER = "";
@@ -65,7 +65,6 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, ChatAdapter
         }
 
     }
-
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView sender, message, timestamp;

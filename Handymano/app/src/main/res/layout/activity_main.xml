@@ -18,9 +18,11 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/loginEmailLayout"
-        android:layout_width="300dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
         android:layout_marginTop="20dp"
+        android:layout_marginEnd="30dp"
         android:hint="@string/login_hint_username"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -36,9 +38,11 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/loginPasswordLayout"
-        android:layout_width="300dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
         android:layout_marginTop="20dp"
+        android:layout_marginEnd="30dp"
         android:hint="@string/login_hint_password"
         app:endIconMode="password_toggle"
         app:errorEnabled="true"
@@ -55,8 +59,10 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_login"
-        android:layout_width="300dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="30dp"
         android:layout_marginBottom="15dp"
         android:onClick="ClickLogin"
         android:text="@string/login_button_text"
@@ -79,8 +85,10 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_register"
-        android:layout_width="300dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="30dp"
         android:layout_marginBottom="10dp"
         android:onClick="ClickRegister"
         android:text="@string/register_button_text"
@@ -92,8 +100,10 @@
     <Button
         android:id="@+id/forgotPassword"
         style="@style/Widget.MaterialComponents.Button.TextButton"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="30dp"
         android:layout_marginBottom="10dp"
         android:text="Forgot password?"
         app:layout_constraintBottom_toBottomOf="parent"
