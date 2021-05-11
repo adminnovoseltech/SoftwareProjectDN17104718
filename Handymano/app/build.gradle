@@ -73,9 +73,6 @@ dependencies {
     //Carousel
     implementation 'com.github.smarteist:autoimageslider:1.4.0'
 
-    //Image loader
-    implementation 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
-
     //Chat
     implementation 'org.ocpsoft.prettytime:prettytime:4.0.1.Final'
 
