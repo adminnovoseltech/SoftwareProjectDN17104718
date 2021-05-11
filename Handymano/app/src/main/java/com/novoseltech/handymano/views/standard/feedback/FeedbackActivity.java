@@ -334,11 +334,6 @@ public class FeedbackActivity extends AppCompatActivity {
             @Override
             protected void onBindViewHolder(@NonNull FeedbackActivity.FeedbackViewHolder holder, int position, @NonNull FeedbackModel model) {
 
-                /*if(model.getUsername().equals(MY_USERNAME)){
-                    holder.feedbackAuthor.setText("Your feedback on " + model.getCreation_date() + " :");
-                }else{
-
-                }*/
                 holder.feedbackAuthor.setText(model.getUsername() + " on " + model.getCreation_date() + " :");
                 holder.feedbackComment.setText(model.getFeedback_text());
 
@@ -454,7 +449,7 @@ public class FeedbackActivity extends AppCompatActivity {
 
         private TextView feedbackAuthor;
         private TextView feedbackComment;
-        private ImageView feedbackImage;
+        private CircularImageView feedbackImage;
         private LinearLayout ll_starContainer;
 
         private ConstraintLayout cl_deleteFeedback;

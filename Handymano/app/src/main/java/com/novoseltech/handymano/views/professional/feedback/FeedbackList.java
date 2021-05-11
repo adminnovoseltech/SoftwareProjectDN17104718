@@ -324,7 +324,7 @@ public class FeedbackList extends AppCompatActivity {
 
         private TextView feedbackAuthor;
         private TextView feedbackComment;
-        private ImageView feedbackImage;
+        private CircularImageView feedbackImage;
 
         LinearLayout ll_starContainer;
 
