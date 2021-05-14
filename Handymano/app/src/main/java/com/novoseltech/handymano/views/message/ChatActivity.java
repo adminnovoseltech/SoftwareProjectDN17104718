@@ -12,6 +12,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -20,6 +21,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
@@ -250,9 +252,20 @@ public class ChatActivity extends AppCompatActivity implements PopupMenu.OnMenuI
             }
         });
 
-        if(chatAdapter.getItemCount() == 0){
-            iv_chatMoreButton.setVisibility(View.GONE);
-        }
+
+
+
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if(chatAdapter.getItemCount() == 0){
+                    iv_chatMoreButton.setVisibility(View.GONE);
+                }else{
+                    iv_chatMoreButton.setVisibility(View.VISIBLE);
+                }
+            }
+        }, 1000);
 
         rv_chatContent.setAdapter(chatAdapter);
 
@@ -357,5 +370,11 @@ public class ChatActivity extends AppCompatActivity implements PopupMenu.OnMenuI
                 return false;
         }
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
+        super.onBackPressed();
     }
 }
