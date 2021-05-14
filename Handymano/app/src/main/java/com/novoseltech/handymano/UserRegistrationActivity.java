@@ -198,4 +198,9 @@ public class UserRegistrationActivity extends AppCompatActivity {
 
         return matcher.matches();
     }
+
+    @Override
+    public void onBackPressed() {
+        //super.onBackPressed();
+    }
 }

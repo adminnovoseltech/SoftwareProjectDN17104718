@@ -56,6 +56,11 @@ public class PasswordReset extends AppCompatActivity {
             }
         });
 
+    }
 
+    @Override
+    public void onBackPressed() {
+        finish();
+        super.onBackPressed();
     }
 }
