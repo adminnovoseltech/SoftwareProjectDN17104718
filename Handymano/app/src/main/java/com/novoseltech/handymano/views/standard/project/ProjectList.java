@@ -186,20 +186,11 @@ public class ProjectList extends AppCompatActivity {
         drawerLayout.openDrawer(GravityCompat.START);
     }
 
-    public static void closeDrawer(DrawerLayout drawerLayout) {
-        //Close drawer layout
-        //Check condition
-        if(drawerLayout.isDrawerOpen(GravityCompat.START)){
-            //When drawer is open
-            //Close drawer
-            drawerLayout.closeDrawer(GravityCompat.START);
-        }
-    }
+
 
     public void ClickJobs(View view){
-        //recreate the activity
-
         Intent intent = new Intent(ProjectList.this, JobsActivity.class);
+        finish();
         startActivity(intent);
     }
 
@@ -209,16 +200,19 @@ public class ProjectList extends AppCompatActivity {
 
     public void ClickHome(View view) {
         Intent intent = new Intent(ProjectList.this, HomeActivityStandard.class);
+        finish();
         startActivity(intent);
     }
 
     public void ClickProfile(View view) {
         Intent intent = new Intent(ProjectList.this, StandardProfileActivity.class);
+        finish();
         startActivity(intent);
     }
 
     public void ClickMessages(View view) {
         Intent intent = new Intent(ProjectList.this, MessageMenu.class);
+        finish();
         intent.putExtra("USER_TYPE", "Standard");
         startActivity(intent);
     }

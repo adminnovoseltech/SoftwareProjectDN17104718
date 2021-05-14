@@ -552,7 +552,6 @@ public class FeedbackActivity extends AppCompatActivity {
     }
 
     public void ClickLogOut(View view) {
-        finish();
         logout();
     }
 

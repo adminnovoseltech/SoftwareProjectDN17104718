@@ -393,7 +393,6 @@ public class FeedbackList extends AppCompatActivity {
     public void ClickHome(View view){
         finish();
         Intent intent = new Intent(FeedbackList.this, HomeActivityProfessional.class);
-
         startActivity(intent);
     }
 

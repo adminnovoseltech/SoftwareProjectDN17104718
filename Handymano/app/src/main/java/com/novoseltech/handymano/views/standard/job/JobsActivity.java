@@ -203,13 +203,6 @@ public class JobsActivity extends AppCompatActivity {
         drawerLayout.openDrawer(GravityCompat.START);
     }
 
-    public static void closeDrawer(DrawerLayout drawerLayout) {
-
-        if(drawerLayout.isDrawerOpen(GravityCompat.START)){
-            drawerLayout.closeDrawer(GravityCompat.START);
-        }
-    }
-
     public void ClickJobs(View view){
         //recreate the activity
         finish();
@@ -222,17 +215,20 @@ public class JobsActivity extends AppCompatActivity {
 
     public void ClickHome(View view) {
         Intent intent = new Intent(JobsActivity.this, HomeActivityStandard.class);
+        finish();
         startActivity(intent);
     }
 
     public void ClickProfile(View view) {
         Intent intent = new Intent(JobsActivity.this, StandardProfileActivity.class);
+        finish();
         startActivity(intent);
     }
 
     public void ClickMessages(View view) {
         Intent intent = new Intent(JobsActivity.this, MessageMenu.class);
         intent.putExtra("USER_TYPE", "Standard");
+        finish();
         startActivity(intent);
     }
 

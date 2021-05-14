@@ -177,7 +177,6 @@ public class JobsList extends AppCompatActivity {
 
     public void ClickProjects(View view){
         //recreate the activity
-
         Intent intent = new Intent(JobsList.this, ProjectsActivity.class);
         finish();
         startActivity(intent);

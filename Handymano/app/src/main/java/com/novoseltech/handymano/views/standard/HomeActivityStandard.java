@@ -427,6 +427,7 @@ public class HomeActivityStandard extends AppCompatActivity {
             public void onClick(View view) {
 
                 Intent intent = new Intent(HomeActivityStandard.this, MessageMenu.class);
+                finish();
                 intent.putExtra("USER_TYPE", "Standard");
                 startActivity(intent);
             }
@@ -438,6 +439,7 @@ public class HomeActivityStandard extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(HomeActivityStandard.this, JobsActivity.class);
+                finish();
                 startActivity(intent);
             }
         });

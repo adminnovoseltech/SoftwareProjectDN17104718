@@ -453,6 +453,7 @@ public class StandardProfileActivity extends AppCompatActivity implements Passwo
         //recreate the activity
 
         Intent intent = new Intent(StandardProfileActivity.this, JobsActivity.class);
+        finish();
         startActivity(intent);
     }
 
@@ -462,6 +463,7 @@ public class StandardProfileActivity extends AppCompatActivity implements Passwo
 
     public void ClickHome(View view) {
         Intent intent = new Intent(StandardProfileActivity.this, HomeActivityStandard.class);
+        finish();
         startActivity(intent);
     }
 
@@ -472,6 +474,7 @@ public class StandardProfileActivity extends AppCompatActivity implements Passwo
 
     public void ClickMessages(View view) {
         Intent intent = new Intent(StandardProfileActivity.this, MessageMenu.class);
+        finish();
         intent.putExtra("USER_TYPE", "Standard");
         startActivity(intent);
     }

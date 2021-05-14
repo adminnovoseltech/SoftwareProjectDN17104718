@@ -160,8 +160,8 @@ public class MessageMenu extends AppCompatActivity {
             messageNavLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    finish();
                     Intent intent = getIntent();
+                    finish();
                     intent.putExtra("USER_TYPE", "Professional");
                     startActivity(intent);
                 }
@@ -257,8 +257,8 @@ public class MessageMenu extends AppCompatActivity {
             messageNavLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    finish();
                     Intent intent = getIntent();
+                    finish();
                     intent.putExtra("USER_TYPE", "Standard");
                     startActivity(intent);
                 }

@@ -547,6 +547,7 @@ public class ViewProfessionalActivity extends AppCompatActivity{
         //recreate the activity
 
         Intent intent = new Intent(ViewProfessionalActivity.this, JobsActivity.class);
+        finish();
         startActivity(intent);
     }
 
@@ -556,17 +557,20 @@ public class ViewProfessionalActivity extends AppCompatActivity{
 
     public void ClickHome(View view) {
         Intent intent = new Intent(ViewProfessionalActivity.this, HomeActivityStandard.class);
+        finish();
         startActivity(intent);
     }
 
     public void ClickProfile(View view) {
         Intent intent = new Intent(ViewProfessionalActivity.this, StandardProfileActivity.class);
+        finish();
         startActivity(intent);
     }
 
     public void ClickMessages(View view) {
         Intent intent = new Intent(ViewProfessionalActivity.this, MessageMenu.class);
         intent.putExtra("USER_TYPE", "Standard");
+        finish();
         startActivity(intent);
     }
 
