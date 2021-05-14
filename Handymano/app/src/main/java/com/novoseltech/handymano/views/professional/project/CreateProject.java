@@ -6,7 +6,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.content.ClipData;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -319,5 +321,41 @@ public class CreateProject extends AppCompatActivity {
 
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        //super.onBackPressed();
+        discardChanges();
+    }
+
+    public void discardChanges(){
+        //Close app
+        //Initialize alert dialog
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        //Set title
+        builder.setTitle("Discard");
+        //Set message
+        builder.setMessage("Your changes are not saved. Continue ?");
+        //Yes button
+        builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                finish();
+                Intent intent = new Intent(CreateProject.this, ProjectsActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        //No button
+        builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                //Dismiss dialog
+                dialogInterface.dismiss();
+            }
+        });
+        //Show dialog
+        builder.show();
     }
 }

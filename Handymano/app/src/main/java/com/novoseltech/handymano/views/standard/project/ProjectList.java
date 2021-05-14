@@ -223,5 +223,8 @@ public class ProjectList extends AppCompatActivity {
         startActivity(intent);
     }
 
-
+    @Override
+    public void onBackPressed() {
+        //super.onBackPressed();
+    }
 }

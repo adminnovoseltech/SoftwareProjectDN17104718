@@ -250,4 +250,10 @@ public class ViewProjectActivity extends AppCompatActivity implements PopupMenu.
 
         }
     }
+
+    @Override
+    public void onBackPressed() {
+        finish();
+        super.onBackPressed();
+    }
 }

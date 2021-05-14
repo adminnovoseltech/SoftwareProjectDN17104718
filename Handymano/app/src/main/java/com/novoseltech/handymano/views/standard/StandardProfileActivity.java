@@ -481,7 +481,10 @@ public class StandardProfileActivity extends AppCompatActivity implements Passwo
         exampleDialog.show(getSupportFragmentManager(), "example dialog");
     }
 
-
+    @Override
+    public void onBackPressed() {
+        //super.onBackPressed();
+    }
 }
 
 

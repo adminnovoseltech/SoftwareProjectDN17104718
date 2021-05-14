@@ -661,6 +661,12 @@ public class EditProject extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        //super.onBackPressed();
+        discardChanges();
+    }
+
     public void discardChanges(){
         //Close app
         //Initialize alert dialog

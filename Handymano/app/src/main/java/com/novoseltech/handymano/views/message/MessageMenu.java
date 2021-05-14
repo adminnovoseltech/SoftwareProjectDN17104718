@@ -387,4 +387,8 @@ public class MessageMenu extends AppCompatActivity {
         builder.show();
     }
 
+    @Override
+    public void onBackPressed() {
+        //super.onBackPressed();
+    }
 }

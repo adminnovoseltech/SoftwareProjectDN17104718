@@ -397,4 +397,10 @@ public class StandardJobViewActivity extends AppCompatActivity implements PopupM
             }
         }
     }
+
+    @Override
+    public void onBackPressed() {
+        finish();
+        super.onBackPressed();
+    }
 }
