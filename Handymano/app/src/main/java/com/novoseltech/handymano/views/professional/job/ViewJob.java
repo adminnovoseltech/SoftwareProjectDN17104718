@@ -91,6 +91,8 @@ public class ViewJob extends AppCompatActivity {
             }
         });
 
+        //getting the job creator UID and document title as JOB_ID from the adapter by clicking RV item
+        //and retrieving job data
         DocumentReference documentReference = fStore.collection("user")
                 .document(USER_ID)
                 .collection("jobs")
@@ -143,6 +145,7 @@ public class ViewJob extends AppCompatActivity {
             }
         }, 600);
 
+        //Initiate conversation from the job ad
         btnMessageAdvertiser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -156,10 +159,9 @@ public class ViewJob extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
-
     }
 
+    //Idea taken from https://github.com/smarteist/Android-Image-Slider
     public void addImagesToSlider(View view){
         if(imageCount == 0){
             //tv_currentImg.setVisibility(View.INVISIBLE);

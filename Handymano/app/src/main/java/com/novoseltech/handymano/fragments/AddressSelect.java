@@ -3,6 +3,7 @@ package com.novoseltech.handymano.fragments;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
@@ -28,6 +29,8 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.textfield.TextInputLayout;
@@ -112,6 +115,12 @@ public class AddressSelect extends Fragment implements OnMapReadyCallback{
 
     }
 
+    //This whole fragment was developed with the help from
+    // 1. https://developers.google.com/maps/documentation/android-sdk/overview
+    // 2. https://stackoverflow.com/questions/9409195/how-to-get-complete-address-from-latitude-and-longitude
+    // Scaling up this fragment to serve during registration of Professional user, editing Pro user's profile, creating and editing job
+    // was developed by me
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -160,19 +169,24 @@ public class AddressSelect extends Fragment implements OnMapReadyCallback{
             public void onMapReady(GoogleMap googleMap) {
 
                 if(mode.equals("Edit")){
+                    //If the Pro user is editing their profile location
                     LatLng point = new LatLng(tmpLat, tmpLon);
                     googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(point, 7));
                     addMarkerToTheMap(point);
+
 
                     coordinates[0] = String.valueOf(tmpLat);
                     coordinates[1] = String.valueOf(tmpLon);
                     coordinates[2] = tmpRad;
 
+
                     btn_saveLocation.setVisibility(View.VISIBLE);
                     btn_cancelLocation.setVisibility(View.VISIBLE);
 
-                }else if(mode.equals("NewJob")){
+                    drawCircle(googleMap, point, Integer.parseInt(tmpRad));
 
+                }else if(mode.equals("NewJob")){
+                    //If standard user is creating new job ad
                     LatLng point = new LatLng(53.2734, -7.77832031);
                     googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(point, 7));
                     et_radius.setVisibility(View.GONE);
@@ -183,7 +197,7 @@ public class AddressSelect extends Fragment implements OnMapReadyCallback{
 
 
                 }else if(mode.equals("JobEdit")){
-
+                    //If standard user is editing job ad location
                     LatLng point = new LatLng(tmpLat, tmpLon);
                     googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(point, 7));
                     addMarkerToTheMap(point);
@@ -194,12 +208,16 @@ public class AddressSelect extends Fragment implements OnMapReadyCallback{
                     btn_cancelLocation.setVisibility(View.VISIBLE);
                     til_radius.setVisibility(View.GONE);
 
-                }else{
 
+                }else{
+                    //Pro user registration location choice
+                    //Animate map over center of Ireland
                     LatLng point = new LatLng(53.2734, -7.77832031);
                     googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(point, 7));
                     coordinates[2] = "0";
                     btn_cancelLocation.setVisibility(View.VISIBLE);
+
+
 
                 }
 
@@ -214,21 +232,19 @@ public class AddressSelect extends Fragment implements OnMapReadyCallback{
         super.onViewCreated(view, savedInstanceState);
 
         if(mode.equals("Edit")){
-
+            //If Pro user is editing the profile
+            //Populate the radius with their current radius
             et_radius.setText(tmpRad);
             Geocoder geocoder;
             List<Address> addresses;
             geocoder = new Geocoder(getContext(), Locale.getDefault());
 
+
             try {
+                //Get the address from the coordinates and populate the EditText
+                //Idea taken from https://stackoverflow.com/questions/9409195/how-to-get-complete-address-from-latitude-and-longitude
                 addresses = geocoder.getFromLocation(tmpLat, tmpLon, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
                 String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
-                //String city = addresses.get(0).getLocality();
-                //String state = addresses.get(0).getAdminArea();
-                //String country = addresses.get(0).getCountryName();
-                //String postalCode = addresses.get(0).getPostalCode();
-                //String knownName = addresses.get(0).getFeatureName();
-
                 et_address.setText(address);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -237,6 +253,8 @@ public class AddressSelect extends Fragment implements OnMapReadyCallback{
 
 
         }else if(mode.equals("JobEdit")){
+            //Get the address from the coordinates and populate the EditText
+            //Idea taken from https://stackoverflow.com/questions/9409195/how-to-get-complete-address-from-latitude-and-longitude
             Geocoder geocoder;
             List<Address> addresses;
             geocoder = new Geocoder(getContext(), Locale.getDefault());
@@ -302,33 +320,45 @@ public class AddressSelect extends Fragment implements OnMapReadyCallback{
             @Override
             public void onClick(View v) {
                 String radius = et_radius.getText().toString();
+                //Passing the location data from the fragment to the activities behind the fragment
+                //Cases
+
+                //New registration
                 if(mode.equals("NewReg")){
+                    //Get the activity behind
                     BusinessRegistrationActivity bra = (BusinessRegistrationActivity) getActivity();
                     if(radius == null){
                         Toast.makeText(getContext(), "Radius cannot be empty", Toast.LENGTH_SHORT).show();
                     }else{
+                        //Make FrameLayout GONE and ConstraintLayout VISIBLE
+                        //Pass the location data to the activity for further processing
                         fl_bra.setVisibility(View.GONE);
                         cl_bra.setVisibility(View.VISIBLE);
                         bra.setLocationData(coordinates[0], coordinates[1], radius);
                     }
                 }else if(mode.equals("Edit")){
+                    //Get the activity behind
                     ProfessionalProfileActivity ppa = (ProfessionalProfileActivity) getActivity();
-
+                    //Make FrameLayout GONE and ConstraintLayout VISIBLE
+                    //Pass the location data to the activity for further processing
                     fl_ppa.setVisibility(View.GONE);
                     cl_ppa.setVisibility(View.VISIBLE);
-
                     ppa.setLocationData(coordinates[0], coordinates[1], radius);
 
                 }else if(mode.equals("JobEdit")){
+                    //Get the activity behind
                     EditJob ej = (EditJob) getActivity();
-
+                    //Make FrameLayout GONE and ConstraintLayout VISIBLE
+                    //Pass the location data to the activity for further processing
                     fl_ej.setVisibility(View.GONE);
                     cl_ej.setVisibility(View.VISIBLE);
                     btn_scej.setVisibility(View.VISIBLE);
                     ej.setLocationData(coordinates[0], coordinates[1]);
                 }else if(mode.equals("NewJob")){
+                    //Get the activity behind
                     CreateJob cj = (CreateJob) getActivity();
-
+                    //Make FrameLayout GONE and ConstraintLayout VISIBLE
+                    //Pass the location data to the activity for further processing
                     fl_cj.setVisibility(View.GONE);
                     cl_cj.setVisibility(View.VISIBLE);
                     cj.setLocationData(coordinates[0], coordinates[1]);
@@ -341,6 +371,7 @@ public class AddressSelect extends Fragment implements OnMapReadyCallback{
             @Override
             public void onClick(View v) {
 
+                //Hide the FrameLayout and show ConstraintLayout if Cancel is pressed
                 if(mode.equals("NewReg")){
                     fl_bra.setVisibility(View.GONE);
                     cl_bra.setVisibility(View.VISIBLE);
@@ -359,6 +390,7 @@ public class AddressSelect extends Fragment implements OnMapReadyCallback{
             }
         });
 
+        //Radius EditText listener
         et_radius.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -368,10 +400,13 @@ public class AddressSelect extends Fragment implements OnMapReadyCallback{
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 if(et_radius.getText().toString().equals("")){
+                    //Set default value
                     et_radius.setText("0");
                 }else if(Double.parseDouble(et_radius.getText().toString()) < 0.0){
+                    //Prevent negative number input
                     et_radius.setText("0");
                 }else{
+                    //Update the Array if correct number is entered
                     String radius = et_radius.getText().toString();
                     coordinates[2] = radius;
                 }
@@ -433,9 +468,16 @@ public class AddressSelect extends Fragment implements OnMapReadyCallback{
         });
     }
 
+    public void drawCircle(GoogleMap map, LatLng point, int radius){
+        Circle circle = map.addCircle(new CircleOptions().center(point).
+                radius(radius).
+                strokeColor(Color.BLUE).
+                fillColor(Color.RED));
+    }
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
-
+        //Map functionality from https://developers.google.com/maps/documentation/android-sdk/map
         LatLng point = new LatLng(53.2734, -7.77832031);
         googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(point, 10));
 
@@ -446,6 +488,7 @@ public class AddressSelect extends Fragment implements OnMapReadyCallback{
     }
 
     private String getCountryFromCoordinates(double LATITUDE, double LONGITUDE) {
+        //Idea taken from https://stackoverflow.com/questions/9409195/how-to-get-complete-address-from-latitude-and-longitude
         String strAdd = "";
         Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
         try {

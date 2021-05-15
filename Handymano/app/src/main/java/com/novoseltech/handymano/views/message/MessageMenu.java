@@ -291,7 +291,7 @@ public class MessageMenu extends AppCompatActivity {
                     messageReceipients = (List<String>) documentSnapshot.get("recipients");
 
                     if(messageReceipients != null){
-                        //If the recipients list is not empty then add themn to the ArrayList that will be passed to the adapter
+                        //If the recipients list is not empty then add them to the ArrayList that will be passed to the adapter
                         //so that the recipients can be shown in the RecyclerView
                         for(int i = 0; i < messageReceipients.size(); i++){
 
@@ -340,7 +340,7 @@ public class MessageMenu extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-
+                //Wait 1000ms until the data is loaded and then show the data in the RecyclerView
                 adapter = new MessagesAdapter(messageReceipients, lastMessageSent, getApplicationContext());
                 rv_chatList.setHasFixedSize(true);
                 rv_chatList.setLayoutManager(new LinearLayoutManager(getApplicationContext()));

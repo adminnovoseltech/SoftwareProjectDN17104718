@@ -115,7 +115,7 @@ public class ChatActivity extends AppCompatActivity implements PopupMenu.OnMenuI
             RECIPIENT_NAME = getIntent().getStringExtra("USERNAME");
         }
 
-        //Getting and loading the recipient image in the chat
+        //Getting and loading the recipient image in the chat from Firebase Storage
         StorageReference storageReference = FirebaseStorage.getInstance()
                 .getReference().child("images")
                 .child(RECIPIENT_ID)
@@ -141,7 +141,7 @@ public class ChatActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         });
 
         tv_chatSenderName.setText(RECIPIENT_NAME);
-
+        //Collection references for the chat messages
         CollectionReference chatReference = fStore.collection("chat").document(UID).collection(RECIPIENT_ID);
         CollectionReference receiverReference = fStore.collection("chat").document(RECIPIENT_ID).collection(UID);
 
@@ -197,16 +197,20 @@ public class ChatActivity extends AppCompatActivity implements PopupMenu.OnMenuI
             }
         });
 
+        //Register click on the "Send Message" icon
         findViewById(R.id.ic_sendMessage).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
+                //IF the message is not offensive then proceed
                 if(!appFunctions.containsOffensiveWord(et_chatMessage.getText().toString())){
+                    //Build the model and create the document in both sender's and receiver's collection
                     ChatModel chat = new ChatModel(user.getUid(),SENDER_NAME, et_chatMessage.getText().toString(), new Date());
                     receiverReference.add(chat);
                     chatReference.add(chat);
                     et_chatMessage.setText("");
 
+                    //If message receiver does not have me on the list of their recipients then add my UID and username separated by "," to it
                     if(!messageRecipientsReceiver.contains(UID + "," + SENDER_NAME)){
 
                         messageRecipientsReceiver.add(UID + "," + SENDER_NAME);
@@ -221,6 +225,7 @@ public class ChatActivity extends AppCompatActivity implements PopupMenu.OnMenuI
 
                     }
 
+                    //If I do not have message recipient on my recipient list then add their UID and username separated by "," to it
                     if(!messageRecipientsSender.contains(RECIPIENT_ID + "," + RECIPIENT_NAME)){
                         messageRecipientsSender.add(RECIPIENT_ID + "," + RECIPIENT_NAME);
 
@@ -244,7 +249,7 @@ public class ChatActivity extends AppCompatActivity implements PopupMenu.OnMenuI
             }
         });
         
-
+        //Displaying message bubbles in the RecyclerView
         rv_chatContent = findViewById(R.id.rv_chatContent);
         linearLayoutManager = new LinearLayoutManager(getApplicationContext());
         linearLayoutManager.setStackFromEnd(true);
@@ -253,26 +258,21 @@ public class ChatActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         Query query = FirebaseFirestore.getInstance()
                 .collection("chat").document(UID).collection(RECIPIENT_ID).orderBy("timestamp", Query.Direction.ASCENDING);
 
-
-
         FirestoreRecyclerOptions<ChatModel> options = new FirestoreRecyclerOptions.Builder<ChatModel>().setQuery(query, ChatModel.class).build();
         chatAdapter = new ChatAdapter(options, SENDER_NAME);
         chatAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             @Override
             public void onItemRangeInserted(int positionStart, int itemCount) {
                 rv_chatContent.scrollToPosition(chatAdapter.getItemCount() - 1);
-
-
             }
         });
-
-
-
 
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
+                //Delaying this action by 1000ms until messages are loaded
+                //If there are no messages exchanged then hide the options to delete the chat
                 if(chatAdapter.getItemCount() == 0){
                     iv_chatMoreButton.setVisibility(View.GONE);
                 }else{
@@ -297,6 +297,7 @@ public class ChatActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         chatAdapter.stopListening();
     }
 
+    //Inflating menu to delete messages
     public void ClickMenuMessages(View view) {
         PopupMenu popupMenu = new PopupMenu(this, view);
         popupMenu.setOnMenuItemClickListener(this);
@@ -323,6 +324,9 @@ public class ChatActivity extends AppCompatActivity implements PopupMenu.OnMenuI
                                     @Override
                                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                                         if(task.isSuccessful()){
+                                            //Each message in the conversation is separate document within the subcollection
+                                            //To delete all messages we need to iterate through the subcollection
+                                            //and delete each document
                                             for(QueryDocumentSnapshot queryDocumentSnapshot : task.getResult()){
                                                 fStore.collection("chat")
                                                         .document(user.getUid())
@@ -336,16 +340,14 @@ public class ChatActivity extends AppCompatActivity implements PopupMenu.OnMenuI
                                                             }
                                                         });
                                             }
-
                                         }
                                     }
                                 });
 
+                                //getting the index in the ArrayList of the recipient list and then updating my recipient list
                                 int indexToRemove = messageRecipientsSender.indexOf(RECIPIENT_ID + "," + RECIPIENT_NAME);
 
                                 messageRecipientsSender.remove(indexToRemove);
-
-
                                 fStore.collection("chat").document(UID)
                                         .update("recipients", messageRecipientsSender)
                                         .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -355,6 +357,7 @@ public class ChatActivity extends AppCompatActivity implements PopupMenu.OnMenuI
                                             }
                                         });
 
+                                //Where to return after deleting the conversation
                                 Intent intent;
                                 if(MODE.equals("PROFILE_VISIT")){
                                     intent = new Intent(ChatActivity.this, ViewProfessionalActivity.class);
@@ -368,10 +371,6 @@ public class ChatActivity extends AppCompatActivity implements PopupMenu.OnMenuI
                                     intent = new Intent(ChatActivity.this, MessageMenu.class);
                                     intent.putExtra("USER_TYPE", USER_TYPE);
                                 }
-
-
-                                //Intent intent = new Intent(ChatActivity.this, MessageMenu.class);
-                                //intent.putExtra("USER_TYPE", USER_TYPE);
                                 finish();
                                 startActivity(intent);
                             }

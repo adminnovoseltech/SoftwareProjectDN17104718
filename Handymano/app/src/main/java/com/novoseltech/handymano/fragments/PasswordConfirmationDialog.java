@@ -46,6 +46,7 @@ public class PasswordConfirmationDialog extends DialogFragment {
         final AlertDialog dialog = builder.create();
         dialog.show();
 
+        //Idea from https://stackoverflow.com/questions/49357150/how-to-update-email-from-firebase-in-android
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

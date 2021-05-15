@@ -105,7 +105,7 @@ public class CreateProject extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-
+                //Image slider settings
                 sliderView.setIndicatorAnimation(IndicatorAnimationType.WORM); //set indicator animation by using IndicatorAnimationType. :WORM or THIN_WORM or COLOR or DROP or FILL or NONE or SCALE or SCALE_DOWN or SLIDE and SWAP!!
                 sliderView.setSliderTransformAnimation(SliderAnimations.SIMPLETRANSFORMATION);
                 sliderView.setIndicatorSelectedColor(Color.WHITE);
@@ -122,12 +122,16 @@ public class CreateProject extends AppCompatActivity {
         }, 600);
 
         iv_addImg.setOnClickListener(new View.OnClickListener() {
+            //When adding images check for permission
             @Override
             public void onClick(View v) {
+                //If the permission is not granted
+                //WRITE_EXTERNAL_STORAGE is required for Android v < 10
                 if(getApplicationContext().checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED || getApplicationContext().
                         checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
                     requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_STORAGE_PERMISSION_CODE);
                 }else{
+                    //If storage permission is granted
                     Intent intent = new Intent();
                     intent.setType("image/*");
                     intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
@@ -138,6 +142,7 @@ public class CreateProject extends AppCompatActivity {
             }
         });
 
+        //Deleting SliderItems from the ArrayList and from the Image slider
         iv_deleteImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -168,6 +173,7 @@ public class CreateProject extends AppCompatActivity {
                     project.put("creation_date", todayDate);
                     project.put("imageCount", imagesArrayList.size());
 
+                    //Save the project data in the
                     fStore.collection("user").document(UID)
                             .collection("projects")
                             .document(projectTitle)
@@ -234,6 +240,11 @@ public class CreateProject extends AppCompatActivity {
                 if (requestCode == REQUEST_STORAGE_PERMISSION_CODE && resultCode == RESULT_OK
                         && null != data) {
                     String[] filePathColumn = { MediaStore.Images.Media.DATA };
+
+                    //Ideas from:
+                    //1. https://stackoverflow.com/questions/59902190/how-to-get-the-path-of-selected-image-from-gallery
+                    //2. https://stackoverflow.com/questions/3879992/how-to-get-bitmap-from-an-uri
+                    //3. https://stackoverflow.com/questions/19585815/select-multiple-images-from-android-gallery
                     imagesEncodedList = new ArrayList<String>();
 
                     //if one image is selected
@@ -241,6 +252,8 @@ public class CreateProject extends AppCompatActivity {
                         mImageUri = null;
                         mImageUri = data.getData();
 
+                        //Add single image to the array list of slider items
+                        //and load the image into the carousel
                         SliderItem sliderItem = new SliderItem();
                         sliderItem.setImageUrl(mImageUri.toString());
                         imagesArrayList.add(sliderItem);
@@ -259,6 +272,8 @@ public class CreateProject extends AppCompatActivity {
                         if(data.getClipData() != null) {
                             ClipData clipData = data.getClipData();
                             for(int i = 0; i < clipData.getItemCount(); i++){
+                                //Get the uri of each picture selected
+                                //and add them to arraylist of SliderItems as well as load them into the carousel
                                 ClipData.Item item = clipData.getItemAt(i);
                                 Uri uri = item.getUri();
                                 Cursor cursor = getContentResolver().query(uri, filePathColumn,
@@ -295,6 +310,7 @@ public class CreateProject extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
         if(requestCode == REQUEST_STORAGE_PERMISSION_CODE) {
             // If request is cancelled, the result arrays are empty.
+            //Idea from https://stackoverflow.com/questions/19585815/select-multiple-images-from-android-gallery
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Intent intent = new Intent();
                 intent.setType("image/*");
@@ -309,6 +325,11 @@ public class CreateProject extends AppCompatActivity {
     }
 
     private void uploadImageToFirebaseStorage(Bitmap bitmap, int imgCount) {
+        //https://firebase.google.com/docs/storage/android/start
+        //Uploading images based on the number of images in the arraylist
+        //then name the folder based on the UID of creator,
+        //subfolder as the project name
+        // and image files as the date and the number of image in the index
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
         StorageReference reference = FirebaseStorage.getInstance().getReference()

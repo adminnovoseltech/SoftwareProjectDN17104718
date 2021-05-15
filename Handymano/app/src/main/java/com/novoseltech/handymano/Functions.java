@@ -1,12 +1,17 @@
 package com.novoseltech.handymano;
 
-import android.util.Log;
 
+import android.util.Log;
 import java.util.ArrayList;
 
+
 public class Functions {
+
+
     public boolean containsOffensiveWord(String sentence){
         //List of offensive words retrieved from https://www.cs.cmu.edu/~biglou/resources/bad-words.txt
+
+        //Idea based on https://stackoverflow.com/questions/33254492/how-to-censored-bad-words-offensive-words-in-android-studio/33254897
         boolean contains = false;
         ArrayList<String> offensiveWords = new ArrayList<>();
         String list =   "allah," +
@@ -125,7 +130,6 @@ public class Functions {
                         "breastjob," +
                         "breastlover," +
                         "breastman," +
-                        "brothel," +
                         "bugger," +
                         "buggered," +
                         "buggery," +
@@ -335,13 +339,6 @@ public class Functions {
                         "fatfucker," +
                         "feces," +
                         "felatio ," +
-                        "felch," +
-                        "felcher," +
-                        "felching," +
-                        "felatio," +
-                        "feltch," +
-                        "feltcher," +
-                        "feltching," +
                         "fetish," +
                         "fight," +
                         "fingerfood," +
@@ -602,7 +599,6 @@ public class Functions {
                         "loverocket," +
                         "lowlife," +
                         "lubejob," +
-                        "luckycammeltoe," +
                         "lugan," +
                         "lynch," +
                         "macaca," +
@@ -1163,4 +1159,6 @@ public class Functions {
 
         return contains;
     }
+
+
 }

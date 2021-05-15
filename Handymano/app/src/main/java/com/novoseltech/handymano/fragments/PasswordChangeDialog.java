@@ -64,9 +64,7 @@ public class PasswordChangeDialog extends DialogFragment {
         et_newPasswordOne = view.findViewById(R.id.et_newPasswordOne);
         et_newPasswordTwo = view.findViewById(R.id.et_newPasswordTwo);
 
-
         String userEmail = user.getEmail();
-
 
         builder.setView(view).setTitle("Password change")
         .setPositiveButton("Confirm", null)
@@ -80,20 +78,27 @@ public class PasswordChangeDialog extends DialogFragment {
         final AlertDialog dialog = builder.create();
         dialog.show();
 
+        //Building the dialog
+        //Idea from https://stackoverflow.com/questions/39866086/change-password-with-firebase-for-android
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //Field validation
                 if(et_oldPassword.getText().toString().equals("") || et_newPasswordOne.getText().toString().equals("") || et_newPasswordTwo.getText().toString().equals("")){
                     Toast.makeText(getContext(), "Cannot have empty fields", Toast.LENGTH_SHORT).show();
                 }else{
+                    //Are new passwords the same
                     if(et_newPasswordOne.getText().toString().equals(et_newPasswordTwo.getText().toString())){
-
+                        //Password complexity validation
                         if(isValidPassword(et_newPasswordOne.getText().toString())){
+                            //Build credential object from old password and email
                             AuthCredential credential = EmailAuthProvider.getCredential(userEmail, et_oldPassword.getText().toString());
+                            //To update the password we must first re-authenticate user
                             user.reauthenticate(credential).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if(task.isSuccessful()){
+                                        //If old password is correct then update the password with the new one
                                         user.updatePassword(et_newPasswordOne.getText().toString()).addOnCompleteListener(new OnCompleteListener<Void>() {
                                             @Override
                                             public void onComplete(@NonNull Task<Void> task) {
@@ -131,7 +136,7 @@ public class PasswordChangeDialog extends DialogFragment {
     }
 
     public boolean isValidPassword(final String password){
-        //https://androidfreetutorial.wordpress.com/2018/01/04/regular-expression-for-password-field-in-android/
+        //Idea from https://androidfreetutorial.wordpress.com/2018/01/04/regular-expression-for-password-field-in-android/
         Pattern pattern;
         Matcher matcher;
 

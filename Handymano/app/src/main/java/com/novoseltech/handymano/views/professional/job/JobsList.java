@@ -81,7 +81,7 @@ public class JobsList extends AppCompatActivity {
             Log.d("TAG", "Profile image not found. Loading default image.");
         }
 
-        //Query
+        //Query my profile document and retrieve my location data
         fStore.collection("user").document(user.getUid())
                 .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -96,6 +96,7 @@ public class JobsList extends AppCompatActivity {
             }
         });
 
+        //Iterate through "user" collection and get me the profile documents which are marked as "Standard" accounts
         fStore.collection("user").get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -103,6 +104,7 @@ public class JobsList extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 if(document.getString("accountType").equals("Standard")){
+                                    //If user document is Standard type then add it to the users ArrayList
                                     usersAL.add(document.getId());
                                     String docId = document.getId();
                                     fStore.collection("user")
@@ -112,10 +114,14 @@ public class JobsList extends AppCompatActivity {
                                             .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                                                 @Override
                                                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                    //If user has "jobs" subcollection created then iterate through all the documents in that subcollection
                                                     for(QueryDocumentSnapshot documentSnapshot : task.getResult()){
                                                         GeoPoint jobGP = documentSnapshot.getGeoPoint("location");
                                                         String jobCategory = documentSnapshot.getString("category");
 
+                                                        //If the job's location is within my range, within my category and it is Active then add it's creator UID
+                                                        // and job title to the Jobs ArrayList which will be passed
+                                                        //to the adapter to be shown within RecyclerView
                                                         if(documentSnapshot.getString("status").equals("Active") && (distanceBetweenTwoCoordinates(jobGP.getLatitude(), jobGP.getLongitude(),
                                                                  tradeGP.getLatitude(), tradeGP.getLongitude()) <= Double.parseDouble(tradeRadius) || tradeRadius.equals("0")) && jobCategory.equals(tradeCategory)){
                                                             jobsAL.add(docId + ',' + documentSnapshot.getId());

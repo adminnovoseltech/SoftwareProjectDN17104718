@@ -113,6 +113,7 @@ public class FeedbackList extends AppCompatActivity {
         cl_tradeFeedbackList = findViewById(R.id.cl_tradeFeedbackList);
         layoutInflater = LayoutInflater.from(getApplicationContext());
 
+        //Getting 5 star rating count
         fStore.collection("rating")
                 .document(user.getUid())
                 .collection("feedback")
@@ -131,6 +132,7 @@ public class FeedbackList extends AppCompatActivity {
             }
         });
 
+        //Getting 4 star rating count
         fStore.collection("rating")
                 .document(user.getUid())
                 .collection("feedback")
@@ -148,6 +150,7 @@ public class FeedbackList extends AppCompatActivity {
             }
         });
 
+        //Getting 3 star rating count
         fStore.collection("rating")
                 .document(user.getUid())
                 .collection("feedback")
@@ -165,6 +168,7 @@ public class FeedbackList extends AppCompatActivity {
             }
         });
 
+        //Getting 2 star rating count
         fStore.collection("rating")
                 .document(user.getUid())
                 .collection("feedback")
@@ -182,6 +186,7 @@ public class FeedbackList extends AppCompatActivity {
             }
         });
 
+        //Getting 1 star rating count
         fStore.collection("rating")
                 .document(user.getUid())
                 .collection("feedback")
@@ -199,6 +204,7 @@ public class FeedbackList extends AppCompatActivity {
             }
         });
 
+        //Get my username and display it in the Navigation Drawer
         fStore.collection("user")
                 .document(user.getUid())
                 .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -217,6 +223,7 @@ public class FeedbackList extends AppCompatActivity {
             public void run() {
 
                 //Feedback banner -- CONTINUED
+                //Calculating the total rating
                 int totalRates = oneStarCount + twoStarCount + threeStarCount + fourStarCount + fiveStarCount;
                 double totalScore = oneStarCount + (twoStarCount * 2) + (threeStarCount * 3) + (fourStarCount * 4) + (fiveStarCount * 5);
                 totalRating = totalScore / totalRates;
@@ -233,15 +240,15 @@ public class FeedbackList extends AppCompatActivity {
                     tv_tradeTotalRating.setText(String.valueOf(round(totalRating, 1)));
                 }
 
-                //tv_tradeTotalRating.setText(String.valueOf(round(totalRating, 1)));
-
             }
         }, 500);
 
         //Feedback list
         fStoreList = findViewById(R.id.rv_tradeRatingList);
 
-        //Query
+        //Query to retrieve the results from the Pro user's rating collection
+        //which have feedback (comment) added to them
+        //to be displayed in the RecyclerView
         Query query = fStore.collection("rating")
                 .document(user.getUid())
                 .collection("feedback")
@@ -264,6 +271,7 @@ public class FeedbackList extends AppCompatActivity {
             @Override
             protected void onBindViewHolder(@NonNull FeedbackList.FeedbackViewHolder holder, int position, @NonNull FeedbackModel model) {
 
+                //Showing the data in the each RV item
                 holder.feedbackAuthor.setText(model.getUsername() + " on " + model.getCreation_date() + " :");
                 holder.feedbackComment.setText(model.getFeedback_text());
 
