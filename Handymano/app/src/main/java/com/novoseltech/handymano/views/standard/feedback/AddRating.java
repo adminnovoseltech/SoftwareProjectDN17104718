@@ -18,6 +18,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.novoseltech.handymano.Functions;
 import com.novoseltech.handymano.R;
 import com.novoseltech.handymano.views.standard.ViewProfessionalActivity;
 import com.novoseltech.handymano.views.standard.job.CreateJob;
@@ -41,7 +42,7 @@ public class AddRating extends AppCompatActivity {
     //Firebase components
     private FirebaseFirestore fStore = FirebaseFirestore.getInstance();
 
-    //Objects
+    //Variables
     private float ratingStars = 0.0f;
     private Date dt = Calendar.getInstance().getTime();
     private SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy", Locale.getDefault());
@@ -52,6 +53,7 @@ public class AddRating extends AppCompatActivity {
     private String MY_USERNAME = "";
     private String TRADE_UID = "";
     private String TRADE_USERNAME = "";
+    private Functions appFunctions = new Functions();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,6 +101,8 @@ public class AddRating extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "You must rate the user", Toast.LENGTH_SHORT).show();
                 }else if(feedbackComment.length() > 500){
                     Toast.makeText(getApplicationContext(), "Feedback comment cannot exceed 500 characters", Toast.LENGTH_SHORT).show();
+                }else if(appFunctions.containsOffensiveWord(feedbackComment)){
+                    Toast.makeText(getApplicationContext(), "Your feedback comment contains an offensive word. Please remove the offensive content and submit the comment.", Toast.LENGTH_SHORT).show();
                 }else{
                     long stars = (long) ratingStars;
                     Map<String, Object> feedbackMap = new HashMap<>();

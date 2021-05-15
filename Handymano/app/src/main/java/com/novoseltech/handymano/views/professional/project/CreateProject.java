@@ -35,6 +35,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.novoseltech.handymano.Functions;
 import com.novoseltech.handymano.R;
 import com.novoseltech.handymano.adapter.SliderAdapter;
 import com.novoseltech.handymano.model.SliderItem;
@@ -65,13 +66,12 @@ public class CreateProject extends AppCompatActivity {
     private SliderView sliderView;
     private SliderAdapter adapter;
 
-
     //Firebase components
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private FirebaseFirestore fStore = FirebaseFirestore.getInstance();
     private FirebaseUser user = mAuth.getCurrentUser();
 
-    //Objects
+    //Variables
     private int REQUEST_STORAGE_PERMISSION_CODE = 2014;
     private long imageCount = 0;
     private String imageEncoded;
@@ -83,6 +83,7 @@ public class CreateProject extends AppCompatActivity {
     private SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy", Locale.getDefault());
     private String todayDate = df.format(dt);
     private List<SliderItem> imagesArrayList = new ArrayList<>();
+    private Functions appFunctions = new Functions();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -159,7 +160,9 @@ public class CreateProject extends AppCompatActivity {
 
 
                 //Content validation
-                if(projectTitle.length() >= 10 && projectTitle.length() <= 50 && projectDescription.length() >= 10 && projectDescription.length() <= 400 && (imagesArrayList.size() > 0)){
+                if(projectTitle.length() >= 10 && projectTitle.length() <= 50 && projectDescription.length() >= 10
+                        && projectDescription.length() <= 400 && (imagesArrayList.size() > 0)
+                        && !appFunctions.containsOffensiveWord(projectTitle) && !appFunctions.containsOffensiveWord(projectDescription)){
                     project.put("title", projectTitle);
                     project.put("description", projectDescription);
                     project.put("creation_date", todayDate);
@@ -200,8 +203,13 @@ public class CreateProject extends AppCompatActivity {
                         et_projectTitle.requestFocus();
                     }else if(imagesArrayList.size() == 0){
                         Toast.makeText(getApplicationContext(), "You must attach at least 1 image to the project", Toast.LENGTH_SHORT).show();
-                    }
-                    else{
+                    }else if(appFunctions.containsOffensiveWord(projectTitle)){
+                        et_projectTitle.setError("Project title contains an offensive word. Please change it to something more appropriate.");
+                        et_projectTitle.requestFocus();
+                    }else if(appFunctions.containsOffensiveWord(projectDescription)){
+                        et_projectDescription.setError("Project description contains an offensive word(s). Please remove the offensive word(s).");
+                        et_projectDescription.requestFocus();
+                    }else{
                         if(projectDescription.length() < 10){
                             et_projectDescription.setError("Description length must be at least 10 characters!");
                         }else{

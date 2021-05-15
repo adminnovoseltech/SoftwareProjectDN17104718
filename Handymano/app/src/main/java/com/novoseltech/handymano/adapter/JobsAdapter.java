@@ -34,7 +34,13 @@ public class JobsAdapter extends RecyclerView.Adapter<JobsAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull JobsAdapter.ViewHolder holder, int position) {
-
+        //Displaying ArrayList data inside of the RecyclerView
+        //JobsList activity iterates through user documents and checks if they are Standard user
+        //If they are then it checks if they have any documents created in "jobs" collection
+        //If they do then the activity iterates through those documents to check for the category and location
+        //If the criteria is matched then the job poster UID and the job name are added to the ArrayList separated by the "," character
+        //This array list is then split here to show the job names on the RecyclerView and user's ID as well as the job name are passed
+        //With the intent when job is clicked on the load the job data
         String toSplit = jobsArrayList.get(position);
         String[] jobData = toSplit.split(",");
         String user = jobData[0];

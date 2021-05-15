@@ -40,6 +40,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.mikhaellopez.circularimageview.CircularImageView;
+import com.novoseltech.handymano.Functions;
 import com.novoseltech.handymano.R;
 import com.novoseltech.handymano.adapter.ChatAdapter;
 import com.novoseltech.handymano.model.ChatModel;
@@ -66,7 +67,7 @@ public class ChatActivity extends AppCompatActivity implements PopupMenu.OnMenuI
     private FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     private String UID = user.getUid();
 
-    //Objects
+    //Variables
     private LinearLayoutManager linearLayoutManager;
     private ChatAdapter chatAdapter;
     private String SENDER_NAME = "";
@@ -78,6 +79,7 @@ public class ChatActivity extends AppCompatActivity implements PopupMenu.OnMenuI
     private String JOB_DATE = "";
     private List<String> messageRecipientsSender = new ArrayList<>();
     private List<String> messageRecipientsReceiver = new ArrayList<>();
+    private Functions appFunctions = new Functions();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,25 +92,30 @@ public class ChatActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         tv_chatSenderName = findViewById(R.id.tv_chatSenderName);
         iv_chatMoreButton = findViewById(R.id.iv_chatMoreButton);
 
+        //Get the mode of how the chat with the recipient was accessed
         MODE = getIntent().getStringExtra("MODE");
         if(MODE.equals("PROFILE_VISIT")){
+            //This mode is retrieved when Standard user clicks on the chat icon on Professional's profile
             RECIPIENT_ID = getIntent().getStringExtra("TRADE_ID");
             RECIPIENT_NAME = getIntent().getStringExtra("TRADE_NAME");
 
         }else if(MODE.equals("JOB_VISIT")){
+            //This mode is retrieved when Professional user clicks on "Message advertiser" button on the job ad
             RECIPIENT_ID = getIntent().getStringExtra("ADVERTISER_ID");
             RECIPIENT_NAME = getIntent().getStringExtra("ADVERTISER_NAME");
             JOB_ID = getIntent().getStringExtra("JOB_ID");
 
-            JOB_ID = getIntent().getStringExtra("JOB_ID");
+            //JOB_ID = getIntent().getStringExtra("JOB_ID");
             JOB_DATE = getIntent().getStringExtra("JOB_DATE");
             et_chatMessage.setText("Hello, I would like to offer my services on job ad " + "'" + JOB_ID +
                     "'" +" that you posted on " + JOB_DATE + ".");
         }else{
+            //This mode is retrieved when the chat is accessed through the RecyclerView click on MessageMenu activity
             RECIPIENT_ID = getIntent().getStringExtra("USER_ID");
             RECIPIENT_NAME = getIntent().getStringExtra("USERNAME");
         }
 
+        //Getting and loading the recipient image in the chat
         StorageReference storageReference = FirebaseStorage.getInstance()
                 .getReference().child("images")
                 .child(RECIPIENT_ID)
@@ -194,37 +201,44 @@ public class ChatActivity extends AppCompatActivity implements PopupMenu.OnMenuI
             @Override
             public void onClick(View v) {
 
-                ChatModel chat = new ChatModel(user.getUid(),SENDER_NAME, et_chatMessage.getText().toString(), new Date());
-                receiverReference.add(chat);
-                chatReference.add(chat);
-                et_chatMessage.setText("");
+                if(!appFunctions.containsOffensiveWord(et_chatMessage.getText().toString())){
+                    ChatModel chat = new ChatModel(user.getUid(),SENDER_NAME, et_chatMessage.getText().toString(), new Date());
+                    receiverReference.add(chat);
+                    chatReference.add(chat);
+                    et_chatMessage.setText("");
 
-                if(!messageRecipientsReceiver.contains(UID + "," + SENDER_NAME)){
+                    if(!messageRecipientsReceiver.contains(UID + "," + SENDER_NAME)){
 
-                    messageRecipientsReceiver.add(UID + "," + SENDER_NAME);
-                    fStore.collection("chat").document(RECIPIENT_ID)
-                            .update("recipients", messageRecipientsReceiver)
-                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
+                        messageRecipientsReceiver.add(UID + "," + SENDER_NAME);
+                        fStore.collection("chat").document(RECIPIENT_ID)
+                                .update("recipients", messageRecipientsReceiver)
+                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
 
-                                }
-                            });
+                                    }
+                                });
 
+                    }
+
+                    if(!messageRecipientsSender.contains(RECIPIENT_ID + "," + RECIPIENT_NAME)){
+                        messageRecipientsSender.add(RECIPIENT_ID + "," + RECIPIENT_NAME);
+
+                        fStore.collection("chat").document(UID)
+                                .update("recipients", messageRecipientsSender)
+                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+
+                                    }
+                                });
+                    }
+                }else{
+                    et_chatMessage.setError("Message contains offensive word(s). Please remove the offensive word(s) and send the message again.");
+                    et_chatMessage.requestFocus();
                 }
 
-                if(!messageRecipientsSender.contains(RECIPIENT_ID + "," + RECIPIENT_NAME)){
-                    messageRecipientsSender.add(RECIPIENT_ID + "," + RECIPIENT_NAME);
 
-                    fStore.collection("chat").document(UID)
-                            .update("recipients", messageRecipientsSender)
-                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-
-                                }
-                            });
-                }
 
 
             }

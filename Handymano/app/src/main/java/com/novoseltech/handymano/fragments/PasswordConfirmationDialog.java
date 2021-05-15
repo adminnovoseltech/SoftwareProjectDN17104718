@@ -21,6 +21,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.novoseltech.handymano.R;
 
 public class PasswordConfirmationDialog extends DialogFragment {
+    //This fragment and all of it's usages (Saving Professional and Standard profile) can be
+    //updated to use simpler version. See PasswordConfirmationDialog
 
     //Layout components
     private EditText et_password1;

@@ -71,6 +71,7 @@ public class BusinessRegistrationActivity extends AppCompatActivity {
     private double longitude;
     private String radius;
     private AddressSelect af = new AddressSelect();
+    private Functions appFunctions = new Functions();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,10 +123,14 @@ public class BusinessRegistrationActivity extends AppCompatActivity {
 
                                         if(documentSnapshot.getString("username").equals(etBusinessUsername.getText().toString().trim())){
                                             usernameMatches = true;
+                                        }else{
+                                            usernameMatches = false;
                                         }
 
                                         if(documentSnapshot.getString("phoneNo").equals(etBusinessPhoneNo.getText().toString().trim())){
                                             phoneNoMatches = true;
+                                        }else{
+                                            phoneNoMatches = false;
                                         }
                                     }
                                 }
@@ -259,13 +264,20 @@ public class BusinessRegistrationActivity extends AppCompatActivity {
             etBusinessUsername.setError("Username already exists. Please specify unique username");
             etBusinessUsername.requestFocus();
             return;
-        }
-        else if(email.isEmpty()){
+        }else if(appFunctions.containsOffensiveWord(etBusinessUsername.getText().toString())){
+            etBusinessUsername.setError("Username contains offensive word. Please change the username to something appropriate");
+            etBusinessUsername.requestFocus();
+            return;
+        }else if(email.isEmpty()){
             etBusinessEmail.setError("Email address is required");
             etBusinessEmail.requestFocus();
             return;
         }else if(!Patterns.EMAIL_ADDRESS.matcher(email).matches()){
             etBusinessEmail.setError("Please enter valid email address");
+            etBusinessEmail.requestFocus();
+            return;
+        }else if(appFunctions.containsOffensiveWord(etBusinessEmail.getText().toString())){
+            etBusinessEmail.setError("Email contains offensive word. Please change the username to something appropriate");
             etBusinessEmail.requestFocus();
             return;
         }else if(phoneNo.isEmpty()){

@@ -43,17 +43,11 @@
         <activity android:name=".views.standard.StandardProfileActivity" />
         <activity android:name=".views.standard.ViewProfessionalActivity" />
         <activity android:name=".PasswordReset" />
-        <!--
-             The API key for Google Maps-based APIs is defined as a string resource.
-             (See the file "res/values/google_maps_api.xml").
-             Note that the API key is linked to the encryption key used to sign the APK.
-             You need a different API key for each encryption key, including the release key that is used to
-             sign the APK for publishing.
-             You can define the keys for the debug and release targets in src/debug/ and src/release/.
-        -->
+
+        <!-- API KEY IS RESTRICTED ONLY TO THIS APPLICATION PACKAGE AND IT'S SHA FINGERPRINT -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyAl_3qIrLgW9ICO-rvhibynazB74LQJC-o" />
+            android:value="@string/google_maps_key" />
 
         <activity android:name=".BusinessRegistrationActivity" />
         <activity android:name=".UserRegistrationActivity" />

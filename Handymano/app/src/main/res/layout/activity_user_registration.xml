@@ -72,7 +72,8 @@
             android:id="@+id/registerPhoneNo_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="text"
+            android:inputType="phone"
+            android:maxLength="10"
             android:maxLines="1" />
     </com.google.android.material.textfield.TextInputLayout>
 

@@ -46,6 +46,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.novoseltech.handymano.Functions;
 import com.novoseltech.handymano.R;
 import com.novoseltech.handymano.adapter.SliderAdapter;
 import com.novoseltech.handymano.model.SliderItem;
@@ -85,7 +86,7 @@ public class EditProject extends AppCompatActivity {
     private FirebaseFirestore fStore = FirebaseFirestore.getInstance();
     private FirebaseUser user = mAuth.getCurrentUser();
 
-    //Objects
+    //Variables
     private long imageCount = 0;
     private int PICK_IMAGE_MULTIPLE = 1000;
     private static final int WRITE_REQUEST = 1;
@@ -101,6 +102,7 @@ public class EditProject extends AppCompatActivity {
     private String todayDate = df.format(dt);
     private String UID = user.getUid();
     private String imageEncoded;
+    private Functions appFunctions = new Functions();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -203,7 +205,10 @@ public class EditProject extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                if(et_projectTitle.getText().toString().length() >= 10 && et_projectTitle.getText().toString().length() <= 50 && et_projectDescription.getText().toString().length() >= 10 && et_projectDescription.getText().toString().length() <= 400 && (initialImages.size() > 0)){
+                if(et_projectTitle.getText().toString().length() >= 10 && et_projectTitle.getText().toString().length() <= 50
+                        && et_projectDescription.getText().toString().length() >= 10 && et_projectDescription.getText().toString().length() <= 400
+                        && (initialImages.size() > 0) && !appFunctions.containsOffensiveWord(et_projectTitle.getText().toString()) &&
+                        !appFunctions.containsOffensiveWord(et_projectDescription.getText().toString())){
                     cl_editProject.setVisibility(View.INVISIBLE);
                     cl_savingProjectChanges.setVisibility(View.VISIBLE);
                     //Objects
@@ -499,8 +504,13 @@ public class EditProject extends AppCompatActivity {
                         et_projectTitle.requestFocus();
                     }else if(initialImages.size() == 0){
                         Toast.makeText(getApplicationContext(), "You must attach at least 1 image to the project", Toast.LENGTH_SHORT).show();
-                    }
-                    else{
+                    }else if(appFunctions.containsOffensiveWord(et_projectTitle.getText().toString())){
+                        et_projectTitle.setError("Project title contains an offensive word. Please change it to something more appropriate.");
+                        et_projectTitle.requestFocus();
+                    }else if(appFunctions.containsOffensiveWord(et_projectDescription.getText().toString())){
+                        et_projectDescription.setError("Project description contains an offensive word(s). Please remove the offensive word(s).");
+                        et_projectDescription.requestFocus();
+                    }else{
                         if(et_projectDescription.getText().toString().length() < 10){
                             et_projectDescription.setError("Description length must be at least 10 characters!");
                         }else{

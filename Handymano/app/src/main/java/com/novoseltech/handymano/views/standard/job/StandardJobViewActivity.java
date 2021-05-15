@@ -59,7 +59,6 @@ import java.util.Locale;
 public class StandardJobViewActivity extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener{
 
     //Layout components
-    private DrawerLayout drawerLayout;
     private SliderView sliderView;
     private ConstraintLayout cl_jobView;
     private TextView tv_jobTitle;
@@ -87,27 +86,6 @@ public class StandardJobViewActivity extends AppCompatActivity implements PopupM
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_standard_job_view);
-        drawerLayout = findViewById(R.id.drawer_layout_standard);
-
-        profileImage = drawerLayout.findViewById(R.id.civ_profilePictureStandard);
-        if(user.getPhotoUrl() != null){
-            Glide.with(getApplicationContext())
-                    .load(user.getPhotoUrl())
-                    .into(profileImage);
-        }
-
-        tv_UserName = drawerLayout.findViewById(R.id.text_UserName_Standard);
-        fStore.collection("user")
-                .document(user.getUid())
-                .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if(task.isSuccessful()){
-                    DocumentSnapshot documentSnapshot = task.getResult();
-                    tv_UserName.setText(documentSnapshot.getString("username"));
-                }
-            }
-        });
 
         JOB_ID = getIntent().getStringExtra("JOB_ID");
         cl_jobView = findViewById(R.id.cl_jobViewStandard);
@@ -303,82 +281,6 @@ public class StandardJobViewActivity extends AppCompatActivity implements PopupM
             Log.d("My Current", "Cannot get Address!");
         }
         return strAdd;
-    }
-
-    public void logout(){
-        //Close app
-        //Initialize alert dialog
-        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
-        //Set title
-        builder.setTitle("Log out");
-        //Set message
-        builder.setMessage("Are you sure you want to log out ?");
-        //Yes button
-        builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                FirebaseAuth.getInstance().signOut();
-                finish();
-                Intent intent = new Intent(StandardJobViewActivity.this, MainActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        //No button
-        builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                //Dismiss dialog
-                dialogInterface.dismiss();
-            }
-        });
-        //Show dialog
-        builder.show();
-    }
-
-    public void ClickMenu(View view) {
-        openDrawer(drawerLayout);
-    }
-
-    public static void openDrawer(DrawerLayout drawerLayout) {
-        //Open drawer layout
-        drawerLayout.openDrawer(GravityCompat.START);
-    }
-
-    public static void closeDrawer(DrawerLayout drawerLayout) {
-        //Close drawer layout
-        //Check condition
-        if(drawerLayout.isDrawerOpen(GravityCompat.START)){
-            //When drawer is open
-            //Close drawer
-            drawerLayout.closeDrawer(GravityCompat.START);
-        }
-    }
-
-    public void ClickJobs(View view){
-        //recreate the activity
-        Intent intent = new Intent(StandardJobViewActivity.this, JobsActivity.class);
-        startActivity(intent);
-    }
-
-    public void ClickLogOut(View view) {
-        logout();
-    }
-
-    public void ClickHome(View view) {
-        Intent intent = new Intent(StandardJobViewActivity.this, HomeActivityStandard.class);
-        startActivity(intent);
-    }
-
-    public void ClickProfile(View view) {
-        Intent intent = new Intent(StandardJobViewActivity.this, StandardProfileActivity.class);
-        startActivity(intent);
-    }
-
-    public void ClickMessages(View view) {
-        Intent intent = new Intent(StandardJobViewActivity.this, MessageMenu.class);
-        intent.putExtra("USER_TYPE", "Standard");
-        startActivity(intent);
     }
 
     @Override

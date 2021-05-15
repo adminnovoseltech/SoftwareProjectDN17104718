@@ -28,12 +28,14 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, ChatAdapter
     String MESSAGE_SENDER = "";
 
     public ChatAdapter(@NonNull FirestoreRecyclerOptions<ChatModel> options, String SENDER_NAME) {
+        //Get my username from the constructor
         super(options);
         CURRENT_USERNAME = SENDER_NAME;
     }
 
     @Override
     protected void onBindViewHolder(@NonNull ViewHolder holder, int position, @NonNull ChatModel model) {
+        //ViewHolder for each chat bubble
         MESSAGE_SENDER = model.getSender();
         holder.message.setText(model.getMessage());
         holder.sender.setText(model.getSender());
@@ -46,6 +48,7 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, ChatAdapter
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view;
 
+        //Decide whether to show the message in sender or receiver chat bubble
         if(viewType == MSG_TYPE_RIGHT){
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_right, parent, false);
         }else{
@@ -58,6 +61,7 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, ChatAdapter
 
     @Override
     public int getItemViewType(int position) {
+        //if the chat bubble's model has my user ID then return message bubble on the right
         if(getItem(position).getUser_id().equals(user.getUid())){
             return MSG_TYPE_RIGHT;
         }else{

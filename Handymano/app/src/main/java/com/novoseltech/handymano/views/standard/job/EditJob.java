@@ -55,6 +55,7 @@ import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.novoseltech.handymano.Functions;
 import com.novoseltech.handymano.R;
 import com.novoseltech.handymano.adapter.SliderAdapter;
 import com.novoseltech.handymano.fragments.AddressSelect;
@@ -127,9 +128,10 @@ public class EditJob extends AppCompatActivity {
     private String jobStatus = "";
     private double tmpLat;
     private double tmpLon;
-    private double newLat;
-    private double newLon;
+    //private double newLat;
+    //private double newLon;
     private AddressSelect af = new AddressSelect();
+    private Functions appFunctions = new Functions();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -355,7 +357,10 @@ public class EditJob extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                if(et_jobTitle.getText().toString().length() >= 10 && et_jobTitle.getText().toString().length() <= 50 && et_jobDescription.getText().toString().length() >= 10 && et_jobDescription.getText().toString().length() <= 400 && (initialImages.size() > 0)){
+                if(et_jobTitle.getText().toString().length() >= 10 && et_jobTitle.getText().toString().length() <= 50 &&
+                        et_jobDescription.getText().toString().length() >= 10 && et_jobDescription.getText().toString().length() <= 400
+                        && (initialImages.size() > 0) && !appFunctions.containsOffensiveWord(et_jobTitle.getText().toString())
+                        && !appFunctions.containsOffensiveWord(et_jobDescription.getText().toString())){
                     cl_editJob.setVisibility(View.INVISIBLE);
                     cl_savingChanges.setVisibility(View.VISIBLE);
                     //Objects
@@ -648,8 +653,13 @@ public class EditJob extends AppCompatActivity {
                         et_jobTitle.requestFocus();
                     }else if(initialImages.size() == 0){
                         Toast.makeText(getApplicationContext(), "You must attach at least 1 image to the job", Toast.LENGTH_SHORT).show();
-                    }
-                    else{
+                    }else if(appFunctions.containsOffensiveWord(et_jobTitle.getText().toString())){
+                        et_jobTitle.setError("Job title contains an offensive word. Please change the title to something appropriate.");
+                        et_jobTitle.requestFocus();
+                    }else if(appFunctions.containsOffensiveWord(et_jobDescription.getText().toString())){
+                        et_jobDescription.setError("Job description contains an offensive word(s). Please remove the offensive word(s).");
+                        et_jobDescription.requestFocus();
+                    }else{
                         if(et_jobDescription.getText().toString().length() < 10){
                             et_jobDescription.setError("Description length must be at least 10 characters!");
                         }else{

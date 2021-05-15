@@ -47,6 +47,7 @@ public class UserRegistrationActivity extends AppCompatActivity {
     private String UID;
     private boolean usernameMatches = false;
     private boolean phoneNoMatches = false;
+    private Functions appFunctions = new Functions();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,11 +73,15 @@ public class UserRegistrationActivity extends AppCompatActivity {
                                 if(documentSnapshot.getString("username").equals(etUsername.getText().toString().trim())){
                                     usernameMatches = true;
                                     Log.d("DEBUG", "Username matches");
+                                }else{
+                                    usernameMatches = false;
                                 }
 
                                 if(documentSnapshot.getString("phoneNo").equals(etPhoneNo.getText().toString().trim())){
                                     phoneNoMatches = true;
                                     Log.d("DEBUG", "Phone number matches");
+                                }else{
+                                    phoneNoMatches = false;
                                 }
                             }
                         }
@@ -113,12 +118,20 @@ public class UserRegistrationActivity extends AppCompatActivity {
             etUsername.setError("Username already exists. Please specify unique username");
             etUsername.requestFocus();
             return;
+        }else if(appFunctions.containsOffensiveWord(etUsername.getText().toString())){
+            etUsername.setError("Username contains offensive word. Please change the username to something appropriate");
+            etUsername.requestFocus();
+            return;
         }else if(email.isEmpty()){
             etEmail.setError("Email address is required");
             etEmail.requestFocus();
             return;
         }else if(!Patterns.EMAIL_ADDRESS.matcher(email).matches()){
             etEmail.setError("Please enter valid email address");
+            etEmail.requestFocus();
+            return;
+        }else if(appFunctions.containsOffensiveWord(etEmail.getText().toString())){
+            etEmail.setError("Email contains offensive word. Please change the username to something appropriate");
             etEmail.requestFocus();
             return;
         }else if(phoneNo.isEmpty()){

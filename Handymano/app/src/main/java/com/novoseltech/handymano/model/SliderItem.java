@@ -1,6 +1,8 @@
 package com.novoseltech.handymano.model;
 
 public class SliderItem {
+    //All credits go to:
+    //https://github.com/smarteist/Android-Image-Slider
 
     private String description;
     private String imageUrl;

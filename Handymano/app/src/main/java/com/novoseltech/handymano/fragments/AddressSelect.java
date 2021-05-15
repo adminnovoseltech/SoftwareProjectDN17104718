@@ -199,7 +199,6 @@ public class AddressSelect extends Fragment implements OnMapReadyCallback{
                     LatLng point = new LatLng(53.2734, -7.77832031);
                     googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(point, 7));
                     coordinates[2] = "0";
-
                     btn_cancelLocation.setVisibility(View.VISIBLE);
 
                 }

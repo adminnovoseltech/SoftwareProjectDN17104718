@@ -46,6 +46,7 @@ import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.novoseltech.handymano.Functions;
 import com.novoseltech.handymano.R;
 import com.novoseltech.handymano.adapter.SliderAdapter;
 import com.novoseltech.handymano.fragments.AddressSelect;
@@ -105,6 +106,7 @@ public class CreateJob extends AppCompatActivity {
     private double latitude = 0.0;
     private double longitude = 0.0;
     private AddressSelect af = new AddressSelect();
+    private Functions appFunctions = new Functions();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -246,7 +248,8 @@ public class CreateJob extends AppCompatActivity {
 
                 //Content validation
                 if(jobTitle.length() >= 10 && jobTitle.length() <= 50 && jobDescription.length() >= 10 && jobDescription.length() <= 400
-                        && (imagesArrayList.size() > 0) && !jobCategory.equals("N/A") && latitude != 0.0 && longitude != 0.0){
+                        && (imagesArrayList.size() > 0) && !jobCategory.equals("N/A") && latitude != 0.0 && longitude != 0.0 && !appFunctions.containsOffensiveWord(jobTitle)
+                        && !appFunctions.containsOffensiveWord(jobDescription)){
                     GeoPoint gp = new GeoPoint(latitude, longitude);
                     job.put("title", jobTitle);
                     job.put("description", jobDescription);
@@ -299,6 +302,12 @@ public class CreateJob extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(), "Job location must be specified", Toast.LENGTH_SHORT).show();
                     }else if(longitude == 0.0){
                         Toast.makeText(getApplicationContext(), "Job location must be specified", Toast.LENGTH_SHORT).show();
+                    }else if(appFunctions.containsOffensiveWord(et_jobTitle.getText().toString())){
+                        et_jobTitle.setError("Job title contains an offensive word. Please change the title to something appropriate.");
+                        et_jobTitle.requestFocus();
+                    }else if(appFunctions.containsOffensiveWord(et_jobDescription.getText().toString())){
+                        et_jobDescription.setError("Job description contains an offensive word(s). Please remove the offensive word(s).");
+                        et_jobDescription.requestFocus();
                     }else{
                         if(jobDescription.length() < 10){
                             et_jobDescription.setError("Description length must be at least 10 characters!");

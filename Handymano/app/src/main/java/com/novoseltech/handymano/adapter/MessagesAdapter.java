@@ -33,6 +33,11 @@ import java.util.List;
 import java.util.SimpleTimeZone;
 
 public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHolder> {
+    //Initial functionality was developed from this:
+    //https://medium.com/@akhilkc9/simple-android-chat-application-using-firestorerecycleradapter-7f632da2eaee
+
+    //This only entailed a chat room where anyone could join. I have rebuilt the complete system
+    //and the only common functionality is displaying the message data in the chat bubbles
 
     private List<String> messagesArrayList;
     private List<String> lastMessagesSent;
@@ -54,7 +59,10 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(@NonNull MessagesAdapter.ViewHolder holder, int position) {
-
+        //MessageMenu activity iterates through Firestore chat documents to check user's recipient list
+        //User's recipient list is structured as "recipientUID,recipientDisplayName" and that data is then stored in the ArrayList
+        //Which is passed to this adapter and the data is then extracted to show recipients display name in the RecyclerView
+        //And recipients UID and name are then displayed to chat activity to load message data
         String toSplit = messagesArrayList.get(position);
         String[] messageData = toSplit.split(",");
         String userID = messageData[0];
@@ -62,6 +70,8 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
 
         holder.messageSender.setText(username);
 
+        //Similar as to above, activity iterates through the messaging between sender and recipients and retrieves last message sent
+        //Which is then shown inside of the RecyclerView
         String messageToSplit = lastMessagesSent.get(position);
         String[] lastMessageData = messageToSplit.split(",");
         String lmTimestamp = lastMessageData[0];

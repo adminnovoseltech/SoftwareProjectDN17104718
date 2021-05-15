@@ -17,6 +17,9 @@ import com.novoseltech.handymano.model.SliderItem;
 import java.util.ArrayList;
 import java.util.List;
 
+//All credits go to:
+//https://github.com/smarteist/Android-Image-Slider
+
 public class SliderAdapter extends SliderViewAdapter<SliderAdapter.SliderAdapterVH> {
 
     private Context context;
@@ -51,7 +54,7 @@ public class SliderAdapter extends SliderViewAdapter<SliderAdapter.SliderAdapter
     @Override
     public void onBindViewHolder(SliderAdapterVH viewHolder, int position) {
         SliderItem sliderItem = mSliderItems.get(position);
-
+        //Setting up the parameters and loading the image into the imageView
         viewHolder.textViewDescription.setText(sliderItem.getDescription());
         viewHolder.textViewDescription.setTextSize(16);
         viewHolder.textViewDescription.setTextColor(Color.WHITE);

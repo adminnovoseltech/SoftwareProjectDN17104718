@@ -281,6 +281,7 @@ public class MessageMenu extends AppCompatActivity {
 
         rv_chatList = findViewById(R.id.rv_chatList);
 
+        //Checking in the "chat" collection if the user has any recipients in the array
         fStore.collection("chat").document(user.getUid())
                 .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -290,6 +291,8 @@ public class MessageMenu extends AppCompatActivity {
                     messageReceipients = (List<String>) documentSnapshot.get("recipients");
 
                     if(messageReceipients != null){
+                        //If the recipients list is not empty then add themn to the ArrayList that will be passed to the adapter
+                        //so that the recipients can be shown in the RecyclerView
                         for(int i = 0; i < messageReceipients.size(); i++){
 
                             String toSplit = messageReceipients.get(i);
@@ -304,17 +307,20 @@ public class MessageMenu extends AppCompatActivity {
                                         @Override
                                         public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
                                             if(value != null){
+                                                //For each of the recipients get the last message sent and add it to the lastMessageSent ArrayList
+                                                //so that it can be shown in the RecyclerView under the recipients name
                                                 List<DocumentSnapshot> dsList = value.getDocuments();
 
                                                 if(dsList.isEmpty()){
 
                                                 }else{
+                                                    //Get the last message's timestamp and calculate when it was sent using the PrettyTime
+                                                    //https://github.com/ocpsoft/prettytime
+
                                                     DocumentSnapshot docSnap = dsList.get(0);
                                                     PrettyTime p = new PrettyTime();
-
                                                     Timestamp ts = docSnap.getTimestamp("timestamp");
                                                     String timestamp = p.format(ts.toDate());
-
                                                     lastMessageSent.add(timestamp + "," + docSnap.getString("message"));
                                                 }
 
