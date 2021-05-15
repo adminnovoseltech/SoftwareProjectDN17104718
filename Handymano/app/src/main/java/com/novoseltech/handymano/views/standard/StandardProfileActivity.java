@@ -45,6 +45,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.mikhaellopez.circularimageview.CircularImageView;
+import com.novoseltech.handymano.Functions;
 import com.novoseltech.handymano.MainActivity;
 import com.novoseltech.handymano.R;
 import com.novoseltech.handymano.fragments.PasswordChangeDialog;
@@ -93,6 +94,7 @@ public class StandardProfileActivity extends AppCompatActivity implements Passwo
     String email = mAuth.getCurrentUser().getEmail();
     String phoneNo;
     String pass = "";
+    Functions appFunctions = new Functions();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -207,7 +209,19 @@ public class StandardProfileActivity extends AppCompatActivity implements Passwo
 
                 }else{
                     //If something was changed
-                    openDialog();
+                    if(!appFunctions.containsOffensiveWord(et_sp_username.getText().toString()) &&
+                            !appFunctions.containsOffensiveWord(et_sp_email.getText().toString())){
+                        openDialog();
+                    }else{
+                        if(appFunctions.containsOffensiveWord(et_sp_username.getText().toString())){
+                            et_sp_username.setError("Username contains offensive word. Please remove the offensive word and save changes.");
+                            et_sp_username.requestFocus();
+                        }else if(appFunctions.containsOffensiveWord(et_sp_email.getText().toString())){
+                            et_sp_email.setError("Email contains offensive word. Please remove the offensive word and save changes.");
+                            et_sp_email.requestFocus();
+                        }
+                    }
+
                 }
 
                 btn_edit_sp.setVisibility(View.VISIBLE);

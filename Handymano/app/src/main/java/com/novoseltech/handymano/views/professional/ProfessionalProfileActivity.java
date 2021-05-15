@@ -48,6 +48,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.mikhaellopez.circularimageview.CircularImageView;
+import com.novoseltech.handymano.Functions;
 import com.novoseltech.handymano.MainActivity;
 import com.novoseltech.handymano.R;
 import com.novoseltech.handymano.fragments.AddressSelect;
@@ -93,7 +94,7 @@ public class ProfessionalProfileActivity extends AppCompatActivity implements Pa
     private FirebaseFirestore fStore = FirebaseFirestore.getInstance();
     private FirebaseUser user = mAuth.getCurrentUser();
 
-    //Objects
+    //Variables
     private static final String TAG = "LOG: ";
     private static final int PICK_FROM_GALLERY = 10000;
     private double latitude;
@@ -112,6 +113,7 @@ public class ProfessionalProfileActivity extends AppCompatActivity implements Pa
     private String pass = "";
     private Boolean editMode = false;
     private AddressSelect af = new AddressSelect();
+    private Functions appFunctions = new Functions();
 
 
     @Override
@@ -272,12 +274,19 @@ public class ProfessionalProfileActivity extends AppCompatActivity implements Pa
 
                 }else{
                     //If something was changed
-                    openDialog();
+                    if(!appFunctions.containsOffensiveWord(et_pp_username.getText().toString()) &&
+                            !appFunctions.containsOffensiveWord(et_pp_email.getText().toString())){
+                        openDialog();
+                    }else{
+                        if(appFunctions.containsOffensiveWord(et_pp_username.getText().toString())){
+                            et_pp_username.setError("Username contains offensive word. Please remove the offensive word and save changes.");
+                            et_pp_username.requestFocus();
+                        }else if(appFunctions.containsOffensiveWord(et_pp_email.getText().toString())){
+                            et_pp_email.setError("Email contains offensive word. Please remove the offensive word and save changes.");
+                            et_pp_email.requestFocus();
+                        }
+                    }
 
-                    Log.d(et_pp_username.getText().toString(), username);
-                    Log.d(et_pp_email.getText().toString(), phoneNo);
-                    Log.d(et_pp_email.getText().toString(), email);
-                    //Log.d(tmpRad, radius);
 
                 }
 
