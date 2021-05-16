@@ -27,6 +27,14 @@ import com.smarteist.autoimageslider.IndicatorView.draw.controller.DrawControlle
 import com.smarteist.autoimageslider.SliderAnimations;
 import com.smarteist.autoimageslider.SliderView;
 
+/**
+ @author Denis Novosel
+ @student_id 17104718
+ @email x17104718@student.ncirl.ie
+ @github https://github.com/adminnovoseltech/SoftwareProjectDN17104718
+ @class ViewProject.java
+ **/
+
 public class ViewProject extends AppCompatActivity {
 
     //Layout components

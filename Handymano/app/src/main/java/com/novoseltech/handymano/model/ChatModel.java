@@ -2,6 +2,14 @@ package com.novoseltech.handymano.model;
 
 import java.util.Date;
 
+/**
+ @author Denis Novosel
+ @student_id 17104718
+ @email x17104718@student.ncirl.ie
+ @github https://github.com/adminnovoseltech/SoftwareProjectDN17104718
+ @class ChatModel.java
+ **/
+
 public class ChatModel {
 
     String user_id, sender, message;

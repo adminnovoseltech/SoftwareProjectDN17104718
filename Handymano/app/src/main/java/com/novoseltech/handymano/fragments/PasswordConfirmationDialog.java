@@ -20,6 +20,14 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.novoseltech.handymano.R;
 
+/**
+ @author Denis Novosel
+ @student_id 17104718
+ @email x17104718@student.ncirl.ie
+ @github https://github.com/adminnovoseltech/SoftwareProjectDN17104718
+ @class PasswordConfirmationDialog.java
+ **/
+
 public class PasswordConfirmationDialog extends DialogFragment {
     //This fragment and all of it's usages (Saving Professional and Standard profile) can be
     //updated to use simpler version. See PasswordConfirmationDialog
@@ -83,7 +91,6 @@ public class PasswordConfirmationDialog extends DialogFragment {
         et_password1 = view.findViewById(R.id.editTextTextPassword);
         et_password2 = view.findViewById(R.id.editTextTextPassword3);
 
-        //return builder.create();
         return dialog;
     }
 

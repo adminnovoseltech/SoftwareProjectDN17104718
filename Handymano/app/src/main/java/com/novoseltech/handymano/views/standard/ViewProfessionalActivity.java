@@ -57,6 +57,14 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
+/**
+ @author Denis Novosel
+ @student_id 17104718
+ @email x17104718@student.ncirl.ie
+ @github https://github.com/adminnovoseltech/SoftwareProjectDN17104718
+ @class ViewProfessionalActivity.java
+ **/
+
 public class ViewProfessionalActivity extends AppCompatActivity{
 
     //Layout components

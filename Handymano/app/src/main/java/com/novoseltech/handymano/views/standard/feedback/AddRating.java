@@ -31,6 +31,14 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+/**
+ @author Denis Novosel
+ @student_id 17104718
+ @email x17104718@student.ncirl.ie
+ @github https://github.com/adminnovoseltech/SoftwareProjectDN17104718
+ @class AddRating.java
+ **/
+
 public class AddRating extends AppCompatActivity {
 
     //Layout components

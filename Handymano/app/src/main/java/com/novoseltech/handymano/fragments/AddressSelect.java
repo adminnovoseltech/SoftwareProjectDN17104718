@@ -45,10 +45,13 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * A simple {@link Fragment} subclass.
- * Use the {@link AddressSelect#newInstance} factory method to
- * create an instance of this fragment.
- */
+ @author Denis Novosel
+ @student_id 17104718
+ @email x17104718@student.ncirl.ie
+ @github https://github.com/adminnovoseltech/SoftwareProjectDN17104718
+ @class AddressSelect.java
+ **/
+
 public class AddressSelect extends Fragment implements OnMapReadyCallback{
 
     // TODO: Rename parameter arguments, choose names that match
@@ -278,7 +281,11 @@ public class AddressSelect extends Fragment implements OnMapReadyCallback{
                     Toast.makeText(getContext(), "Location cannot be empty",
                             Toast.LENGTH_SHORT).show();
                 }else{
+
+
+
                     LatLng point = getLocationFromAddress(getContext(), address);
+
 
                     //Check permission
                     if(ActivityCompat.checkSelfPermission(getContext(),
@@ -430,16 +437,35 @@ public class AddressSelect extends Fragment implements OnMapReadyCallback{
         List<Address> address;
         LatLng p1 = null;
 
+
+
         try {
             // May throw an IOException
             address = coder.getFromLocationName(strAddress, 5);
-            if (address == null) {
-                return null;
+
+            if(address != null && !address.isEmpty()){
+                Address location = address.get(0);
+                p1 = new LatLng(location.getLatitude(), location.getLongitude() );
+            }else{
+                p1 = new LatLng(53.2734, -7.77832031);
+                Toast.makeText(getContext(), "Address could not be found. Default location set", Toast.LENGTH_SHORT).show();
             }
 
-            Address location = address.get(0);
+            /*if (address == null) {
+                return null;
+            }*/
 
-            p1 = new LatLng(location.getLatitude(), location.getLongitude() );
+
+
+            /*if(!location.hasLatitude() && !location.hasLongitude()){
+                Toast.makeText(getContext(), "Location cannot be found", Toast.LENGTH_SHORT).show();
+            }else{
+                p1 = new LatLng(location.getLatitude(), location.getLongitude() );
+            }*/
+
+
+
+
 
         } catch (IOException ex) {
 

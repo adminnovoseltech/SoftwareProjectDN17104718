@@ -56,6 +56,14 @@ import com.smarteist.autoimageslider.SliderView;
 import java.util.List;
 import java.util.Locale;
 
+/**
+ @author Denis Novosel
+ @student_id 17104718
+ @email x17104718@student.ncirl.ie
+ @github https://github.com/adminnovoseltech/SoftwareProjectDN17104718
+ @class StandardJobViewActivity.java
+ **/
+
 public class StandardJobViewActivity extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener{
 
     //Layout components

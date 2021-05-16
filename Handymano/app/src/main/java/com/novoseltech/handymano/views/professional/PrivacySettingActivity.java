@@ -28,6 +28,14 @@ import com.novoseltech.handymano.R;
 import com.novoseltech.handymano.fragments.PasswordChangeDialog;
 import com.novoseltech.handymano.fragments.PasswordConfirmationDialog;
 
+/**
+ @author Denis Novosel
+ @student_id 17104718
+ @email x17104718@student.ncirl.ie
+ @github https://github.com/adminnovoseltech/SoftwareProjectDN17104718
+ @class PrivacySettingActivity.java
+ **/
+
 public class PrivacySettingActivity extends AppCompatActivity {
 
     //Layout components

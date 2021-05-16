@@ -67,6 +67,14 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+/**
+ @author Denis Novosel
+ @student_id 17104718
+ @email x17104718@student.ncirl.ie
+ @github https://github.com/adminnovoseltech/SoftwareProjectDN17104718
+ @class CreateJob.java
+ **/
+
 public class CreateJob extends AppCompatActivity {
 
     //Layout components
@@ -380,8 +388,8 @@ public class CreateJob extends AppCompatActivity {
                     }
 
                 } else {
-                    Toast.makeText(getApplicationContext(), "Request code: " + requestCode + " and result code: " + resultCode,
-                            Toast.LENGTH_LONG).show();
+                    /*Toast.makeText(getApplicationContext(), "Request code: " + requestCode + " and result code: " + resultCode,
+                            Toast.LENGTH_LONG).show();*/
                 }
             }
         } catch (Exception e) {

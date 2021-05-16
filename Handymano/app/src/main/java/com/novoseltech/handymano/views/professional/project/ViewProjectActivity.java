@@ -1,5 +1,13 @@
 package com.novoseltech.handymano.views.professional.project;
 
+/**
+ @author Denis Novosel
+ @student_id 17104718
+ @email x17104718@student.ncirl.ie
+ @github https://github.com/adminnovoseltech/SoftwareProjectDN17104718
+ @class ViewProjectActivity.java
+ **/
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -36,6 +44,7 @@ import com.google.firebase.storage.StorageReference;
 import com.novoseltech.handymano.R;
 import com.novoseltech.handymano.adapter.SliderAdapter;
 import com.novoseltech.handymano.model.SliderItem;
+import com.novoseltech.handymano.views.professional.HomeActivityProfessional;
 import com.smarteist.autoimageslider.IndicatorView.animation.type.IndicatorAnimationType;
 import com.smarteist.autoimageslider.IndicatorView.draw.controller.DrawController;
 import com.smarteist.autoimageslider.SliderAnimations;
@@ -58,7 +67,7 @@ public class ViewProjectActivity extends AppCompatActivity implements PopupMenu.
     private FirebaseUser user = mAuth.getCurrentUser();
 
     //Objects
-    private static final String TAG = "TAG: ";
+    private static final String TAG = ViewProjectActivity.class.getSimpleName();
     private static final int REQUEST_STORAGE_PERMISSION_CODE = 1000;
     private String PROJECT_ID;
     private String projectCreationDate = "";
@@ -151,7 +160,7 @@ public class ViewProjectActivity extends AppCompatActivity implements PopupMenu.
                 @Override
                 public void onComplete(@NonNull Task<Uri> task) {
                     if(task.isSuccessful()){
-                        Log.d("URL: ", task.getResult().toString());
+                        Log.d(TAG, task.getResult().toString());
                         sliderItem.setImageUrl(task.getResult().toString());
                         adapter.addItem(sliderItem);
                     }else{

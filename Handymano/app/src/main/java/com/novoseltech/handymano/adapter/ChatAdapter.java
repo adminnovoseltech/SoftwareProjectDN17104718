@@ -17,6 +17,14 @@ import com.novoseltech.handymano.model.ChatModel;
 
 import org.ocpsoft.prettytime.PrettyTime;
 
+/**
+ @author Denis Novosel
+ @student_id 17104718
+ @email x17104718@student.ncirl.ie
+ @github https://github.com/adminnovoseltech/SoftwareProjectDN17104718
+ @class ChatAdapter.java
+ **/
+
 public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, ChatAdapter.ViewHolder> {
     public static final int MSG_TYPE_LEFT = 0;
     public static final int MSG_TYPE_RIGHT = 1;

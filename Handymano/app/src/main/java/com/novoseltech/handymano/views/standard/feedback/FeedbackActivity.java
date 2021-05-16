@@ -51,6 +51,14 @@ import com.novoseltech.handymano.views.standard.job.JobsActivity;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
+/**
+ @author Denis Novosel
+ @student_id 17104718
+ @email x17104718@student.ncirl.ie
+ @github https://github.com/adminnovoseltech/SoftwareProjectDN17104718
+ @class FeedbackActivity.java
+ **/
+
 public class FeedbackActivity extends AppCompatActivity {
 
     //Layout components

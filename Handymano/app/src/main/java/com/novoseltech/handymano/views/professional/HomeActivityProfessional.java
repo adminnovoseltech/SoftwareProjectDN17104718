@@ -1,5 +1,4 @@
 package com.novoseltech.handymano.views.professional;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
@@ -31,6 +30,14 @@ import com.novoseltech.handymano.views.professional.feedback.FeedbackList;
 import com.novoseltech.handymano.views.professional.job.JobsList;
 import com.novoseltech.handymano.views.professional.project.ProjectsActivity;
 
+/**
+ @author Denis Novosel
+ @student_id 17104718
+ @email x17104718@student.ncirl.ie
+ @github https://github.com/adminnovoseltech/SoftwareProjectDN17104718
+ @class HomeActivityProfessional.java
+**/
+
 public class  HomeActivityProfessional extends AppCompatActivity {
 
     //Layout components
@@ -49,8 +56,8 @@ public class  HomeActivityProfessional extends AppCompatActivity {
     private FirebaseFirestore fStore = FirebaseFirestore.getInstance();
     private FirebaseUser user = mAuth.getCurrentUser();
 
-    //Objects
-    private static final String TAG = "LOG: ";
+    //Variables
+    private static final String TAG = HomeActivityProfessional.class.getSimpleName();
     private String USERNAME = "";
     private String CATEGORY = "";
 

@@ -1,5 +1,13 @@
 package com.novoseltech.handymano.views.message;
 
+/**
+ @author Denis Novosel
+ @student_id 17104718
+ @email x17104718@student.ncirl.ie
+ @github https://github.com/adminnovoseltech/SoftwareProjectDN17104718
+ @class ChatActivity.java
+ **/
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -205,7 +213,7 @@ public class ChatActivity extends AppCompatActivity implements PopupMenu.OnMenuI
                 //IF the message is not offensive then proceed
                 if(!appFunctions.containsOffensiveWord(et_chatMessage.getText().toString())){
                     //Build the model and create the document in both sender's and receiver's collection
-                    ChatModel chat = new ChatModel(user.getUid(),SENDER_NAME, et_chatMessage.getText().toString(), new Date());
+                    ChatModel chat = new ChatModel(user.getUid(),SENDER_NAME, et_chatMessage.getText().toString().trim(), new Date());
                     receiverReference.add(chat);
                     chatReference.add(chat);
                     et_chatMessage.setText("");

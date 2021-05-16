@@ -31,6 +31,14 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ @author Denis Novosel
+ @student_id 17104718
+ @email x17104718@student.ncirl.ie
+ @github https://github.com/adminnovoseltech/SoftwareProjectDN17104718
+ @class UserRegistrationActivity.java
+ **/
+
 public class UserRegistrationActivity extends AppCompatActivity {
 
     //Layout components

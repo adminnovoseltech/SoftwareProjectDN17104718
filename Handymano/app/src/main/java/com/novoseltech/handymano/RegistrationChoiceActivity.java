@@ -6,6 +6,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
+/**
+ @author Denis Novosel
+ @student_id 17104718
+ @email x17104718@student.ncirl.ie
+ @github https://github.com/adminnovoseltech/SoftwareProjectDN17104718
+ @class RegistrationChoiceActivity.java
+ **/
+
 public class RegistrationChoiceActivity extends AppCompatActivity {
 
     @Override

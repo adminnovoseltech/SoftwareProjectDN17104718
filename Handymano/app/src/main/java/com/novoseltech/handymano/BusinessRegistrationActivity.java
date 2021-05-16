@@ -42,6 +42,14 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ @author Denis Novosel
+ @student_id 17104718
+ @email x17104718@student.ncirl.ie
+ @github https://github.com/adminnovoseltech/SoftwareProjectDN17104718
+ @class BusinessRegistrationActivity.java
+ **/
+
 public class BusinessRegistrationActivity extends AppCompatActivity {
 
     //Layout components
@@ -405,9 +413,6 @@ public class BusinessRegistrationActivity extends AppCompatActivity {
         latitude = Double.parseDouble(lat);
         longitude = Double.parseDouble(lon);
         radius = rad;
-
         btn_register.setVisibility(View.VISIBLE);
-
-        Toast.makeText(getApplicationContext(), latitude + ", " + longitude + ", " + radius, Toast.LENGTH_SHORT).show();
     }
 }

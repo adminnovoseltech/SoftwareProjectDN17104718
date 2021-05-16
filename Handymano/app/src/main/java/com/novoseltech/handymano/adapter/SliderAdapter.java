@@ -17,6 +17,14 @@ import com.novoseltech.handymano.model.SliderItem;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ @author Denis Novosel
+ @student_id 17104718
+ @email x17104718@student.ncirl.ie
+ @github https://github.com/adminnovoseltech/SoftwareProjectDN17104718
+ @class SliderAdapter.java
+ **/
+
 //All credits go to:
 //https://github.com/smarteist/Android-Image-Slider
 

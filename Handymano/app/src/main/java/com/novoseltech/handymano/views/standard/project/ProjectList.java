@@ -34,6 +34,13 @@ import com.novoseltech.handymano.views.standard.HomeActivityStandard;
 import com.novoseltech.handymano.views.standard.StandardProfileActivity;
 import com.novoseltech.handymano.views.standard.job.JobsActivity;
 
+/**
+ @author Denis Novosel
+ @student_id 17104718
+ @email x17104718@student.ncirl.ie
+ @github https://github.com/adminnovoseltech/SoftwareProjectDN17104718
+ @class ProjectList.java
+ **/
 
 public class ProjectList extends AppCompatActivity {
 

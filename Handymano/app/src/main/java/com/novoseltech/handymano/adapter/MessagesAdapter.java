@@ -32,6 +32,14 @@ import java.util.Date;
 import java.util.List;
 import java.util.SimpleTimeZone;
 
+/**
+ @author Denis Novosel
+ @student_id 17104718
+ @email x17104718@student.ncirl.ie
+ @github https://github.com/adminnovoseltech/SoftwareProjectDN17104718
+ @class MessagesAdapter.java
+ **/
+
 public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHolder> {
     //Initial functionality was developed from this:
     //https://medium.com/@akhilkc9/simple-android-chat-application-using-firestorerecycleradapter-7f632da2eaee

@@ -50,6 +50,7 @@ import com.novoseltech.handymano.MainActivity;
 import com.novoseltech.handymano.R;
 import com.novoseltech.handymano.fragments.PasswordChangeDialog;
 import com.novoseltech.handymano.fragments.PasswordConfirmationDialog;
+import com.novoseltech.handymano.fragments.ProfileDeleteDialog;
 import com.novoseltech.handymano.views.message.MessageMenu;
 import com.novoseltech.handymano.views.standard.job.JobsActivity;
 import com.novoseltech.handymano.views.standard.job.StandardJobViewActivity;
@@ -60,6 +61,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
+/**
+ @author Denis Novosel
+ @student_id 17104718
+ @email x17104718@student.ncirl.ie
+ @github https://github.com/adminnovoseltech/SoftwareProjectDN17104718
+ @class StandardProfileActivity.java
+ **/
 
 public class StandardProfileActivity extends AppCompatActivity implements PasswordConfirmationDialog.PasswordConfirmationDialogListener {
 
@@ -75,6 +84,7 @@ public class StandardProfileActivity extends AppCompatActivity implements Passwo
     Button btn_edit_sp;
     Button btn_save_sp;
     Button btn_stdUserChangePassword;
+    Button btn_deleteStandardProfile;
     CircularImageView profileImage;
     TextView tv_UserName;
     TextView tv_sp_username;
@@ -143,6 +153,7 @@ public class StandardProfileActivity extends AppCompatActivity implements Passwo
         btn_save_sp = findViewById(R.id.btn_save_sp);
         btn_save_sp.setVisibility(View.INVISIBLE);
         btn_stdUserChangePassword = findViewById(R.id.btn_stdUserChangePassword);
+        btn_deleteStandardProfile = findViewById(R.id.btn_deleteStandardProfile);
 
         if(mAuth.getCurrentUser().getPhotoUrl() != null){
             Glide.with(this)
@@ -236,27 +247,37 @@ public class StandardProfileActivity extends AppCompatActivity implements Passwo
             }
         });
 
+        btn_deleteStandardProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                confirmProfileDelete();
+            }
+        });
+
         iv_sp_profilePhoto.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                try {
-                    if (ActivityCompat.checkSelfPermission(StandardProfileActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                        ActivityCompat.requestPermissions(StandardProfileActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, PICK_FROM_GALLERY);
-                    } else {
-                        /*Intent galleryIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                        startActivityForResult(galleryIntent, PICK_FROM_GALLERY);*/
+            public void onClick(View v) {
 
-                        Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                        intent.setType("image/*");
-                        //Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                        if(intent.resolveActivity(getPackageManager()) != null){
-                            startActivityForResult(intent, PICK_FROM_GALLERY);
-                        }
+                if(getApplicationContext().checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED || getApplicationContext().
+                        checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, PICK_FROM_GALLERY);
+                }else{
+                    Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                    intent.setType("image/*");
+                    if(intent.resolveActivity(getPackageManager()) != null){
+                        startActivityForResult(intent, PICK_FROM_GALLERY);
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
                 }
 
+                /*if (ActivityCompat.checkSelfPermission(StandardProfileActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(StandardProfileActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, PICK_FROM_GALLERY);
+                } else {
+                    Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                    intent.setType("image/*");
+                    if(intent.resolveActivity(getPackageManager()) != null){
+                        startActivityForResult(intent, PICK_FROM_GALLERY);
+                    }
+                }*/
             }
         });
 
@@ -355,7 +376,7 @@ public class StandardProfileActivity extends AppCompatActivity implements Passwo
                         startActivityForResult(intent, PICK_FROM_GALLERY);
                     }
                 } else {
-                    //Show error message that prevents that informs them about permission
+                    Toast.makeText(getApplicationContext(),"Storage permission is denied. Please allow it in the settings to be able to choose profile image.", Toast.LENGTH_SHORT).show();
                 }
                 break;
         }
@@ -496,6 +517,43 @@ public class StandardProfileActivity extends AppCompatActivity implements Passwo
     public void showDialog(){
         PasswordChangeDialog exampleDialog = new PasswordChangeDialog();
         exampleDialog.show(getSupportFragmentManager(), "example dialog");
+    }
+
+    public void showDeleteDialog(){
+        ProfileDeleteDialog profileDeleteDialog = new ProfileDeleteDialog();
+        Bundle bundle = new Bundle();
+        bundle.putString("USER_TYPE", "Standard");
+        bundle.putString("USERNAME", tv_UserName.getText().toString());
+        profileDeleteDialog.setArguments(bundle);
+        profileDeleteDialog.show(getSupportFragmentManager(), "Profile delete dialog show");
+    }
+
+    public void confirmProfileDelete(){
+        //Close app
+        //Initialize alert dialog
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
+        //Set title
+        builder.setTitle("Delete account");
+        //Set message
+        builder.setMessage("Are you sure you want to delete your profile ?");
+        //Yes button
+        builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                showDeleteDialog();
+            }
+        });
+
+        //No button
+        builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                //Dismiss dialog
+                dialogInterface.dismiss();
+            }
+        });
+        //Show dialog
+        builder.show();
     }
 
     @Override

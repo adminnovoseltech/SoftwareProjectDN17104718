@@ -23,15 +23,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <!--<com.google.android.material.imageview.ShapeableImageView
-                android:id="@+id/iv_sp_profilePhoto"
-                android:layout_width="150dp"
-                android:layout_height="150dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize10Percent"
-                app:srcCompat="@drawable/ic_profile_512" />-->
+                <Button
+                    android:id="@+id/btn_deleteStandardProfile"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="30dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="30dp"
+                    android:text="DELETE PROFILE"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/btn_stdUserChangePassword" />
 
                 <com.mikhaellopez.circularimageview.CircularImageView
                     android:id="@+id/iv_sp_profilePhoto"
@@ -230,9 +232,7 @@
                     android:layout_marginStart="30dp"
                     android:layout_marginTop="10dp"
                     android:layout_marginEnd="30dp"
-                    android:layout_marginBottom="20dp"
                     android:text="Change password"
-                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/btn_edit_sp" />

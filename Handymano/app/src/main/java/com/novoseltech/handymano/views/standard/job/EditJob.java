@@ -81,6 +81,14 @@ import java.util.Map;
 
 import static com.google.common.reflect.Reflection.initialize;
 
+/**
+ @author Denis Novosel
+ @student_id 17104718
+ @email x17104718@student.ncirl.ie
+ @github https://github.com/adminnovoseltech/SoftwareProjectDN17104718
+ @class EditJob.java
+ **/
+
 public class EditJob extends AppCompatActivity {
 
     //Layout components

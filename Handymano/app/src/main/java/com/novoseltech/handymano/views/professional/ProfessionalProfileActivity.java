@@ -28,6 +28,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -53,6 +54,7 @@ import com.novoseltech.handymano.MainActivity;
 import com.novoseltech.handymano.R;
 import com.novoseltech.handymano.fragments.AddressSelect;
 import com.novoseltech.handymano.fragments.PasswordConfirmationDialog;
+import com.novoseltech.handymano.fragments.ProfileDeleteDialog;
 import com.novoseltech.handymano.views.message.MessageMenu;
 import com.novoseltech.handymano.views.professional.feedback.FeedbackList;
 import com.novoseltech.handymano.views.professional.job.JobsList;
@@ -64,6 +66,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
+/**
+ @author Denis Novosel
+ @student_id 17104718
+ @email x17104718@student.ncirl.ie
+ @github https://github.com/adminnovoseltech/SoftwareProjectDN17104718
+ @class ProfessionalProfileActivity.java
+ **/
 
 public class ProfessionalProfileActivity extends AppCompatActivity implements PasswordConfirmationDialog.PasswordConfirmationDialogListener{
 
@@ -88,6 +98,7 @@ public class ProfessionalProfileActivity extends AppCompatActivity implements Pa
     private Button btn_edit_pp;
     private Button btn_save_pp;
     private Button btn_chooseLocation;
+    private Button btn_deleteProfessionalProfile;
 
     //Firebase components
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
@@ -95,7 +106,7 @@ public class ProfessionalProfileActivity extends AppCompatActivity implements Pa
     private FirebaseUser user = mAuth.getCurrentUser();
 
     //Variables
-    private static final String TAG = "LOG: ";
+    private static final String TAG = ProfessionalProfileActivity.class.getSimpleName();
     private static final int PICK_FROM_GALLERY = 10000;
     private double latitude;
     private double longitude;
@@ -162,6 +173,8 @@ public class ProfessionalProfileActivity extends AppCompatActivity implements Pa
         btn_chooseLocation = findViewById(R.id.btn_chooseLoc);
         btn_chooseLocation.setVisibility(View.GONE);
 
+        btn_deleteProfessionalProfile = findViewById(R.id.btn_deleteProfessionalProfile);
+
         if(mAuth.getCurrentUser().getPhotoUrl() != null){
             Glide.with(this)
                     .load(user.getPhotoUrl())
@@ -176,7 +189,7 @@ public class ProfessionalProfileActivity extends AppCompatActivity implements Pa
                     .load(user.getPhotoUrl())
                     .into(profileImage);
         }else{
-            Log.d("TAG", "Profile image not found. Loading default image.");
+            Log.d(TAG, "Profile image not found. Loading default image.");
         }
 
         fStore.collection("user").document(UID).get()
@@ -319,12 +332,12 @@ public class ProfessionalProfileActivity extends AppCompatActivity implements Pa
         iv_pp_profilePhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                try {
+                /*try {
                     if (ActivityCompat.checkSelfPermission(ProfessionalProfileActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                         ActivityCompat.requestPermissions(ProfessionalProfileActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, PICK_FROM_GALLERY);
                     } else {
-                        /*Intent galleryIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                        startActivityForResult(galleryIntent, PICK_FROM_GALLERY);*/
+                        *//*Intent galleryIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                        startActivityForResult(galleryIntent, PICK_FROM_GALLERY);*//*
 
                         Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                         intent.setType("image/*");
@@ -335,8 +348,26 @@ public class ProfessionalProfileActivity extends AppCompatActivity implements Pa
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
+                }*/
+
+                if(getApplicationContext().checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED || getApplicationContext().
+                        checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, PICK_FROM_GALLERY);
+                }else{
+                    Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                    intent.setType("image/*");
+                    if(intent.resolveActivity(getPackageManager()) != null){
+                        startActivityForResult(intent, PICK_FROM_GALLERY);
+                    }
                 }
 
+            }
+        });
+
+        btn_deleteProfessionalProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                confirmProfileDelete();
             }
         });
 
@@ -434,7 +465,7 @@ public class ProfessionalProfileActivity extends AppCompatActivity implements Pa
                         startActivityForResult(intent, PICK_FROM_GALLERY);
                     }
                 } else {
-                    //Show error message that prevents that informs them about permission
+                    Toast.makeText(getApplicationContext(),"Storage permission is denied. Please allow it in the settings to be able to choose profile image.", Toast.LENGTH_SHORT).show();
                 }
                 break;
         }
@@ -628,6 +659,43 @@ public class ProfessionalProfileActivity extends AppCompatActivity implements Pa
             btn_save_pp.setVisibility(View.GONE);
             btn_edit_pp.setVisibility(View.VISIBLE);
         }
+    }
+
+    public void showDeleteDialog(){
+        ProfileDeleteDialog profileDeleteDialog = new ProfileDeleteDialog();
+        Bundle bundle = new Bundle();
+        bundle.putString("USER_TYPE", "Professional");
+        bundle.putString("USERNAME", tv_pp_username.getText().toString());
+        profileDeleteDialog.setArguments(bundle);
+        profileDeleteDialog.show(getSupportFragmentManager(), "Profile delete dialog show");
+    }
+
+    public void confirmProfileDelete(){
+        //Close app
+        //Initialize alert dialog
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
+        //Set title
+        builder.setTitle("Delete account");
+        //Set message
+        builder.setMessage("Are you sure you want to delete your profile ?");
+        //Yes button
+        builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                showDeleteDialog();
+            }
+        });
+
+        //No button
+        builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                //Dismiss dialog
+                dialogInterface.dismiss();
+            }
+        });
+        //Show dialog
+        builder.show();
     }
 
 }
