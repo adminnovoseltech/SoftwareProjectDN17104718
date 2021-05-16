@@ -73,6 +73,8 @@ public class ViewProject extends AppCompatActivity {
         adapter = new SliderAdapter(getApplicationContext());
         sliderView.setSliderAdapter(adapter);
 
+        //Get the project Id and project creator ID
+        //From that we can get all the project data
 
         DocumentReference documentReference = fStore.collection("user")
                 .document(TRADE_ID)
@@ -122,8 +124,6 @@ public class ViewProject extends AppCompatActivity {
                 });
             }
         }, 600);
-
-
     }
 
     public void addImagesToSlider(View view){
@@ -149,7 +149,6 @@ public class ViewProject extends AppCompatActivity {
                     }
                 }
             });
-
         }
     }
 

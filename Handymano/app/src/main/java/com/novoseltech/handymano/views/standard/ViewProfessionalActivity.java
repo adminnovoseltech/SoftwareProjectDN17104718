@@ -188,6 +188,7 @@ public class ViewProfessionalActivity extends AppCompatActivity{
          *
          * **/
 
+        //Getting 5 star rating count
         fStore.collection("rating")
                 .document(TRADE_UID)
                 .collection("feedback")
@@ -205,6 +206,7 @@ public class ViewProfessionalActivity extends AppCompatActivity{
             }
         });
 
+        //Getting 4 star rating count
         fStore.collection("rating")
                 .document(TRADE_UID)
                 .collection("feedback")
@@ -222,6 +224,7 @@ public class ViewProfessionalActivity extends AppCompatActivity{
             }
         });
 
+        //Getting 3 star rating count
         fStore.collection("rating")
                 .document(TRADE_UID)
                 .collection("feedback")
@@ -239,6 +242,7 @@ public class ViewProfessionalActivity extends AppCompatActivity{
             }
         });
 
+        //Getting 2 star rating count
         fStore.collection("rating")
                 .document(TRADE_UID)
                 .collection("feedback")
@@ -256,6 +260,7 @@ public class ViewProfessionalActivity extends AppCompatActivity{
             }
         });
 
+        //Getting 1 star rating count
         fStore.collection("rating")
                 .document(TRADE_UID)
                 .collection("feedback")
@@ -274,6 +279,7 @@ public class ViewProfessionalActivity extends AppCompatActivity{
         });
 
 
+        //Getting the data about the professional user from Firestore
         fStore.collection("user").document(TRADE_UID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -304,6 +310,7 @@ public class ViewProfessionalActivity extends AppCompatActivity{
             }
         });
 
+        //Getting the last project that user has created
         Query query = fStore.collection("user").document(TRADE_UID).
                 collection("projects").orderBy("creation_date", Query.Direction.DESCENDING)
                 .limit(1);
@@ -319,8 +326,6 @@ public class ViewProfessionalActivity extends AppCompatActivity{
                     }else{
                         lastProject = documentSnapshot.get(0).getId();
                     }
-
-
 
                 }else{
                     lastProject = task.getException().getLocalizedMessage();
@@ -365,7 +370,7 @@ public class ViewProfessionalActivity extends AppCompatActivity{
                     tv_viewTradeAllProjects.setVisibility(View.GONE);
                 }
 
-
+                //Button listeners
                 btn_viewTradeFeedback.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -389,6 +394,7 @@ public class ViewProfessionalActivity extends AppCompatActivity{
                     @Override
                     public void onClick(View v) {
 
+                        //If user has projects created then we can click on the last projects name from the profile and visit it
                         if(!tv_tradeLastProject.getText().toString().equals("Last project: User has no projects created")){
                             Intent intent  = new Intent(getApplicationContext(), ViewProject.class);
                             intent.putExtra("USER_ID", TRADE_UID);
@@ -412,8 +418,8 @@ public class ViewProfessionalActivity extends AppCompatActivity{
 
 
 
+                //Show user's location on the map
                 mapFragment = (SupportMapFragment)getSupportFragmentManager().findFragmentById(R.id.trade_map_frag);
-
                 mapFragment.getMapAsync(new OnMapReadyCallback() {
                     @Override
                     public void onMapReady(GoogleMap googleMap) {

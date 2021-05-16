@@ -36,6 +36,7 @@ public class PasswordReset extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_password_reset);
 
+        //https://firebase.google.com/docs/auth/android/manage-users#send_a_password_reset_email
         et_Email = findViewById(R.id.emailPasswordReset);
         btn_resetPassword = findViewById(R.id.btn_resetPassword);
         btn_resetPassword.setOnClickListener(new View.OnClickListener() {

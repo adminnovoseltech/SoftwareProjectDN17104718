@@ -164,7 +164,12 @@ public class CreateJob extends AppCompatActivity {
                 "Carpentry",
                 "Plumbing",
                 "Electricity",
-                "Metal works"
+                "Metal works",
+                "Mechanic works",
+                "Bricklaying",
+                "Painting",
+                "Landscaping",
+                "Plastering"
         };
 
         ArrayAdapter<String> adapterJobCategory = new ArrayAdapter<>(this, R.layout.services_category_layout, R.id.tv_1, JOB_CATEGORY);
@@ -190,6 +195,16 @@ public class CreateJob extends AppCompatActivity {
                     jobCategory = "Electrician";
                 }else if(dropdownJobCategory.getEditableText().toString().equals("Metal works")){
                     jobCategory = "Metal worker";
+                }else if(dropdownJobCategory.getEditableText().toString().equals("Mechanic works")){
+                    jobCategory = "Mechanic";
+                }else if(dropdownJobCategory.getEditableText().toString().equals("Bricklaying")){
+                    jobCategory = "Bricklayer";
+                }else if(dropdownJobCategory.getEditableText().toString().equals("Painting")){
+                    jobCategory = "Painter";
+                }else if(dropdownJobCategory.getEditableText().toString().equals("Landscaping")){
+                    jobCategory = "Landscaper";
+                }else if(dropdownJobCategory.getEditableText().toString().equals("Plaster")){
+                    jobCategory = "Plasterer";
                 }
             }
 

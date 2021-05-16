@@ -189,6 +189,10 @@ public class MainActivity extends AppCompatActivity {
                                 }
                             });
 
+                    //I am using Handler throughout my application
+                    //to delay certain actions for some period of time
+                    //idea is from https://stackoverflow.com/questions/3072173/how-to-call-a-method-after-a-delay-in-android
+                    //In this particular case I am waiting 500 ms so that data about user's account type is retrieved and then I can decide which intent to start
                     Handler handler = new Handler();
                     handler.postDelayed(new Runnable() {
                         @Override
@@ -204,7 +208,7 @@ public class MainActivity extends AppCompatActivity {
                                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                 startActivity(intent);
                             }else{
-                                Toast.makeText(getApplicationContext(), "Account type not recognized.", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getApplicationContext(), "Account type not recognized. Please try to log in again.", Toast.LENGTH_SHORT).show();
                             }
                         }
                     }, 500);

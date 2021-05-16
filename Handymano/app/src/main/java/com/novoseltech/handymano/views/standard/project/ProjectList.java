@@ -46,21 +46,21 @@ import com.novoseltech.handymano.views.standard.job.JobsActivity;
 public class ProjectList extends AppCompatActivity {
 
     //Layout components
-    DrawerLayout drawerLayout;
+    private DrawerLayout drawerLayout;
     private RecyclerView rv_tradeProjectList;
-    CircularImageView profileImage;
-    TextView tv_UserName;
+    private CircularImageView profileImage;
+    private TextView tv_UserName;
     private TextView tv_toolbarTitle;
     private LinearLayout ll_mainToolbar;
 
     //Firebase components
-    FirebaseFirestore fStore = FirebaseFirestore.getInstance();
-    FirebaseAuth mAuth = FirebaseAuth.getInstance();
-    FirebaseUser user = mAuth.getCurrentUser();
+    private FirebaseFirestore fStore = FirebaseFirestore.getInstance();
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private FirebaseUser user = mAuth.getCurrentUser();
 
     //Variables
     private FirestoreRecyclerAdapter adapter;
-    String USER_ID = "";
+    private String USER_ID = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,7 +97,7 @@ public class ProjectList extends AppCompatActivity {
 
         rv_tradeProjectList = findViewById(R.id.rv_tradeProjectList);
 
-        //Query
+        //Query to get the projects
         Query query = fStore.collection("user")
                 .document(USER_ID)
                 .collection("projects")
@@ -123,7 +123,7 @@ public class ProjectList extends AppCompatActivity {
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-
+                        //When clicking each item then pass the details to the ViewProject activity
                         Intent intent  = new Intent(getApplicationContext(), ViewProject.class);
                         intent.putExtra("USER_ID", USER_ID);
                         intent.putExtra("PROJECT_ID", holder.projectTitle.getText());

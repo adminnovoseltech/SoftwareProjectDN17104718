@@ -165,6 +165,7 @@ public class StandardJobViewActivity extends AppCompatActivity implements PopupM
         if(imageCount == 0){
 
         }else{
+            //Iterating through the Storage job's folder and getting the images then loading them into the sliderview
             StorageReference storageReference = FirebaseStorage.getInstance().getReference()
                     .child("images")
                     .child(user.getUid())
@@ -199,11 +200,12 @@ public class StandardJobViewActivity extends AppCompatActivity implements PopupM
     public boolean onMenuItemClick(MenuItem menuItem) {
         switch (menuItem.getItemId()){
             case R.id.option_edit:
-
+                //When going to edit the job first check for storage permission
                 if(getApplicationContext().checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED || getApplicationContext().
                         checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
                     requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_STORAGE_PERMISSION_CODE);
                 }else{
+                    //if storage permission is given the go to edit project
                     Intent intent = new Intent(StandardJobViewActivity.this, EditJob.class);
                     intent.putExtra("JOB_ID", JOB_ID);
                     startActivity(intent);
@@ -211,12 +213,14 @@ public class StandardJobViewActivity extends AppCompatActivity implements PopupM
 
                 return true;
             case R.id.option_delete:
+                //Deleting the job
                 AlertDialog.Builder deleteJobDialog = new AlertDialog.Builder(StandardJobViewActivity.this);
                 deleteJobDialog.setTitle("Delete job")
                         .setMessage("You are about to delete the job. Continue?")
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
+                                //Delete job images
                                 StorageReference storageReference = FirebaseStorage.getInstance().getReference()
                                         .child("images")
                                         .child(user.getUid())
@@ -238,14 +242,15 @@ public class StandardJobViewActivity extends AppCompatActivity implements PopupM
                                         }
                                     });
                                 }
-
+                                //Delete job document
                                 fStore.collection("user")
                                         .document(user.getUid())
                                         .collection("jobs")
                                         .document(JOB_ID)
                                         .delete();
-
+                                //Go to the list of jobs
                                 Intent intent = new Intent(StandardJobViewActivity.this, JobsActivity.class);
+                                finish();
                                 startActivity(intent);
                             }
                         })

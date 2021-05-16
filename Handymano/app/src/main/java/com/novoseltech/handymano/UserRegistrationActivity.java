@@ -78,6 +78,7 @@ public class UserRegistrationActivity extends AppCompatActivity {
                         if(task.isSuccessful()){
                             for(QueryDocumentSnapshot documentSnapshot : task.getResult()){
 
+                                //Iterating through the "user" collection to determine if someone is already using this username and phone number
                                 if(documentSnapshot.getString("username").equals(etUsername.getText().toString().trim())){
                                     usernameMatches = true;
                                     Log.d("DEBUG", "Username matches");
@@ -117,6 +118,8 @@ public class UserRegistrationActivity extends AppCompatActivity {
         String email = etEmail.getText().toString().trim();
         String phoneNo = etPhoneNo.getText().toString().trim();
         String password = etPassword.getText().toString().trim();
+
+        //Input validations
 
         if(username.isEmpty()){
             etUsername.setError("Username is required");
@@ -159,7 +162,8 @@ public class UserRegistrationActivity extends AppCompatActivity {
             etPassword.requestFocus();
             return;
         }
-        
+
+        //Firebase Auth method
         mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
@@ -168,6 +172,8 @@ public class UserRegistrationActivity extends AppCompatActivity {
                     UID = mAuth.getCurrentUser().getUid();
                     DocumentReference docReference = fStore.collection("user").document(UID);
                     DocumentReference docReferenceChat = fStore.collection("chat").document(UID);
+
+                    //Creating "chat" and "user" collections
                     Map<String, Object> user = new HashMap<>();
                     Map<String, Object> chatMap = new HashMap<>();
                     user.put("username", username);
@@ -191,6 +197,8 @@ public class UserRegistrationActivity extends AppCompatActivity {
                             System.out.println("Chat list created");
                         }
                     });
+
+                    //When all of that is created then move to the Home activity
 
                     Intent intent = new Intent(UserRegistrationActivity.this, HomeActivityStandard.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

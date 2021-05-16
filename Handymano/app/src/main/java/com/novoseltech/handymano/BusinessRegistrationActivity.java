@@ -105,6 +105,9 @@ public class BusinessRegistrationActivity extends AppCompatActivity {
         btn_chooseLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //Learned about fragments from official Android documentation
+                //and https://guides.codepath.com/android/creating-and-using-fragments
+
                 Bundle bundle = new Bundle();
                 bundle.putString("mode", "NewReg");
                 af.setArguments(bundle);
@@ -158,12 +161,19 @@ public class BusinessRegistrationActivity extends AppCompatActivity {
         });
 
         //Services category - creating the dropdown
+
+        //Idea here and throughout the project was from https://www.material.io/components/menus/android
         final String[] SERVICES_CATEGORY = new String[] {
                 "Builder",
                 "Carpenter",
                 "Plumber",
                 "Electrician",
-                "Metal worker"
+                "Metal worker",
+                "Mechanic",
+                "Bricklayer",
+                "Painter",
+                "Landscaper",
+                "Plasterer",
         };
 
         final ArrayAdapter<String> adapterSC = new ArrayAdapter<>(this, R.layout.services_category_layout, R.id.tv_1, SERVICES_CATEGORY);
@@ -190,6 +200,16 @@ public class BusinessRegistrationActivity extends AppCompatActivity {
                     businessCategory = "Electrician";
                 }else if(dropdown_SC.getEditableText().toString().equals("Metal worker")){
                     businessCategory = "Metal worker";
+                }else if(dropdown_SC.getEditableText().toString().equals("Mechanic")){
+                    businessCategory = "Mechanic";
+                }else if(dropdown_SC.getEditableText().toString().equals("Bricklayer")){
+                    businessCategory = "Bricklayer";
+                }else if(dropdown_SC.getEditableText().toString().equals("Painter")){
+                    businessCategory = "Painter";
+                }else if(dropdown_SC.getEditableText().toString().equals("Landscaper")){
+                    businessCategory = "Landscaper";
+                }else if(dropdown_SC.getEditableText().toString().equals("Plasterer")){
+                    businessCategory = "Plasterer";
                 }
 
             }
@@ -311,6 +331,7 @@ public class BusinessRegistrationActivity extends AppCompatActivity {
         }
 
         mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            //https://firebase.google.com/docs/auth/android/start
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()){

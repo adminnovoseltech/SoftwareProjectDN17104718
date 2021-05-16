@@ -21,7 +21,7 @@ public class Functions {
         //Idea based on https://stackoverflow.com/questions/33254492/how-to-censored-bad-words-offensive-words-in-android-studio/33254897
         boolean contains = false;
         ArrayList<String> offensiveWords = new ArrayList<>();
-        String list =   "allah," +
+        /*String list =   "allah," +
                         "anal," +
                         "analannie," +
                         "analsex," +
@@ -1145,7 +1145,17 @@ public class Functions {
                         "xxx," +
                         "yankee," +
                         "zigabo," +
-                        "zipperhead";
+                        "zipperhead";*/
+
+        //Above list will be managed when WebApplication is complete and
+        //I build administration module. For now I have 6 entries below just as a proof of concept
+        String list =   "porn" +
+                "pussy" +
+                "penis" +
+                "dick" +
+                "gay" +
+                "lesbian";
+        //etc... I limited the list because this system needs to be improved
 
         for(String offWord : list.split(",")){
             offensiveWords.add(offWord);
@@ -1153,15 +1163,12 @@ public class Functions {
 
         for(int i = 0; i < offensiveWords.size(); i++){
             String offensiveWord = offensiveWords.get(i);
-            //Log.d("OFFENSIVE WORD " + i, offensiveWord);
             if(sentence.toLowerCase().contains(offensiveWord)){
                 contains = true;
-                Log.d("OFFENSIVE WORD FOUND", "YES");
             }
         }
 
-        Log.d("SIZE OF AL", offensiveWords.size()+"");
-        Log.d("MY SENTENCE", sentence);
+
 
 
         return contains;

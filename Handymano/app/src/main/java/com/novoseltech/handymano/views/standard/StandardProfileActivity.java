@@ -182,6 +182,7 @@ public class StandardProfileActivity extends AppCompatActivity implements Passwo
                     }
                 });
 
+        //When we click on the EDIT button then hide text views and show EditText fields
         btn_edit_sp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -197,8 +198,9 @@ public class StandardProfileActivity extends AppCompatActivity implements Passwo
             }
         });
 
-
-
+        //When we save hide the EditTexts and show text views
+        //But check if there were any changes
+        //if so then get the password and then save the changes
         btn_save_sp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -258,6 +260,7 @@ public class StandardProfileActivity extends AppCompatActivity implements Passwo
             @Override
             public void onClick(View v) {
 
+                //Check permissions for loading the profile image
                 if(getApplicationContext().checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED || getApplicationContext().
                         checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                     requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, PICK_FROM_GALLERY);
@@ -268,16 +271,6 @@ public class StandardProfileActivity extends AppCompatActivity implements Passwo
                         startActivityForResult(intent, PICK_FROM_GALLERY);
                     }
                 }
-
-                /*if (ActivityCompat.checkSelfPermission(StandardProfileActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(StandardProfileActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, PICK_FROM_GALLERY);
-                } else {
-                    Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                    intent.setType("image/*");
-                    if(intent.resolveActivity(getPackageManager()) != null){
-                        startActivityForResult(intent, PICK_FROM_GALLERY);
-                    }
-                }*/
             }
         });
 
@@ -307,6 +300,8 @@ public class StandardProfileActivity extends AppCompatActivity implements Passwo
             }
         }
     }
+
+    //Idea from https://stackoverflow.com/questions/59770552/android-uploading-profile-picture-for-a-firebase-authenticated-user
 
     private void uploadImageToFirebaseStorage(Bitmap bitmap) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();

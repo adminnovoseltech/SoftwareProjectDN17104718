@@ -235,7 +235,12 @@ public class EditJob extends AppCompatActivity {
                 "Carpentry",
                 "Plumbing",
                 "Electricity",
-                "Metal works"
+                "Metal works",
+                "Mechanic works",
+                "Bricklaying",
+                "Painting",
+                "Landscaping",
+                "Plastering"
         };
 
         if(jobCategory.equals("Builder")){
@@ -246,6 +251,16 @@ public class EditJob extends AppCompatActivity {
             dropdownJobCategory.setText("Plumbing");
         }else if(jobCategory.equals("Electrician")){
             dropdownJobCategory.setText("Electricity");
+        }else if(jobCategory.equals("Mechanic")){
+            dropdownJobCategory.setText("Mechanic works");
+        }else if(jobCategory.equals("Bricklayer")){
+            dropdownJobCategory.setText("Bricklaying");
+        }else if(jobCategory.equals("Painter")){
+            dropdownJobCategory.setText("Painting");
+        }else if(jobCategory.equals("Landscaper")){
+            dropdownJobCategory.setText("Landscaping");
+        }else if(jobCategory.equals("Plasterer")){
+            dropdownJobCategory.setText("Plastering");
         }else if(jobCategory.equals("Metal worker")){
             dropdownJobCategory.setText("Metal works");
         }
@@ -272,6 +287,16 @@ public class EditJob extends AppCompatActivity {
                     jobCategory = "Electrician";
                 }else if(dropdownJobCategory.getEditableText().toString().equals("Metal works")){
                     jobCategory = "Metal worker";
+                }else if(dropdownJobCategory.getEditableText().toString().equals("Mechanic works")){
+                    jobCategory = "Mechanic";
+                }else if(dropdownJobCategory.getEditableText().toString().equals("Bricklaying")){
+                    jobCategory = "Bricklayer";
+                }else if(dropdownJobCategory.getEditableText().toString().equals("Painting")){
+                    jobCategory = "Painter";
+                }else if(dropdownJobCategory.getEditableText().toString().equals("Landscaping")){
+                    jobCategory = "Landscaper";
+                }else if(dropdownJobCategory.getEditableText().toString().equals("Plaster")){
+                    jobCategory = "Plasterer";
                 }
             }
 
