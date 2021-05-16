@@ -29,14 +29,14 @@ Handymano features profile customizations, job advertisements, project portfolio
 
 
 ### Home Activity - Standard user
-[![Standard user home activity](https://raw.githubusercontent.com/adminnovoseltech/SoftwareProjectDN17104718/main/Images/HandymanoStd.jpg "Standard user home activity")](https://github.com/adminnovoseltech/SoftwareProjectDN17104718/blob/main/Images/HandymanoStd.jpg "Standard user home activity")
+[![Standard user home activity](https://raw.githubusercontent.com/adminnovoseltech/SoftwareProjectDN17104718/main/Images/HandymanoStd.jpg | height=500 "Standard user home activity")](https://github.com/adminnovoseltech/SoftwareProjectDN17104718/blob/main/Images/HandymanoStd.jpg "Standard user home activity")
 
 ------------
 
 ### Home Activity - Professional user
-[![Home activity professional](https://raw.githubusercontent.com/adminnovoseltech/SoftwareProjectDN17104718/main/Images/HandymanoPro.jpg "Home activity professional")](https://github.com/adminnovoseltech/SoftwareProjectDN17104718/blob/main/Images/HandymanoPro.jpg "Home activity professional")
+[![Home activity professional](https://raw.githubusercontent.com/adminnovoseltech/SoftwareProjectDN17104718/main/Images/HandymanoPro.jpg | height=500 "Home activity professional")](https://github.com/adminnovoseltech/SoftwareProjectDN17104718/blob/main/Images/HandymanoPro.jpg "Home activity professional")
 
 ------------
 
 ### Feedback list
-[![Feedback](https://raw.githubusercontent.com/adminnovoseltech/SoftwareProjectDN17104718/main/Images/HandymanoFeedback.jpg "Feedback")](https://github.com/adminnovoseltech/SoftwareProjectDN17104718/blob/main/Images/HandymanoFeedback.jpg "Feedback")
+[![Feedback](https://raw.githubusercontent.com/adminnovoseltech/SoftwareProjectDN17104718/main/Images/HandymanoFeedback.jpg | height=500 "Feedback")](https://github.com/adminnovoseltech/SoftwareProjectDN17104718/blob/main/Images/HandymanoFeedback.jpg "Feedback")
