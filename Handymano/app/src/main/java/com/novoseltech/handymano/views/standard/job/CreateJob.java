@@ -293,8 +293,8 @@ public class CreateJob extends AppCompatActivity {
                                 }
                             });
 
-                    Intent intent = new Intent(CreateJob.this, StandardJobViewActivity.class);
-                    intent.putExtra("JOB_ID", jobTitle);
+                    Intent intent = new Intent(CreateJob.this, JobsActivity.class);
+                    //intent.putExtra("JOB_ID", jobTitle);
                     finish();
                     startActivity(intent);
 

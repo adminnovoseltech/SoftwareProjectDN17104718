@@ -430,14 +430,12 @@ public class AddressSelect extends Fragment implements OnMapReadyCallback{
     }
 
 
-
+    //Idea from https://stackoverflow.com/questions/43371135/getting-latitude-and-longitude-from-given-address
     public LatLng getLocationFromAddress(Context context, String strAddress) {
 
         Geocoder coder = new Geocoder(context);
         List<Address> address;
         LatLng p1 = null;
-
-
 
         try {
             // May throw an IOException
@@ -450,22 +448,6 @@ public class AddressSelect extends Fragment implements OnMapReadyCallback{
                 p1 = new LatLng(53.2734, -7.77832031);
                 Toast.makeText(getContext(), "Address could not be found. Default location set", Toast.LENGTH_SHORT).show();
             }
-
-            /*if (address == null) {
-                return null;
-            }*/
-
-
-
-            /*if(!location.hasLatitude() && !location.hasLongitude()){
-                Toast.makeText(getContext(), "Location cannot be found", Toast.LENGTH_SHORT).show();
-            }else{
-                p1 = new LatLng(location.getLatitude(), location.getLongitude() );
-            }*/
-
-
-
-
 
         } catch (IOException ex) {
 

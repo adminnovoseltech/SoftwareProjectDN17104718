@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -234,31 +235,37 @@ public class HomeActivityStandard extends AppCompatActivity {
 
                     }else{
 
-                        //Clear temp collection
-                        clearTempCollection();
-                        //Clear array
-                        accounts.clear();
-                        //Get users location
-                        //getCurrentLocation();
+                        if(et_stdUserLocation.getText().toString().equals("")){
+                            et_stdUserLocation.setError("Address cannot be blank");
+                            et_stdUserLocation.requestFocus();
+                        }else{
+                            //Clear temp collection
+                            clearTempCollection();
+                            //Clear array
+                            accounts.clear();
+                            //Get users location
+                            //getCurrentLocation();
 
-                        getLocationFromAddress(getApplicationContext(), et_stdUserLocation.getText().toString());
+                            getLocationFromAddress(getApplicationContext(), et_stdUserLocation.getText().toString());
 
-                        //Calling the method to retrieve professional users account based on their and user's location and travelling preferences
-                        getProUsersFromCurrentLocation();
-                        //Stop adapter listening
-                        adapter.stopListening();
-                        //Start adaper listening
-                        adapter.startListening();
-                        //Setting the RecyclerView to visible
-                        fStoreList.setVisibility(View.VISIBLE);
-                        //Set invisible
-                        btn_expandSearchOptions.setVisibility(View.VISIBLE);
+                            //Calling the method to retrieve professional users account based on their and user's location and travelling preferences
+                            getProUsersFromCurrentLocation();
+                            //Stop adapter listening
+                            adapter.stopListening();
+                            //Start adaper listening
+                            adapter.startListening();
+                            //Setting the RecyclerView to visible
+                            fStoreList.setVisibility(View.VISIBLE);
+                            //Set invisible
+                            btn_expandSearchOptions.setVisibility(View.VISIBLE);
 
-                        //Set visible
-                        btn_search.setVisibility(View.GONE);
-                        til_stdUserLocation.setVisibility(View.GONE);
-                        dropdownServiceCategory.setVisibility(View.GONE);
-                        til_dropdownServiceCategory.setVisibility(View.GONE);
+                            //Set visible
+                            btn_search.setVisibility(View.GONE);
+                            til_stdUserLocation.setVisibility(View.GONE);
+                            dropdownServiceCategory.setVisibility(View.GONE);
+                            til_dropdownServiceCategory.setVisibility(View.GONE);
+                        }
+
 
                     }
                 }
@@ -348,6 +355,8 @@ public class HomeActivityStandard extends AppCompatActivity {
                             Glide.with(getApplicationContext())
                                     .load(task.getResult().toString())
                                     .into(holder.list_image);
+                        }else{
+
                         }
 
                     }
@@ -618,22 +627,29 @@ public class HomeActivityStandard extends AppCompatActivity {
 
     }
 
+    //Idea from https://stackoverflow.com/questions/43371135/getting-latitude-and-longitude-from-given-address
     public void getLocationFromAddress(Context context, String strAddress) {
 
         Geocoder coder = new Geocoder(context);
         List<Address> address;
-        LatLng p1 = null;
 
         try {
             // May throw an IOException
             address = coder.getFromLocationName(strAddress, 5);
-            if (address == null) {
+            /*if (address == null) {
 
+            }*/
+            if(address != null && !address.isEmpty()){
+                Address location = address.get(0);
+            }else{
+                std_latitude = String.valueOf(53.2734);
+                std_longitude = String.valueOf(-7.77832031);
+                Toast.makeText(getApplicationContext(), "Address could not be found. Default location set", Toast.LENGTH_SHORT).show();
             }
 
-            Address location = address.get(0);
-            std_latitude = String.valueOf(location.getLatitude());
-            std_longitude = String.valueOf(location.getLongitude());
+            //Address location = address.get(0);
+            //std_latitude = String.valueOf(location.getLatitude());
+            //std_longitude = String.valueOf(location.getLongitude());
 
         } catch (IOException ex) {
 
@@ -659,7 +675,8 @@ public class HomeActivityStandard extends AppCompatActivity {
     }
 
     private void getLocation() {
-        Location locationGPS = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        //Permission is checked when clicking button to search for tradesmen
+        @SuppressLint("MissingPermission") Location locationGPS = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         if (locationGPS != null) {
             double lat = locationGPS.getLatitude();
             double lon = locationGPS.getLongitude();
