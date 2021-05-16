@@ -5,7 +5,7 @@ Programe: Bachelor of Science (Hons) in Computing - part time\
 Specialization: Software Development\
 Student email: x17104718@student.ncirl.ie\
 Personal email: denis.novosel1@gmail.com\
-LinkedIn: https://www.linkedin.com/in/novoseldenis/
+LinkedIn: https://www.linkedin.com/in/novoseldenis/\
 
 
 ------------
@@ -23,20 +23,22 @@ Handymano features profile customizations, job advertisements, project portfolio
 
 ## Images
 ### Application logo
-[![Logo](https://raw.githubusercontent.com/adminnovoseltech/SoftwareProjectDN17104718/main/Images/logo.jpg "Logo")](https://github.com/adminnovoseltech/SoftwareProjectDN17104718/blob/main/Images/logo.jpg "Logo")
+
+<img src="https://raw.githubusercontent.com/adminnovoseltech/SoftwareProjectDN17104718/main/Images/logo.jpg" height="300">
 
 ------------
 
 
 ### Home Activity - Standard user
-[![Standard user home activity](https://raw.githubusercontent.com/adminnovoseltech/SoftwareProjectDN17104718/main/Images/HandymanoStd.jpg | height=500 "Standard user home activity")](https://github.com/adminnovoseltech/SoftwareProjectDN17104718/blob/main/Images/HandymanoStd.jpg "Standard user home activity")
+
+<img src="https://raw.githubusercontent.com/adminnovoseltech/SoftwareProjectDN17104718/main/Images/HandymanoStd.jpg" height="500">
 
 ------------
 
 ### Home Activity - Professional user
-[![Home activity professional](https://raw.githubusercontent.com/adminnovoseltech/SoftwareProjectDN17104718/main/Images/HandymanoPro.jpg | height=500 "Home activity professional")](https://github.com/adminnovoseltech/SoftwareProjectDN17104718/blob/main/Images/HandymanoPro.jpg "Home activity professional")
+<img src="https://raw.githubusercontent.com/adminnovoseltech/SoftwareProjectDN17104718/main/Images/HandymanoPro.jpg" height="500">
 
 ------------
 
 ### Feedback list
-[![Feedback](https://raw.githubusercontent.com/adminnovoseltech/SoftwareProjectDN17104718/main/Images/HandymanoFeedback.jpg | height=500 "Feedback")](https://github.com/adminnovoseltech/SoftwareProjectDN17104718/blob/main/Images/HandymanoFeedback.jpg "Feedback")
+<img src="https://raw.githubusercontent.com/adminnovoseltech/SoftwareProjectDN17104718/main/Images/HandymanoFeedback.jpg" height="500">
