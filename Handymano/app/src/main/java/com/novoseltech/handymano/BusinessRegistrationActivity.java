@@ -228,7 +228,7 @@ public class BusinessRegistrationActivity extends AppCompatActivity {
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 if(dropdownYOE.getEditableText().toString().equals("0-1 years")){
-                    businessExperience = "Builder";
+                    businessExperience = "0-1 years";
                 }else if(dropdownYOE.getEditableText().toString().equals("1-3 years")){
                     businessExperience = "1-3 years";
                 }else if(dropdownYOE.getEditableText().toString().equals("3-5 years")){

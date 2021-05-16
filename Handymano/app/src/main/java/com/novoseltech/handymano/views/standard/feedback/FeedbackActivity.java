@@ -46,6 +46,7 @@ import com.novoseltech.handymano.views.message.MessageMenu;
 import com.novoseltech.handymano.views.professional.feedback.FeedbackList;
 import com.novoseltech.handymano.views.standard.HomeActivityStandard;
 import com.novoseltech.handymano.views.standard.StandardProfileActivity;
+import com.novoseltech.handymano.views.standard.ViewProfessionalActivity;
 import com.novoseltech.handymano.views.standard.job.JobsActivity;
 
 import java.math.BigDecimal;
@@ -60,6 +61,7 @@ import java.math.RoundingMode;
  **/
 
 public class FeedbackActivity extends AppCompatActivity {
+
 
     //Layout components
     private DrawerLayout drawerLayout;
@@ -94,6 +96,7 @@ public class FeedbackActivity extends AppCompatActivity {
     private LayoutInflater layoutInflater;
     private FirestoreRecyclerAdapter adapter;
     private String FEEDBACK_MODE = "";
+    private static final String TAG = FeedbackActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -420,7 +423,17 @@ public class FeedbackActivity extends AppCompatActivity {
                                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
-                                        Log.d("DELETE", "Feedback deleted");
+
+
+                                        if(task.isSuccessful()){
+                                            Log.d(TAG, "Feedback deleted");
+                                            Intent intent = new Intent(FeedbackActivity.this, ViewProfessionalActivity.class);
+                                            intent.putExtra("USER_ID", TRADE_UID);
+                                            finish();
+                                            startActivity(intent);
+                                        }else{
+                                            Log.d(TAG, "Something went wrong.");
+                                        }
                                     }
                                 });
 
