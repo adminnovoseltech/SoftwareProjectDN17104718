@@ -24,6 +24,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -55,20 +56,27 @@ public class ProjectsActivity extends AppCompatActivity {
     private RecyclerView fStoreList;
     private CircularImageView profileImage;
     private TextView tv_drawerUsername;
-
-    private FirestoreRecyclerAdapter adapter;
+    private TextView tv_toolbarTitle;
+    private LinearLayout ll_mainToolbar;
 
     //Firebase components
     private FirebaseFirestore fStore = FirebaseFirestore.getInstance();
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private FirebaseUser user = mAuth.getCurrentUser();
 
+    //Variables
+    private FirestoreRecyclerAdapter adapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_projects);
-
         drawerLayout = findViewById(R.id.drawer_layout_professional);
+
+        ll_mainToolbar = findViewById(R.id.ll_mainToolbar);
+        tv_toolbarTitle = ll_mainToolbar.findViewById(R.id.tv_toolbarTitle);
+        tv_toolbarTitle.setText("PROJECTS");
+
         profileImage = drawerLayout.findViewById(R.id.civ_profilePictureProfessional);
         tv_drawerUsername = drawerLayout.findViewById(R.id.text_UserName_Professional);
         fStoreList = findViewById(R.id.firestoreListProjects);

@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -54,6 +55,8 @@ public class JobsActivity extends AppCompatActivity {
     private RecyclerView fStoreList;
     private CircularImageView profileImage;
     private TextView tv_UserName;
+    private TextView tv_toolbarTitle;
+    private LinearLayout ll_mainToolbar;
 
     //Firebase components
     private FirebaseFirestore fStore = FirebaseFirestore.getInstance();
@@ -70,6 +73,9 @@ public class JobsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_jobs);
         drawerLayout = findViewById(R.id.drawer_layout_standard);
 
+        ll_mainToolbar = findViewById(R.id.ll_mainToolbar);
+        tv_toolbarTitle = ll_mainToolbar.findViewById(R.id.tv_toolbarTitle);
+        tv_toolbarTitle.setText("JOBS");
 
         profileImage = drawerLayout.findViewById(R.id.civ_profilePictureStandard);
         if(user.getPhotoUrl() != null){

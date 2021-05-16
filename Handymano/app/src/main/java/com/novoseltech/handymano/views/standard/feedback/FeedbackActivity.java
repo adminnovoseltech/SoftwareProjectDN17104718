@@ -76,6 +76,8 @@ public class FeedbackActivity extends AppCompatActivity {
     private TextView tv_totalRating;
     private Button btn_addTradeFeedback;
     private CircularImageView profileImage;
+    private TextView tv_toolbarTitle;
+    private LinearLayout ll_mainToolbar;
 
     //Firebase components
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
@@ -104,6 +106,10 @@ public class FeedbackActivity extends AppCompatActivity {
         setContentView(R.layout.activity_feedback);
         drawerLayout = findViewById(R.id.drawer_layout_standard);
         tv_myUsername = findViewById(R.id.text_UserName_Standard);
+
+        ll_mainToolbar = findViewById(R.id.ll_mainToolbar);
+        tv_toolbarTitle = ll_mainToolbar.findViewById(R.id.tv_toolbarTitle);
+        tv_toolbarTitle.setText("FEEDBACK");
 
         TRADE_UID = getIntent().getStringExtra("USER_ID");
         TRADE_USERNAME = getIntent().getStringExtra("TRADE_USERNAME");
@@ -597,6 +603,7 @@ public class FeedbackActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        //super.onBackPressed();
+        finish();
+        super.onBackPressed();
     }
 }

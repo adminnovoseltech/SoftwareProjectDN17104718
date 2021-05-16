@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -49,6 +50,8 @@ public class ProjectList extends AppCompatActivity {
     private RecyclerView rv_tradeProjectList;
     CircularImageView profileImage;
     TextView tv_UserName;
+    private TextView tv_toolbarTitle;
+    private LinearLayout ll_mainToolbar;
 
     //Firebase components
     FirebaseFirestore fStore = FirebaseFirestore.getInstance();
@@ -65,6 +68,11 @@ public class ProjectList extends AppCompatActivity {
         setContentView(R.layout.activity_project_list);
 
         drawerLayout = findViewById(R.id.drawer_layout_standard);
+
+        ll_mainToolbar = findViewById(R.id.ll_mainToolbar);
+        tv_toolbarTitle = ll_mainToolbar.findViewById(R.id.tv_toolbarTitle);
+        tv_toolbarTitle.setText("PROJECTS");
+
         USER_ID = getIntent().getStringExtra("USER_ID");
 
         profileImage = drawerLayout.findViewById(R.id.civ_profilePictureStandard);
@@ -226,6 +234,7 @@ public class ProjectList extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        //super.onBackPressed();
+        finish();
+        super.onBackPressed();
     }
 }

@@ -74,6 +74,8 @@ public class FeedbackList extends AppCompatActivity {
     private TextView tv_tradeRatingCountFour;
     private TextView tv_tradeRatingCountFive;
     private TextView tv_tradeTotalRating;
+    private TextView tv_toolbarTitle;
+    private LinearLayout ll_mainToolbar;
 
     //Firebase components
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
@@ -97,6 +99,9 @@ public class FeedbackList extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_feedback_list);
         drawerLayout = findViewById(R.id.drawer_layout_professional);
+        ll_mainToolbar = findViewById(R.id.ll_mainToolbar);
+        tv_toolbarTitle = ll_mainToolbar.findViewById(R.id.tv_toolbarTitle);
+        tv_toolbarTitle.setText("FEEDBACK");
 
         profileImage = drawerLayout.findViewById(R.id.civ_profilePictureProfessional);
         tv_drawerUsername = drawerLayout.findViewById(R.id.text_UserName_Professional);

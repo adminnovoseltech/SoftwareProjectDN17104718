@@ -22,6 +22,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -56,6 +57,8 @@ public class JobsList extends AppCompatActivity {
     private TextView tv_drawerUsername;
     private CircularImageView profileImage;
     private RecyclerView rv_regularJobList;
+    private TextView tv_toolbarTitle;
+    private LinearLayout ll_mainToolbar;
 
     //Firebase components
     private FirebaseFirestore fStore = FirebaseFirestore.getInstance();
@@ -75,8 +78,12 @@ public class JobsList extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_jobs_list);
-
         drawerLayout = findViewById(R.id.drawer_layout_professional);
+
+        ll_mainToolbar = findViewById(R.id.ll_mainToolbar);
+        tv_toolbarTitle = ll_mainToolbar.findViewById(R.id.tv_toolbarTitle);
+        tv_toolbarTitle.setText("JOBS");
+
         tv_drawerUsername = drawerLayout.findViewById(R.id.text_UserName_Professional);
         profileImage = drawerLayout.findViewById(R.id.civ_profilePictureProfessional);
         rv_regularJobList = findViewById(R.id.rv_regularJobList);

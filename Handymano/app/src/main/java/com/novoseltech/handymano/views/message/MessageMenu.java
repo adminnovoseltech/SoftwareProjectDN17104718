@@ -70,7 +70,8 @@ public class MessageMenu extends AppCompatActivity {
     private LinearLayout projectsNavLayout;
     private LinearLayout feedbackNavLayout;
     private LinearLayout appLogoutLayout;
-
+    private TextView tv_toolbarTitle;
+    private LinearLayout ll_mainToolbar;
     //Firebase components
     private FirebaseFirestore fStore = FirebaseFirestore.getInstance();
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();;
@@ -88,11 +89,16 @@ public class MessageMenu extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
         USER_TYPE = getIntent().getStringExtra("USER_TYPE");
 
         if(USER_TYPE.equals("Professional")){
             setContentView(R.layout.activity_message_menu_professional);
             drawerLayout = findViewById(R.id.drawer_layout_professional);
+
+            ll_mainToolbar = findViewById(R.id.ll_mainToolbar);
+            tv_toolbarTitle = ll_mainToolbar.findViewById(R.id.tv_toolbarTitle);
+            tv_toolbarTitle.setText("MESSAGES");
 
             tv_UserName = drawerLayout.findViewById(R.id.text_UserName_Professional);
             CircularImageView profileImage = drawerLayout.findViewById(R.id.civ_profilePictureProfessional);
@@ -201,6 +207,10 @@ public class MessageMenu extends AppCompatActivity {
         }else{
             setContentView(R.layout.activity_message_menu);
             drawerLayout = findViewById(R.id.drawer_layout_standard);
+
+            ll_mainToolbar = findViewById(R.id.ll_mainToolbar);
+            tv_toolbarTitle = ll_mainToolbar.findViewById(R.id.tv_toolbarTitle);
+            tv_toolbarTitle.setText("MESSAGES");
 
             tv_UserName = drawerLayout.findViewById(R.id.text_UserName_Standard);
             CircularImageView profileImage = drawerLayout.findViewById(R.id.civ_profilePictureStandard);
